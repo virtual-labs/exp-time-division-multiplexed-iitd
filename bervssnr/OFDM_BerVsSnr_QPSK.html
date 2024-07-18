@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Virtual Labs</title>
+    <style>
+      table {
+        width: 80%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        width: 100px;
+      }
+    </style>
+    <script>
+      let snrValues = [];
+      let berValues = [];
+
+      function qfunc(x) {
+        return 0.5 * (1 - erf(x / Math.sqrt(2)));
+      }
+
+      function erf(x) {
+        const sign = x < 0 ? -1 : 1;
+        x = Math.abs(x);
+
+        const a1 = 0.254829592;
+        const a2 = -0.284496736;
+        const a3 = 1.421413741;
+        const a4 = -1.453152027;
+        const a5 = 1.061405429;
+        const p = 0.3275911;
+
+        const t = 1 / (1 + p * x);
+        const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+
+        return sign * y;
+      }
+
+      function addSNR() {
+        const snrValue = parseFloat(document.getElementById('snrInput').value);
+        if (isNaN(snrValue)) {
+          alert('Please enter a valid SNR value');
+          return;
+        }
+
+        if (snrValues.includes(snrValue)) {
+          alert('SNR value already exists');
+          return;
+        }
+
+        // Calculate BER for the given SNR
+        const berValue = qfunc(Math.sqrt(2 * 10 ** (snrValue / 10)));
+
+        // Store the values
+        snrValues.push(snrValue);
+        berValues.push(berValue);
+
+        // Sort the SNR and BER values
+        const sortedIndices = [...Array(snrValues.length).keys()].sort((a, b) => snrValues[a] - snrValues[b]);
+        snrValues = sortedIndices.map(i => snrValues[i]);
+        berValues = sortedIndices.map(i => berValues[i]);
+
+        // Display results in the table
+        const tableBody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // Clear previous results
+        for (let i = 0; i < snrValues.length; i++) {
+          const row = tableBody.insertRow();
+          const cell1 = row.insertCell(0);
+          const cell2 = row.insertCell(1);
+          cell1.textContent = snrValues[i];
+          cell2.textContent = berValues[i].toExponential(2);
+        }
+
+        // Plot the BER vs SNR
+        plotBERvsSNR();
+      }
+
+      function plotBERvsSNR() {
+        const trace = {
+          x: snrValues,
+          y: berValues,
+          mode: 'lines+markers',
+          type: 'scatter',
+          name: 'Theoretical BER',
+          line: { shape: 'linear' }
+        };
+
+        const data = [trace];
+
+        const layout = {
+          title: 'BER vs SNR for OFDM using QPSK Modulation',
+          xaxis: {
+            title: 'SNR (dB)',
+            type: 'linear'
+          },
+          yaxis: {
+            title: 'Bit Error Rate',
+            type: 'log',
+            autorange: true
+          }
+        };
+
+        Plotly.newPlot('plot', data, layout);
+      }
+    </script>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 mt-1 flex-1">
+        <div class="">
+          <div class="flex flex-col justify-center">
+            <div class="flex max-lg:flex-col items-center gap-x-4 gap-y-2 mt-2">
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+                  <label for="numSC" class="font-medium">Number of Subcarriers:</label>
+                  <input
+                    class="border w-32 border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="numSC"
+                    min="1"
+                    value="128"
+                  />
+                </div>
+              </div>
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+                  <label for="cpLen" class="font-medium">Cyclic Prefix Length:</label>
+                  <input
+                    class=" w-32 border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="cpLen"
+                    value="32"
+                  />
+                </div>
+              </div>
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+                  <label for="snrInput" class="font-medium">SNR (dB):</label>
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number"
+                    id="snrInput"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <div class="flex justify-center">
+                <button
+                  class="bg-blue-500 text-white rounded-md px-2 py-1"
+                  class="button"
+                  onclick="addSNR()"
+                >
+                  Calculate BER
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="flex my-2 max-lg:flex-col">
+            <div class="flex-1 basis-2/5">
+              <h3 class="flex ml-3 text-[#42c7bc] text-[20px] font-medium">BER Results</h3>
+              <table class="mt-1" id="resultsTable">
+                <thead>
+                  <tr class="bg-slate-300">
+                    <th>SNR (dB)</th>
+                    <th>BER</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Results will be added here -->
+                </tbody>
+              </table>
+            </div>
+            <div class="flex-1 basis-3/5">
+              <div id="plot" width="600" height="400"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
