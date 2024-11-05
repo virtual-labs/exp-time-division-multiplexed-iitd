@@ -2,38 +2,174 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What does OFDM stand for?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Orthogonal Frequency Division Multiplexing",
+        "b": "Orthogonal Frequency Division Modulation",
+        "c": "Orthogonal Frequency Division Management",
+        "d": "Orthogonal Frequency Data Modulation"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Correct! OFDM stands for Orthogonal Frequency Division Multiplexing.",
+        "b": "Incorrect. The term is 'Multiplexing', not 'Modulation'.",
+        "c": "Incorrect. It refers to 'Multiplexing', not 'Management'.",
+        "d": "Incorrect. The correct term is 'Multiplexing'."
       },
       "correctAnswer": "a",
-      "difficulty": "beginner"
+      "difficulty": "intermediate"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "Which of the following is a key advantage of OFDM?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Increased latency",
+        "b": "Resistance to multipath fading",
+        "c": "Reduced spectral efficiency",
+        "d": "Simplified receiver design"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. OFDM is known for low latency, not increased latency.",
+        "b": "Correct! OFDM is resistant to multipath fading due to its use of multiple carriers.",
+        "c": "Incorrect. OFDM actually improves spectral efficiency.",
+        "d": "Incorrect. The receiver design can be complex due to the need for synchronization."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What technique does OFDM use to separate data streams?",
+      "answers": {
+        "a": "Time Division Multiplexing",
+        "b": "Frequency Division Multiplexing",
+        "c": "Code Division Multiplexing",
+        "d": "Orthogonal subcarriers"
+      },
+      "explanations": {
+        "a": "Incorrect. Time Division Multiplexing is not used in OFDM.",
+        "b": "Incorrect. While related, OFDM specifically uses orthogonal subcarriers.",
+        "c": "Incorrect. Code Division Multiplexing is a different technique.",
+        "d": "Correct! OFDM uses orthogonal subcarriers to separate data streams."
+      },
+      "correctAnswer": "d",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In OFDM, what does the term 'cyclic prefix' refer to?",
+      "answers": {
+        "a": "A method of frequency reuse",
+        "b": "A guard interval added to prevent inter-symbol interference",
+        "c": "The number of subcarriers used",
+        "d": "A modulation technique"
+      },
+      "explanations": {
+        "a": "Incorrect. The cyclic prefix does not relate to frequency reuse.",
+        "b": "Correct! A cyclic prefix is added to prevent inter-symbol interference.",
+        "c": "Incorrect. It does not refer to the number of subcarriers.",
+        "d": "Incorrect. The cyclic prefix is not a modulation technique."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which modulation technique is commonly used in OFDM systems?",
+      "answers": {
+        "a": "QAM (Quadrature Amplitude Modulation)",
+        "b": "BPSK (Binary Phase Shift Keying)",
+        "c": "FSK (Frequency Shift Keying)",
+        "d": "ASK (Amplitude Shift Keying)"
+      },
+      "explanations": {
+        "a": "Correct! QAM is commonly used in OFDM systems to maximize data rates.",
+        "b": "Incorrect. While BPSK can be used, it is not the most common.",
+        "c": "Incorrect. FSK is not typically used in OFDM.",
+        "d": "Incorrect. ASK is not commonly associated with OFDM."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the primary function of the inverse Fast Fourier Transform (IFFT) in OFDM?",
+      "answers": {
+        "a": "To convert time-domain signals to frequency-domain signals",
+        "b": "To modulate the signal onto a carrier frequency",
+        "c": "To create orthogonal subcarriers from frequency-domain signals",
+        "d": "To demodulate received signals"
+      },
+      "explanations": {
+        "a": "Incorrect. The IFFT converts frequency-domain signals to time-domain signals.",
+        "b": "Incorrect. Modulation occurs after IFFT.",
+        "c": "Correct! The IFFT creates orthogonal subcarriers for transmission.",
+        "d": "Incorrect. IFFT is used in transmission, not demodulation."
       },
       "correctAnswer": "c",
-      "difficulty": "beginner"
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is a common application of OFDM?",
+      "answers": {
+        "a": "Digital broadcasting",
+        "b": "Satellite communications",
+        "c": "Wi-Fi networks",
+        "d": "All of the above"
+      },
+      "explanations": {
+        "a": "Correct! OFDM is used in digital broadcasting systems.",
+        "b": "Correct! OFDM is also used in satellite communications.",
+        "c": "Correct! Wi-Fi networks utilize OFDM for data transmission.",
+        "d": "Correct! All of the above are applications of OFDM."
+      },
+      "correctAnswer": "d",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What role does the Fast Fourier Transform (FFT) play in OFDM?",
+      "answers": {
+        "a": "It generates the input signal",
+        "b": "It converts the time-domain signal to frequency-domain",
+        "c": "It modulates the signal onto a carrier",
+        "d": "It demodulates the received signal"
+      },
+      "explanations": {
+        "a": "Incorrect. FFT does not generate the input signal.",
+        "b": "Correct! FFT converts the time-domain signal to frequency-domain.",
+        "c": "Incorrect. Modulation is done after the FFT process.",
+        "d": "Incorrect. Demodulation occurs at the receiver end."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "How does OFDM improve spectral efficiency?",
+      "answers": {
+        "a": "By using a single carrier frequency",
+        "b": "By allowing overlapping subcarriers",
+        "c": "By reducing the number of bits transmitted",
+        "d": "By using a higher baud rate"
+      },
+      "explanations": {
+        "a": "Incorrect. OFDM uses multiple subcarriers, not a single carrier frequency.",
+        "b": "Correct! OFDM allows overlapping subcarriers without interference.",
+        "c": "Incorrect. OFDM transmits more bits by using multiple subcarriers.",
+        "d": "Incorrect. Increasing baud rate can lead to increased interference."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What is the purpose of the guard interval in OFDM?",
+      "answers": {
+        "a": "To allow for frequency drift",
+        "b": "To prevent inter-symbol interference",
+        "c": "To enhance signal strength",
+        "d": "To improve data rates"
+      },
+      "explanations": {
+        "a": "Incorrect. The guard interval does not address frequency drift.",
+        "b": "Correct! The guard interval prevents inter-symbol interference.",
+        "c": "Incorrect. The guard interval does not enhance signal strength.",
+        "d": "Incorrect. While it improves reliability, it does not directly increase data rates."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
     }
   ]
 }
