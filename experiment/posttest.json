@@ -2,38 +2,174 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What is the primary advantage of using OFDM in high-speed wireless communication systems?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Increased latency and complexity",
+        "b": "Improved resistance to multipath fading and interference",
+        "c": "Higher signal power requirement",
+        "d": "Reduced bandwidth utilization"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. OFDM aims to reduce latency and complexity.",
+        "b": "Correct! OFDM provides improved resistance to multipath fading and interference.",
+        "c": "Incorrect. OFDM can operate effectively at lower signal power levels.",
+        "d": "Incorrect. OFDM improves bandwidth utilization."
       },
-      "correctAnswer": "a",
-      "difficulty": "beginner"
+      "correctAnswer": "b",
+      "difficulty": "hard"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "In the context of OFDM, what is the significance of the cyclic prefix?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "It increases the data rate.",
+        "b": "It allows for frequency synchronization.",
+        "c": "It serves as a guard interval to mitigate inter-symbol interference.",
+        "d": "It reduces the overall bandwidth of the signal."
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. The cyclic prefix does not directly increase the data rate.",
+        "b": "Incorrect. While it helps with timing, its main purpose is not frequency synchronization.",
+        "c": "Correct! The cyclic prefix serves as a guard interval to mitigate inter-symbol interference.",
+        "d": "Incorrect. The cyclic prefix does not reduce the bandwidth; it adds overhead."
       },
       "correctAnswer": "c",
-      "difficulty": "beginner"
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the role of the Fast Fourier Transform (FFT) in the OFDM receiver?",
+      "answers": {
+        "a": "It modulates the signal for transmission.",
+        "b": "It converts the time-domain signal back to frequency-domain for demodulation.",
+        "c": "It generates the original signal for decoding.",
+        "d": "It equalizes the received signal."
+      },
+      "explanations": {
+        "a": "Incorrect. FFT is not used for modulation.",
+        "b": "Correct! FFT converts the time-domain signal back to frequency-domain for demodulation.",
+        "c": "Incorrect. The original signal is not generated; decoding happens afterward.",
+        "d": "Incorrect. Equalization is a separate process that can occur after FFT."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In an OFDM system, how does subcarrier spacing affect performance?",
+      "answers": {
+        "a": "Wider subcarrier spacing increases the risk of inter-carrier interference.",
+        "b": "Narrower subcarrier spacing reduces bandwidth efficiency.",
+        "c": "Wider subcarrier spacing allows for better frequency diversity.",
+        "d": "Narrower subcarrier spacing improves resistance to frequency-selective fading."
+      },
+      "explanations": {
+        "a": "Incorrect. Wider spacing actually reduces the risk of inter-carrier interference.",
+        "b": "Incorrect. Narrow spacing can improve bandwidth efficiency up to a limit.",
+        "c": "Correct! Wider subcarrier spacing allows for better frequency diversity.",
+        "d": "Incorrect. Narrower spacing increases susceptibility to frequency-selective fading."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which modulation scheme is often used in conjunction with OFDM to achieve high data rates?",
+      "answers": {
+        "a": "QPSK (Quadrature Phase Shift Keying)",
+        "b": "16-QAM (Quadrature Amplitude Modulation)",
+        "c": "FSK (Frequency Shift Keying)",
+        "d": "PSK (Phase Shift Keying)"
+      },
+      "explanations": {
+        "a": "Incorrect. QPSK is effective but not the highest data rate.",
+        "b": "Correct! 16-QAM is commonly used with OFDM for high data rates.",
+        "c": "Incorrect. FSK is not typically used with OFDM.",
+        "d": "Incorrect. PSK can be used, but it does not achieve the same high rates as QAM."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the effect of increasing the number of subcarriers in an OFDM system?",
+      "answers": {
+        "a": "Decreased data throughput due to increased overhead.",
+        "b": "Increased resilience to frequency-selective fading.",
+        "c": "Higher complexity in the transmitter design.",
+        "d": "Lower overall spectral efficiency."
+      },
+      "explanations": {
+        "a": "Incorrect. Increasing subcarriers can improve throughput if managed correctly.",
+        "b": "Correct! More subcarriers improve resilience to frequency-selective fading.",
+        "c": "Correct! More subcarriers increase design complexity.",
+        "d": "Incorrect. More subcarriers can improve spectral efficiency."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "How does OFDM mitigate the effects of multipath fading?",
+      "answers": {
+        "a": "By using a single high-frequency carrier.",
+        "b": "By transmitting multiple signals simultaneously over different frequencies.",
+        "c": "By dividing the signal into multiple orthogonal subcarriers.",
+        "d": "By employing spread spectrum techniques."
+      },
+      "explanations": {
+        "a": "Incorrect. A single carrier does not mitigate multipath fading effectively.",
+        "b": "Incorrect. Although it uses multiple frequencies, it is through subcarriers.",
+        "c": "Correct! OFDM mitigates fading by dividing the signal into multiple orthogonal subcarriers.",
+        "d": "Incorrect. Spread spectrum is a different technique, not specifically related to OFDM."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is one major challenge when implementing OFDM systems?",
+      "answers": {
+        "a": "The need for precise synchronization between transmitter and receiver.",
+        "b": "The simplicity of the modulation scheme.",
+        "c": "The requirement for low bandwidth.",
+        "d": "The inability to support high data rates."
+      },
+      "explanations": {
+        "a": "Correct! Precise synchronization is crucial for successful OFDM operation.",
+        "b": "Incorrect. OFDM can be complex in implementation.",
+        "c": "Incorrect. OFDM is designed to utilize available bandwidth efficiently.",
+        "d": "Incorrect. OFDM can support very high data rates."
+      },
+      "correctAnswer": "a",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the impact of using a longer cyclic prefix in OFDM?",
+      "answers": {
+        "a": "It increases the data rate.",
+        "b": "It reduces inter-symbol interference but decreases the overall data throughput.",
+        "c": "It enhances the frequency diversity of the subcarriers.",
+        "d": "It simplifies the receiver design."
+      },
+      "explanations": {
+        "a": "Incorrect. A longer cyclic prefix does not increase the data rate.",
+        "b": "Correct! It reduces inter-symbol interference but can decrease data throughput due to overhead.",
+        "c": "Incorrect. It does not enhance frequency diversity.",
+        "d": "Incorrect. Longer cyclic prefixes can complicate the receiver design."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "In OFDM, what is meant by 'spectral efficiency'?",
+      "answers": {
+        "a": "The amount of data transmitted per unit of bandwidth.",
+        "b": "The total power used in transmission.",
+        "c": "The time taken to transmit a given amount of data.",
+        "d": "The ability to resist noise in the communication channel."
+      },
+      "explanations": {
+        "a": "Correct! Spectral efficiency refers to the amount of data transmitted per unit of bandwidth.",
+        "b": "Incorrect. Power usage is not the same as spectral efficiency.",
+        "c": "Incorrect. Time taken relates to delay, not efficiency.",
+        "d": "Incorrect. While noise resistance is important, it is not the definition of spectral efficiency."
+      },
+      "correctAnswer": "a",
+      "difficulty": "hard"
     }
   ]
 }
