@@ -16,7 +16,11 @@
     <h2>2. Running the Simulation</h2>
     <p>After entering the parameters, follow these steps:</p>
     <ol>
-        <li>Click the <strong>Generate</strong> button to start processing the inputs.</li>
+        <li>Click the <strong>Generate Message</strong> button to start processing the inputs.</li>
+        <li>Then, click the <strong>Generate Subcarrier</strong> button.</li>
+        <li>Next, click the <strong>Time Domain OFDM Without CP</strong> button.</li>
+        <li>After that, click the <strong>Time Domain OFDM CP</strong> button.</li>
+        <li>Finally, click the <strong>Received Subcarrier</strong> button.</li>
         <li>The simulator will generate the OFDM signal based on the input parameters.</li>
         <li>Observe the generated visualizations, including:</li>
         <ul>
