@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "What does OFDM stand for?",
+      "question": "1. What does OFDM stand for?",
       "answers": {
         "a": "Orthogonal Frequency Division Multiplexing",
         "b": "Orthogonal Frequency Division Modulation",
@@ -19,7 +19,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which of the following is a key advantage of OFDM?",
+      "question": "2. Which of the following is a key advantage of OFDM?",
       "answers": {
         "a": "Increased latency",
         "b": "Resistance to multipath fading",
@@ -36,7 +36,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What technique does OFDM use to separate data streams?",
+      "question": "3. What technique does OFDM use to separate data streams?",
       "answers": {
         "a": "Time Division Multiplexing",
         "b": "Frequency Division Multiplexing",
@@ -53,7 +53,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "In OFDM, what does the term 'cyclic prefix' refer to?",
+      "question": "4. In OFDM, what does the term 'cyclic prefix' refer to?",
       "answers": {
         "a": "A method of frequency reuse",
         "b": "A guard interval added to prevent inter-symbol interference",
@@ -70,7 +70,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "Which modulation technique is commonly used in OFDM systems?",
+      "question": "5. Which modulation technique is commonly used in OFDM systems?",
       "answers": {
         "a": "QAM (Quadrature Amplitude Modulation)",
         "b": "BPSK (Binary Phase Shift Keying)",
@@ -87,7 +87,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What is the primary function of the inverse Fast Fourier Transform (IFFT) in OFDM?",
+      "question": "6. What is the primary function of the inverse Fast Fourier Transform (IFFT) in OFDM?",
       "answers": {
         "a": "To convert time-domain signals to frequency-domain signals",
         "b": "To modulate the signal onto a carrier frequency",
@@ -104,7 +104,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What is a common application of OFDM?",
+      "question": "7. What is a common application of OFDM?",
       "answers": {
         "a": "Digital broadcasting",
         "b": "Satellite communications",
@@ -121,7 +121,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What role does the Fast Fourier Transform (FFT) play in OFDM?",
+      "question": "8. What role does the Fast Fourier Transform (FFT) play in OFDM?",
       "answers": {
         "a": "It generates the input signal",
         "b": "It converts the time-domain signal to frequency-domain",
@@ -138,7 +138,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "How does OFDM improve spectral efficiency?",
+      "question": "9. How does OFDM improve spectral efficiency?",
       "answers": {
         "a": "By using a single carrier frequency",
         "b": "By allowing overlapping subcarriers",
@@ -155,7 +155,7 @@
       "difficulty": "intermediate"
     },
     {
-      "question": "What is the purpose of the guard interval in OFDM?",
+      "question": "10. What is the purpose of the guard interval in OFDM?",
       "answers": {
         "a": "To allow for frequency drift",
         "b": "To prevent inter-symbol interference",
