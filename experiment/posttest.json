@@ -2,7 +2,7 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "What is the primary advantage of using OFDM in high-speed wireless communication systems?",
+      "question": "1. What is the primary advantage of using OFDM in high-speed wireless communication systems?",
       "answers": {
         "a": "Increased latency and complexity",
         "b": "Improved resistance to multipath fading and interference",
@@ -19,7 +19,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "In the context of OFDM, what is the significance of the cyclic prefix?",
+      "question": "2. In the context of OFDM, what is the significance of the cyclic prefix?",
       "answers": {
         "a": "It increases the data rate.",
         "b": "It allows for frequency synchronization.",
@@ -36,7 +36,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "What is the role of the Fast Fourier Transform (FFT) in the OFDM receiver?",
+      "question": "3. What is the role of the Fast Fourier Transform (FFT) in the OFDM receiver?",
       "answers": {
         "a": "It modulates the signal for transmission.",
         "b": "It converts the time-domain signal back to frequency-domain for demodulation.",
@@ -53,7 +53,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "In an OFDM system, how does subcarrier spacing affect performance?",
+      "question": "4. In an OFDM system, how does subcarrier spacing affect performance?",
       "answers": {
         "a": "Wider subcarrier spacing increases the risk of inter-carrier interference.",
         "b": "Narrower subcarrier spacing reduces bandwidth efficiency.",
@@ -70,7 +70,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "Which modulation scheme is often used in conjunction with OFDM to achieve high data rates?",
+      "question": "5. Which modulation scheme is often used in conjunction with OFDM to achieve high data rates?",
       "answers": {
         "a": "QPSK (Quadrature Phase Shift Keying)",
         "b": "16-QAM (Quadrature Amplitude Modulation)",
@@ -87,7 +87,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "What is the effect of increasing the number of subcarriers in an OFDM system?",
+      "question": "6. What is the effect of increasing the number of subcarriers in an OFDM system?",
       "answers": {
         "a": "Decreased data throughput due to increased overhead.",
         "b": "Increased resilience to frequency-selective fading.",
@@ -104,7 +104,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "How does OFDM mitigate the effects of multipath fading?",
+      "question": "7. How does OFDM mitigate the effects of multipath fading?",
       "answers": {
         "a": "By using a single high-frequency carrier.",
         "b": "By transmitting multiple signals simultaneously over different frequencies.",
@@ -121,7 +121,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "What is one major challenge when implementing OFDM systems?",
+      "question": "8. What is one major challenge when implementing OFDM systems?",
       "answers": {
         "a": "The need for precise synchronization between transmitter and receiver.",
         "b": "The simplicity of the modulation scheme.",
@@ -138,7 +138,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "What is the impact of using a longer cyclic prefix in OFDM?",
+      "question": "9. What is the impact of using a longer cyclic prefix in OFDM?",
       "answers": {
         "a": "It increases the data rate.",
         "b": "It reduces inter-symbol interference but decreases the overall data throughput.",
@@ -155,7 +155,7 @@
       "difficulty": "hard"
     },
     {
-      "question": "In OFDM, what is meant by 'spectral efficiency'?",
+      "question": "10. In OFDM, what is meant by 'spectral efficiency'?",
       "answers": {
         "a": "The amount of data transmitted per unit of bandwidth.",
         "b": "The total power used in transmission.",
