@@ -318,6 +318,7 @@ id="plotButton">Plot SER vs SER</button>
       // Show alert if the value is out of range
       if (value < 8 || value > 64) {
         alert("Choose Number of OFDM Subcarriers between 8 and 64");
+		window.location.reload(true); 
       }
     }
   });
@@ -335,16 +336,19 @@ id="plotButton">Plot SER vs SER</button>
             // Check if the number of subcarriers is a power of 2
             if (!isPowerOf2(nSubcarriers)) {
                 alert('Number of subcarriers must be a power of 2.');
+				window.location.reload(true); 
             }
 
             // Check if OFDM symbol index is greater than the number of symbols
             if (ofdmSymbolIndex > nSymbols) {
                 alert('OFDM Symbol index cannot be greater than the number of OFDM symbols.');
+				window.location.reload(true); 
             }
 
             // Check if cyclic prefix length is greater than the number of subcarriers
             if (cyclicPrefix >= nSubcarriers) {
                 alert('Choose a lower value for the length of cyclic prefix.');
+				window.location.reload(true); 
             }
         }
 
