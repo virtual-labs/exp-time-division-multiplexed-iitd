@@ -112,9 +112,9 @@
         "d": "All of the above"
       },
       "explanations": {
-        "a": "Correct! OFDM is used in digital broadcasting systems.",
-        "b": "Correct! OFDM is also used in satellite communications.",
-        "c": "Correct! Wi-Fi networks utilize OFDM for data transmission.",
+        "a": "Incorrect! OFDM is used in digital broadcasting systems.",
+        "b": "Incorrect! OFDM is also used in satellite communications.",
+        "c": "Inorrect! Wi-Fi networks utilize OFDM for data transmission.",
         "d": "Correct! All of the above are applications of OFDM."
       },
       "correctAnswer": "d",
