@@ -149,60 +149,62 @@ type="number" id="snr" value="0" min="0" max = "20")
 	<hr/>
 	
 	<div class = "container">
-	<div class = "left-half">
-	          <div class="flex gap-1">
-              <div class="flex-1 flex flex-col items-center">
-                <div class="w-full">
-                  <img
-                    src="ofdm2409_1.png"
-                    alt="psk1" 
-					style= "height:450px; width: 550px; margin-left: 40px"
-                  />
-				<button
-                  class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[450px] left-[2px]"
-                  onclick="runQAMSystem()"
-                >
-                  Generate Message
-                </button>
-				<button
-                  class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[500px] left-[2px]"
-                  onclick="plot1()"
-                >
-                  Generate Subcarrier
-                </button>
-								<button
-                  class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[0px] left-[2px]"
-                  onclick="plot2()"
-                >
-                  Time domain ofdm without cp
-                </button>
-				
-			    <button
-                  class="button bg-blue-500 text-white rounded-md px-2 py-1 relative bottom-[-50px] left-[2px]"
-                  onclick="plot3()"
-                >
-                  Time domain ofdm cp
-                </button>
-				
-					                <button
-                  class="button bg-blue-500 text-white rounded-md px-2 py-1 relative bottom-[-10px] left-[300px]"
-                  onclick="plot4(scaledReceivedSubcarriers)"
-                >
-                Received subcarrier
-                </button>
-				
-			    <button
-                  class="button bg-gray-500 text-white rounded-md px-2 py-1 relative bottom-[-50px] left-[150px]"
-                  onclick="plotReceivedBitstreams(binaryReceivedData)"
-                >
-                Demodulate OFDM
-                </button>
-				
-              </div>
-              </div>
-			  </div>
+<div class="left-half">
+  <div class="flex gap-1">
+    <div class="flex-1 flex flex-col items-center">
+      <div class="w-full" style="position: relative;">
+        <img
+          src="ofdm2409_1.png"
+          alt="psk1"
+          style="height: 28.125em; width: 34.375em; margin-left: 3em;"
+        />
+        
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[0.125em]"
+          onclick="runQAMSystem()"
+        >
+          Generate Message
+        </button>
 
-	</div>
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4em] left-[0.125em]"
+          onclick="plot1()"
+        >
+          Generate Subcarrier
+        </button>
+        
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-2.5em] left-[0.125em]"
+          onclick="plot2()"
+        >
+          Time domain ofdm without cp
+        </button>
+
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-5.5em] left-[0.125em]"
+          onclick="plot3()"
+        >
+          Time domain ofdm cp
+        </button>
+        
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-5.5em] left-[20.75em]"
+          onclick="plot4(scaledReceivedSubcarriers)"
+        >
+          Received subcarrier
+        </button>
+        
+        <button
+          class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-9.5em] left-[11.375em]"
+          onclick="plotReceivedBitstreams(binaryReceivedData)"
+        >
+          Demodulate OFDM
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 				
@@ -890,7 +892,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 type: 'bar'
             }; 
 			const layout = {
-                title: `Subcarriers in Frequency Domain (Before IFFT) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+                title: `Subcarriers in Frequency Domain (Before <br> IFFT) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
                 xaxis: {title: 'Subcarrier Index'},
                 yaxis: {title: 'Magnitude'}
             };
@@ -972,7 +974,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 type: 'scatter'
             }; 
 			const layout = {
-                title: `OFDM Signal in Time Domain (Without CP) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+                title: `OFDM Signal in Time Domain (Without <br> CP) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
                 xaxis: {title: 'Time (s)'},
                 yaxis: {title: 'Amplitude'}
             };
@@ -1054,7 +1056,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 type: 'scatter'
             }; 
 			const layout = {
-                title: `OFDM Signal in Time Domain (With Cyclic Prefix) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+                title: `OFDM Signal in Time Domain (With <br> Cyclic Prefix) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
                 xaxis: {title: 'Time (s)'},
                 yaxis: {title: 'Amplitude'}
             };
@@ -1137,7 +1139,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 type: 'bar'
             };
 			const layout = {
-                title: `Received Subcarriers in Frequency Domain (After FFT) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+                title: `Received Subcarriers in Frequency Domain <br> (After FFT) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
                 xaxis: {title: 'Subcarrier Index'},
                 yaxis: {title: 'Magnitude'}
             };
@@ -1152,7 +1154,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 mode: 'markers',
                 type: 'scatter'
             }, {
-                title: `Transmitted 16-QAM Symbols for ${ofdmSymbolIndex} OFDM Symbol`,
+                title: `Transmitted 16-QAM Symbols <br> for ${ofdmSymbolIndex} OFDM Symbol`,
                 xaxis: {title: 'In-phase'},
                 yaxis: {title: 'Quadrature'}
             });
@@ -1164,7 +1166,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 mode: 'markers',
                 type: 'scatter'
             }, {
-                title: `Received 16-QAM Symbols for ${ofdmSymbolIndex} OFDM Symbol`,
+                title: `Received 16-QAM Symbols <br> for ${ofdmSymbolIndex} OFDM Symbol`,
                 xaxis: {title: 'In-phase'},
                 yaxis: {title: 'Quadrature'}
             });
@@ -1196,7 +1198,7 @@ function plotModulatedBitstreams(binaryModData) {
     };
     
     Plotly.newPlot('plot7', [trace1], {
-        title: `Binary Bitsream of ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+        title: `Binary Bitsream of <br> ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
         xaxis: { title: 'Bit Index' },
         yaxis: { title: 'Bit Value' }
     });
@@ -1216,7 +1218,7 @@ function plotReceivedBitstreams(binaryReceivedData) {
     };
 
     Plotly.newPlot('plot8', [trace2], {
-        title: `Binary Bitsream of Received ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+        title: `Binary Bitsream of Received <br> ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
         xaxis: { title: 'Bit Index' },
         yaxis: { title: 'Bit Value' }
     });
