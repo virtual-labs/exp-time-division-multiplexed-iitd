@@ -137,23 +137,23 @@
       "correctAnswer": "b",
       "difficulty": "intermediate"
     },
-    {
-      "question": "9. How does OFDM improve spectral efficiency?",
-      "answers": {
-        "a": "By using a single carrier frequency",
-        "b": "By allowing overlapping subcarriers",
-        "c": "By reducing the number of bits transmitted",
-        "d": "By using a higher baud rate"
-      },
-      "explanations": {
-        "a": "Incorrect. OFDM uses multiple subcarriers, not a single carrier frequency.",
-        "b": "Correct! OFDM allows overlapping subcarriers without interference.",
-        "c": "Incorrect. OFDM transmits more bits by using multiple subcarriers.",
-        "d": "Incorrect. Increasing baud rate can lead to increased interference."
-      },
-      "correctAnswer": "b",
-      "difficulty": "intermediate"
-    },
+   {
+  "question": "9. How does OFDM improve spectral efficiency?",
+  "answers": {
+    "a": "By using a single carrier frequency",
+    "b": "By utilizing orthogonality among subcarriers",
+    "c": "By reducing the number of bits transmitted",
+    "d": "By using a higher baud rate"
+  },
+  "explanations": {
+    "a": "Incorrect. OFDM uses multiple subcarriers, not a single carrier frequency.",
+    "b": "Correct! OFDM improves spectral efficiency by utilizing orthogonality among subcarriers, preventing interference.",
+    "c": "Incorrect. OFDM increases data transmission by utilizing multiple subcarriers.",
+    "d": "Incorrect. Increasing baud rate does not directly improve spectral efficiency and can lead to higher interference."
+  },
+  "correctAnswer": "b",
+  "difficulty": "intermediate"
+},
     {
       "question": "10. What is the purpose of the guard interval in OFDM?",
       "answers": {
