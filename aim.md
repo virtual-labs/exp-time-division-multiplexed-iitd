@@ -1,0 +1,1 @@
+**The aim of this experiment is to study Orthogonal Frequency Division Multiplexing (OFDM) techniques and understand how they function in communication systems by efficiently utilizing available frequency bands.**
