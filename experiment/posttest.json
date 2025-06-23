@@ -2,171 +2,171 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "1. What is the primary advantage of using OFDM in high-speed wireless communication systems?",
+      "question": "1. Why does OFDM perform better than single-carrier systems in frequency-selective channels?",
       "answers": {
-        "a": "Increased latency and complexity",
-        "b": "Improved resistance to multipath fading and interference",
-        "c": "Higher signal power requirement",
-        "d": "Reduced bandwidth utilization"
+        "a": "Each subcarrier experiences flat fading due to reduced bandwidth per subcarrier",
+        "b": "All subcarriers experience the same channel response",
+        "c": "OFDM avoids multipath fading by using time-domain filtering",
+        "d": "Subcarriers do not interfere even in the absence of cyclic prefix"
       },
       "explanations": {
-        "a": "Incorrect. OFDM aims to reduce latency and complexity.",
-        "b": "Correct! OFDM provides improved resistance to multipath fading and interference.",
-        "c": "Incorrect. OFDM can operate effectively at lower signal power levels.",
-        "d": "Incorrect. OFDM improves bandwidth utilization."
-      },
-      "correctAnswer": "b",
-      "difficulty": "hard"
-    },
-    {
-      "question": "2. In the context of OFDM, what is the significance of the cyclic prefix?",
-      "answers": {
-        "a": "It increases the data rate.",
-        "b": "It allows for frequency synchronization.",
-        "c": "It serves as a guard interval to mitigate inter-symbol interference.",
-        "d": "It reduces the overall bandwidth of the signal."
-      },
-      "explanations": {
-        "a": "Incorrect. The cyclic prefix does not directly increase the data rate.",
-        "b": "Incorrect. While it helps with timing, its main purpose is not frequency synchronization.",
-        "c": "Correct! The cyclic prefix serves as a guard interval to mitigate inter-symbol interference.",
-        "d": "Incorrect. The cyclic prefix does not reduce the bandwidth; it adds overhead."
-      },
-      "correctAnswer": "c",
-      "difficulty": "hard"
-    },
-    {
-      "question": "3. What is the role of the Fast Fourier Transform (FFT) in the OFDM receiver?",
-      "answers": {
-        "a": "It modulates the signal for transmission.",
-        "b": "It converts the time-domain signal back to frequency-domain for demodulation.",
-        "c": "It generates the original signal for decoding.",
-        "d": "It equalizes the received signal."
-      },
-      "explanations": {
-        "a": "Incorrect. FFT is not used for modulation.",
-        "b": "Correct! FFT converts the time-domain signal back to frequency-domain for demodulation.",
-        "c": "Incorrect. The original signal is not generated; decoding happens afterward.",
-        "d": "Incorrect. Equalization is a separate process that can occur after FFT."
-      },
-      "correctAnswer": "b",
-      "difficulty": "hard"
-    },
-    {
-      "question": "4. In an OFDM system, how does subcarrier spacing affect performance?",
-      "answers": {
-        "a": "Wider subcarrier spacing increases the risk of inter-carrier interference.",
-        "b": "Narrower subcarrier spacing reduces bandwidth efficiency.",
-        "c": "Wider subcarrier spacing allows for better frequency diversity.",
-        "d": "Narrower subcarrier spacing improves resistance to frequency-selective fading."
-      },
-      "explanations": {
-        "a": "Incorrect. Wider spacing actually reduces the risk of inter-carrier interference.",
-        "b": "Incorrect. Narrow spacing can improve bandwidth efficiency up to a limit.",
-        "c": "Correct! Wider subcarrier spacing allows for better frequency diversity.",
-        "d": "Incorrect. Narrower spacing increases susceptibility to frequency-selective fading."
-      },
-      "correctAnswer": "c",
-      "difficulty": "hard"
-    },
-    {
-      "question": "5. Which modulation scheme is often used in conjunction with OFDM to achieve high data rates?",
-      "answers": {
-        "a": "QPSK (Quadrature Phase Shift Keying)",
-        "b": "16-QAM (Quadrature Amplitude Modulation)",
-        "c": "FSK (Frequency Shift Keying)",
-        "d": "PSK (Phase Shift Keying)"
-      },
-      "explanations": {
-        "a": "Incorrect. QPSK is effective but not the highest data rate.",
-        "b": "Correct! 16-QAM is commonly used with OFDM for high data rates.",
-        "c": "Incorrect. FSK is not typically used with OFDM.",
-        "d": "Incorrect. PSK can be used, but it does not achieve the same high rates as QAM."
-      },
-      "correctAnswer": "b",
-      "difficulty": "hard"
-    },
-    {
-      "question": "6. What is the effect of increasing the number of subcarriers in an OFDM system?",
-      "answers": {
-        "a": "Decreased data throughput due to increased overhead.",
-        "b": "Increased resilience to frequency-selective fading.",
-        "c": "Higher complexity in the transmitter design.",
-        "d": "Lower overall spectral efficiency."
-      },
-      "explanations": {
-        "a": "Incorrect. Increasing subcarriers can improve throughput if managed correctly.",
-        "b": "Correct! More subcarriers improve resilience to frequency-selective fading.",
-        "c": "Correct! More subcarriers increase design complexity.",
-        "d": "Incorrect. More subcarriers can improve spectral efficiency."
-      },
-      "correctAnswer": "b",
-      "difficulty": "hard"
-    },
-    {
-      "question": "7. How does OFDM mitigate the effects of multipath fading?",
-      "answers": {
-        "a": "By using a single high-frequency carrier.",
-        "b": "By transmitting multiple signals simultaneously over different frequencies.",
-        "c": "By dividing the signal into multiple orthogonal subcarriers.",
-        "d": "By employing spread spectrum techniques."
-      },
-      "explanations": {
-        "a": "Incorrect. A single carrier does not mitigate multipath fading effectively.",
-        "b": "Incorrect. Although it uses multiple frequencies, it is through subcarriers.",
-        "c": "Correct! OFDM mitigates fading by dividing the signal into multiple orthogonal subcarriers.",
-        "d": "Incorrect. Spread spectrum is a different technique, not specifically related to OFDM."
-      },
-      "correctAnswer": "c",
-      "difficulty": "hard"
-    },
-    {
-      "question": "8. What is one major challenge when implementing OFDM systems?",
-      "answers": {
-        "a": "The need for precise synchronization between transmitter and receiver.",
-        "b": "The simplicity of the modulation scheme.",
-        "c": "The requirement for low bandwidth.",
-        "d": "The inability to support high data rates."
-      },
-      "explanations": {
-        "a": "Correct! Precise synchronization is crucial for successful OFDM operation.",
-        "b": "Incorrect. OFDM can be complex in implementation.",
-        "c": "Incorrect. OFDM is designed to utilize available bandwidth efficiently.",
-        "d": "Incorrect. OFDM can support very high data rates."
+        "a": "Correct! Subcarrier bandwidth is narrow, resulting in flat fading per subcarrier, which simplifies equalization.",
+        "b": "Incorrect. Each subcarrier may experience a different channel gain.",
+        "c": "Incorrect. OFDM uses cyclic prefix, not time-domain filtering, to manage multipath.",
+        "d": "Incorrect. Cyclic prefix is essential to maintaining orthogonality in multipath conditions."
       },
       "correctAnswer": "a",
       "difficulty": "hard"
     },
     {
-      "question": "9. What is the impact of using a longer cyclic prefix in OFDM?",
+      "question": "2. How does timing offset in an OFDM receiver impact system performance?",
       "answers": {
-        "a": "It increases the data rate.",
-        "b": "It reduces inter-symbol interference but decreases the overall data throughput.",
-        "c": "It enhances the frequency diversity of the subcarriers.",
-        "d": "It simplifies the receiver design."
+        "a": "It shifts the center frequency of the signal",
+        "b": "It destroys orthogonality and causes inter-carrier interference",
+        "c": "It increases the signal amplitude",
+        "d": "It improves phase synchronization"
       },
       "explanations": {
-        "a": "Incorrect. A longer cyclic prefix does not increase the data rate.",
-        "b": "Correct! It reduces inter-symbol interference but can decrease data throughput due to overhead.",
-        "c": "Incorrect. It does not enhance frequency diversity.",
-        "d": "Incorrect. Longer cyclic prefixes can complicate the receiver design."
+        "a": "Incorrect. Timing offset doesn't affect frequency directly.",
+        "b": "Correct! Even small timing errors disturb the FFT window, breaking orthogonality and causing ICI.",
+        "c": "Incorrect. Timing offset does not change signal amplitude.",
+        "d": "Incorrect. Timing offset worsens synchronization rather than improves it."
       },
       "correctAnswer": "b",
       "difficulty": "hard"
     },
     {
-      "question": "10. In OFDM, what is meant by 'spectral efficiency'?",
+      "question": "3. Why does OFDM have a high peak-to-average power ratio (PAPR)?",
       "answers": {
-        "a": "The amount of data transmitted per unit of bandwidth.",
-        "b": "The total power used in transmission.",
-        "c": "The time taken to transmit a given amount of data.",
-        "d": "The ability to resist noise in the communication channel."
+        "a": "All subcarriers are modulated with BPSK only",
+        "b": "The cyclic prefix increases the peak power",
+        "c": "Multiple sinusoids may add constructively, leading to high peaks",
+        "d": "Frequency offset increases the signal's average power"
       },
       "explanations": {
-        "a": "Correct! Spectral efficiency refers to the amount of data transmitted per unit of bandwidth.",
-        "b": "Incorrect. Power usage is not the same as spectral efficiency.",
-        "c": "Incorrect. Time taken relates to delay, not efficiency.",
-        "d": "Incorrect. While noise resistance is important, it is not the definition of spectral efficiency."
+        "a": "Incorrect. PAPR is unrelated to the specific modulation scheme used.",
+        "b": "Incorrect. The cyclic prefix does not influence peak power significantly.",
+        "c": "Correct! Constructive interference of subcarriers causes high peaks in time domain.",
+        "d": "Incorrect. Frequency offset distorts the signal but doesn't increase average power."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "question": "4. How does increasing the number of OFDM subcarriers (with fixed bandwidth) impact the system?",
+      "answers": {
+        "a": "It decreases the symbol duration and increases ICI",
+        "b": "It reduces subcarrier spacing and increases sensitivity to Doppler shift",
+        "c": "It increases bandwidth and decreases SNR",
+        "d": "It simplifies channel estimation"
+      },
+      "explanations": {
+        "a": "Incorrect. Symbol duration increases with more subcarriers.",
+        "b": "Correct! More subcarriers = lower spacing, which increases Doppler sensitivity.",
+        "c": "Incorrect. Bandwidth remains constant; SNR is not directly affected.",
+        "d": "Incorrect. Channel estimation becomes more complex with more subcarriers."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "5. Which of the following best describes the function of the cyclic prefix in OFDM under a dispersive channel?",
+      "answers": {
+        "a": "It eliminates the need for channel equalization",
+        "b": "It converts linear convolution into circular convolution, preserving subcarrier orthogonality",
+        "c": "It increases modulation order",
+        "d": "It ensures each subcarrier has equal amplitude"
+      },
+      "explanations": {
+        "a": "Incorrect. Equalization is still necessary to correct fading.",
+        "b": "Correct! CP enables circular convolution, aligning with FFT processing and avoiding ISI/ICI.",
+        "c": "Incorrect. Modulation order is independent of CP.",
+        "d": "Incorrect. Channel response affects amplitude."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "6. What is a major disadvantage of OFDM in mobile environments?",
+      "answers": {
+        "a": "It is completely immune to Doppler spread",
+        "b": "Time variation within one symbol duration causes loss of orthogonality",
+        "c": "It cannot operate at high data rates",
+        "d": "It has extremely low power efficiency"
+      },
+      "explanations": {
+        "a": "Incorrect. OFDM is sensitive to Doppler effects.",
+        "b": "Correct! Rapid channel changes break orthogonality, leading to inter-carrier interference.",
+        "c": "Incorrect. OFDM is designed for high data rate applications.",
+        "d": "Incorrect. Power efficiency depends on amplifier design and PAPR management."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "7. In an OFDM system using 64-QAM, what does increasing the modulation order do?",
+      "answers": {
+        "a": "Improves noise immunity but reduces data rate",
+        "b": "Increases data rate but also increases BER in noisy channels",
+        "c": "Reduces PAPR due to simpler constellations",
+        "d": "Eliminates the need for cyclic prefix"
+      },
+      "explanations": {
+        "a": "Incorrect. Higher order modulations are less robust to noise.",
+        "b": "Correct! While data rate improves, high-order QAM is more error-prone in low-SNR environments.",
+        "c": "Incorrect. Higher-order modulation often increases PAPR.",
+        "d": "Incorrect. CP is still needed regardless of modulation."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "8. Why is the IFFT used at the transmitter in OFDM systems?",
+      "answers": {
+        "a": "To convert time-domain data to frequency domain",
+        "b": "To spread the data over the channel using coding",
+        "c": "To synthesize orthogonal time-domain waveform from frequency-domain symbols",
+        "d": "To filter out high-frequency noise"
+      },
+      "explanations": {
+        "a": "Incorrect. IFFT goes from frequency to time domain.",
+        "b": "Incorrect. Coding is a separate step.",
+        "c": "Correct! IFFT maps modulated frequency-domain data to a composite orthogonal time-domain waveform.",
+        "d": "Incorrect. Filtering is not the purpose of IFFT."
+      },
+      "correctAnswer": "c",
+      "difficulty": "hard"
+    },
+    {
+      "question": "9. In an OFDM system, what would be the primary effect of a frequency offset between the transmitter and receiver?",
+      "answers": {
+        "a": "It reduces ISI by improving synchronization",
+        "b": "It causes inter-carrier interference and spectral leakage",
+        "c": "It improves orthogonality among subcarriers",
+        "d": "It compresses the time-domain signal"
+      },
+      "explanations": {
+        "a": "Incorrect. Frequency offset worsens synchronization.",
+        "b": "Correct! Even small frequency offsets cause ICI and leakage between subcarriers.",
+        "c": "Incorrect. Frequency offsets *destroy* orthogonality.",
+        "d": "Incorrect. The signal duration remains unaffected."
+      },
+      "correctAnswer": "b",
+      "difficulty": "hard"
+    },
+    {
+      "question": "10. Which of the following best explains spectral efficiency in OFDM with adaptive modulation?",
+      "answers": {
+        "a": "Using different modulation orders across subcarriers depending on channel conditions",
+        "b": "Employing cyclic prefixes of variable length across symbols",
+        "c": "Transmitting pilot symbols in every subcarrier",
+        "d": "Reducing IFFT size to fit more data per symbol"
+      },
+      "explanations": {
+        "a": "Correct! Adaptive modulation matches subcarrier modulation order to channel SNR, improving efficiency.",
+        "b": "Incorrect. CP length is generally fixed.",
+        "c": "Incorrect. Pilots aid in estimation, not efficiency.",
+        "d": "Incorrect. Reducing IFFT size limits subcarrier count and reduces granularity."
       },
       "correctAnswer": "a",
       "difficulty": "hard"
