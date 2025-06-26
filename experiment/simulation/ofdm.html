@@ -104,7 +104,7 @@
         <label for="nSymbols">Number of OFDM Symbols:</label>
                   <input
                     class="max-lg:ml-10 border border-black px-2 py-1 rounded-sm"
-type="number" id="nSymbols" value="100" min="1"
+type="number" id="nSymbols" value="20" min="1"
                   />
                 </div>
               </div>
@@ -112,14 +112,14 @@ type="number" id="nSymbols" value="100" min="1"
         <label for="nSubcarriers">Number of OFDM Subcarriers (N):</label>
                 <input
                   class="border border-black px-2 py-1 rounded-sm"
-type="number" id="nSubcarriers" value="64" min="1"
+type="number" id="nSubcarriers" value="8" min="1"
                 />
               </div>
               <div class="flex items-center justify-center gap-1 mt-2">
         <label for="cyclicPrefix">Length of Cyclic Prefix (Ncp):</label>
                 <input
                   class="border border-black px-2 py-1 rounded-sm"
-type="number" id="cyclicPrefix" value="16" min="1"
+type="number" id="cyclicPrefix" value="4" min="1"
                 />
               </div>
 			  
@@ -896,7 +896,14 @@ document.getElementById('plotButton').addEventListener('click', function() {
             //ofdmSymbolIndex = `${ofdmSymbolIndex + 1}${getOrdinalSuffix(ofdmSymbolIndex + 1)}`;
             let timeAxisOfdm = Array.from({length: N}, (_, i) => i / Fs);  // Time axis for OFDM without CP
             let timeAxisOfdmWithCP = Array.from({length: N + Ncp}, (_, i) => i / Fs);  // Time axis for OFDM with CP
-			 const trace = {
+            const annotations = modData[ofdmSymbolIndex].map((complexVal, index) => ({
+            x: index,
+            y: 5, // fixed y-position for all annotations
+            text: complexVal.toString(), // or use `.toPolar()` or `.toFixed()` depending on format you want
+            showarrow: false,
+            font: { color: "black", size: 10 }
+          }));
+            const trace = {
  //           plot('plot1', {
                 x: Array.from({length: N}, (_, i) => i),
                 y: Array.from({length: N}, (_, i) => modData[ofdmSymbolIndex][i].magnitude()),
@@ -905,7 +912,8 @@ document.getElementById('plotButton').addEventListener('click', function() {
 			const layout = {
                 title: `Subcarriers in Frequency Domain (Before <br> IFFT) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
                 xaxis: {title: 'Subcarrier Index'},
-                yaxis: {title: 'Magnitude'}
+                yaxis: {title: 'Magnitude'},
+                annotations: annotations
             };
 			            Plotly.newPlot('plot1', [trace], layout);
 						            document.getElementById('scrolltosubcarrier').scrollIntoView({ behavior: 'smooth' });
@@ -1059,21 +1067,34 @@ document.getElementById('plotButton').addEventListener('click', function() {
         // Function to plot graphs with dynamic titles
        // function plotSubcarriers(ofdmSymbolIndex, modData, ofdmTimeSignal, ofdmWithCP, receivedSubcarriers, receivedData, M, N, Ncp, Fs) {
             //ofdmSymbolIndex = `${ofdmSymbolIndex + 1}${getOrdinalSuffix(ofdmSymbolIndex + 1)}`;
-            let timeAxisOfdm = Array.from({length: N}, (_, i) => i / Fs);  // Time axis for OFDM without CP
-            let timeAxisOfdmWithCP = Array.from({length: N + Ncp}, (_, i) => i / Fs);  // Time axis for OFDM with CP
-            const trace = {
-                x: timeAxisOfdmWithCP,
-                y: Array.from({length: N + Ncp}, (_, i) => ofdmWithCP[ofdmSymbolIndex][i].real),
-                type: 'scatter'
-            }; 
-			const layout = {
-                title: `OFDM Signal in Time Domain (With <br> Cyclic Prefix) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol (real part)`,
-                xaxis: {title: 'Time (s)'},
-                yaxis: {title: 'Amplitude'}
-            };
-						            Plotly.newPlot('plot3', [trace], layout);
-									            document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth' });
-}									
+            let timeAxisOfdm = Array.from({ length: N }, (_, i) => i / Fs);  // Time axis without CP
+let timeAxisOfdmWithCP = Array.from({ length: N + Ncp }, (_, i) => i / Fs);  // Time axis with CP
+
+// Real part of the OFDM signal with CP
+let yValues = Array.from({ length: N + Ncp }, (_, i) => ofdmWithCP[ofdmSymbolIndex][i].real);
+
+// Color first Ncp and last Ncp points red, rest blue
+let colors = Array.from({ length: N + Ncp }, (_, i) =>
+  i < Ncp || i >= (N + Ncp - Ncp) ? 'red' : 'blue'
+);
+
+const trace = {
+  x: timeAxisOfdmWithCP,
+  y: yValues,
+  type: 'scatter',
+  mode: 'lines+markers', // to show colored markers
+  marker: { color: colors }
+};
+
+const layout = {
+  title: `OFDM Signal in Time Domain (With <br> Cyclic Prefix) for ${ofdmSymbolIndex + 1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol (real part)`,
+  xaxis: { title: 'Time (s)' },
+  yaxis: { title: 'Amplitude' }
+};
+
+Plotly.newPlot('plot3', [trace], layout);
+document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth' });
+}					
 			
             // Plot Received Subcarriers in Frequency Domain (after FFT at the receiver)
 			function plot4(scaledReceivedSubcarriers) {
@@ -1143,7 +1164,14 @@ document.getElementById('plotButton').addEventListener('click', function() {
             //ofdmSymbolIndex = `${ofdmSymbolIndex + 1}${getOrdinalSuffix(ofdmSymbolIndex + 1)}`;
             let timeAxisOfdm = Array.from({length: N}, (_, i) => i / Fs);  // Time axis for OFDM without CP
             let timeAxisOfdmWithCP = Array.from({length: N + Ncp}, (_, i) => i / Fs);  // Time axis for OFDM with CP
- */           
+ */ const annotations = scaledReceivedSubcarriers[ofdmSymbolIndex].map((complexVal, index) => ({
+  x: index,
+  y: 5, // fixed height for annotation
+  text: `${complexVal.real.toFixed(1)}${complexVal.imag >= 0 ? '+' : ''}${complexVal.imag.toFixed(1)}j`,
+  showarrow: false,
+  font: { color: "black", size: 10 }
+}));
+
 			const trace = {
                 x: Array.from({length: N}, (_, i) => i),
                 y: Array.from({length: N}, (_, i) => scaledReceivedSubcarriers[ofdmSymbolIndex][i].magnitude()),
@@ -1152,7 +1180,8 @@ document.getElementById('plotButton').addEventListener('click', function() {
 			const layout = {
                 title: `Received Subcarriers in Frequency Domain <br> (After FFT) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
                 xaxis: {title: 'Subcarrier Index'},
-                yaxis: {title: 'Magnitude'}
+                yaxis: {title: 'Magnitude'},
+                annotations: annotations
             };
 									            Plotly.newPlot('plot4', [trace], layout);
 												            document.getElementById('scrolltoreceivedsubcarrier').scrollIntoView({ behavior: 'smooth' });
@@ -1207,11 +1236,18 @@ function plotModulatedBitstreams(binaryModData) {
         type: 'scatter',
         name: 'Binary Bitstream of Modulated Data'
     };
-    
+    const annotations = binaryModData.map((bit, index) => ({
+        x: (index + 0.5), // Center the annotation in the bit interval
+        y: 1.1, // Position the text above the line
+        text: bit.toString(),
+        showarrow: false,
+        font: { color: "black" },
+      }));
     Plotly.newPlot('plot7', [trace1], {
         title: `Binary Bitsream of <br> ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
         xaxis: { title: 'Bit Index' },
-        yaxis: { title: 'Bit Value' }
+        yaxis: { title: 'Bit Value' },
+        annotations: annotations
     });
 }
 
@@ -1227,11 +1263,18 @@ function plotReceivedBitstreams(binaryReceivedData) {
         type: 'scatter',
         name: 'Binary Bitstream of Received Data'
     };
-
+    const annotations = binaryReceivedData.map((bit, index) => ({
+        x: (index + 0.5), // Center the annotation in the bit interval
+        y: 1.1, // Position the text above the line
+        text: bit.toString(),
+        showarrow: false,
+        font: { color: "black" },
+      }));
     Plotly.newPlot('plot8', [trace2], {
         title: `Binary Bitsream of Received <br> ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
         xaxis: { title: 'Bit Index' },
-        yaxis: { title: 'Bit Value' }
+        yaxis: { title: 'Bit Value' },
+        annotations: annotations
     });
 	            document.getElementById('scrolltoreceivedbits').scrollIntoView({ behavior: 'smooth' });
 }
