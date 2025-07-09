@@ -77,7 +77,6 @@
           
               <li class="step step4">Step 4: Click on the 'Time Domain OFDM With CP' button to add the cyclic prefix to the time-domain OFDM signal, simulating a practical OFDM frame structure.</li>
           
-              <li class="step step1">Step 5: Click on the 'Received Subcarrier' button to simulate reception and retrieve the subcarriers for a selected OFDM symbol (after CP removal and FFT).</li>
           
               <li class="step step2">16-QAM Modulation: Each group of 4 bits is mapped to one of 16 predefined complex constellation points using Gray coding. The constellation points are:
                 <br/>
@@ -193,20 +192,15 @@ type="number" id="snr" value="0" min="0" max = "20")
         >
           Time domain ofdm cp
         </button>
-        
-        <button
-          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-5.5em] left-[20.75em]"
-          onclick="plot4(scaledReceivedSubcarriers)"
-        >
-          Received subcarrier
-        </button>
-        
+      
+ <!--      
         <button
           class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-9.5em] left-[11.375em]"
           onclick="plotReceivedBitstreams(binaryReceivedData)"
         >
           Demodulate OFDM
         </button>
+ -->        
       </div>
     </div>
   </div>
@@ -221,15 +215,13 @@ type="number" id="snr" value="0" min="0" max = "20")
 			</div>
 		    <div id = "scrolltosubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
               <div id="plot1" class="w-[600px] h-[450px]"></div>
+              <div id="plot1ff" class="w-[600px] h-[450px]"></div>
 			</div>
 			<div id = "scrolltoofdmwithoutcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
               <div id="plot2" class="w-[600px] h-[450px]"></div>
 			</div>
 			<div id = "scrolltoofdmwithcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
                 <div id="plot3" class="w-[600px] h-[450px]"></div>
-              </div>
-			  			<div id = "scrolltoreceivedsubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
-                <div id="plot4" class="w-[600px] h-[450px]"></div>
               </div>
 	</div>
 	
@@ -261,7 +253,9 @@ id="plotButton">Plot SER vs SER</button>
 			  <div id = "container">
     <h1>Instructions for Demodulation of OFDM using 16-QAM</h1>
     <ul>
-		<li class="step step1">Step 1: You can Demodulate the OFDM Signal clicking on the 'Demodulate OFDM' button</li>
+      <li class="step step1">Step 1: Click on the 'Received Subcarrier' button to simulate reception and retrieve the subcarriers for a selected OFDM symbol (after CP removal and FFT).</li>
+
+		<li class="step step1">Step 2: You can Demodulate the OFDM Signal clicking on the 'Demodulate OFDM' button</li>
 		<li class="step step2">In the demodulation part, maximum likelihood detection is used to find the closest constellation point to each received symbol. After identifying the nearest point, the Gray code mapping is reversed to recover the 
 		original transmitted data. This approach ensures accurate data recovery even in the presence of noise.
     </ul>
@@ -286,6 +280,15 @@ id="plotButton">Plot SER vs SER</button>
           <div class="flex flex-col">
             <div class="flex justify-center pt-4">
               <button
+              class="button bg-blue-500 text-white rounded-md px-2 py-1"
+              onclick="plot4(scaledReceivedSubcarriers)"
+            >
+              Received subcarrier
+            </button>
+
+            </div>
+            <div class="flex justify-center pt-4">
+              <button
                 class="bg-blue-500 text-white rounded-md px-2 py-1"
                 class="button"
                 onclick="plotReceivedBitstreams(binaryReceivedData)"
@@ -304,9 +307,16 @@ id="plotButton">Plot SER vs SER</button>
                   />
                 </div>
               </div>
+              <div class="flex flex-col items-center gap-4 mt-4">
+              <div id = "scrolltoreceivedsubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
+                <div id="plot4" class="w-[600px] h-[450px]"></div>
+              </div>
+              <div id="plot1fff" class="w-[600px] h-[450px]"></div>
+
               <div id = "scrolltoreceivedbits" class="flex items-center gap-2 justify-center max-lg:flex-col">
               <div id="plot8" class="w-[600px] h-[450px]"></div>
             </div>
+          </div>
             </div>
           </div>
         </div>
@@ -916,6 +926,27 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 annotations: annotations
             };
 			            Plotly.newPlot('plot1', [trace], layout);
+
+                  const traceff = {
+    x: modData[ofdmSymbolIndex].map(c => c.real),  // Real parts
+    y: modData[ofdmSymbolIndex].map(c => c.imag),  // Imaginary parts
+    mode: 'markers',
+    type: 'scatter',
+    marker: {
+        color: 'blue',
+        size: 8,
+        symbol: 'circle'
+    },
+    name: 'Constellation'
+};
+const layoutff = {
+    title: `Constellation Diagram`,
+    xaxis: { title: 'In-phase (Re)', zeroline: true },
+    yaxis: { title: 'Quadrature (Im)', zeroline: true },
+    showlegend: false
+};
+
+Plotly.newPlot('plot1ff', [traceff], layoutff);
 						            document.getElementById('scrolltosubcarrier').scrollIntoView({ behavior: 'smooth' });
 						}
 
@@ -998,6 +1029,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
                 yaxis: {title: 'Amplitude'}
             };
 						            Plotly.newPlot('plot2', [trace], layout);
+
 									            document.getElementById('scrolltoofdmwithoutcp').scrollIntoView({ behavior: 'smooth' });
 			}						
 
@@ -1184,6 +1216,27 @@ document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth
                 annotations: annotations
             };
 									            Plotly.newPlot('plot4', [trace], layout);
+
+                              const tracefff = {
+    x: scaledReceivedSubcarriers[ofdmSymbolIndex].map(c => c.real),  // Real parts
+    y: scaledReceivedSubcarriers[ofdmSymbolIndex].map(c => c.imag),  // Imaginary parts
+    mode: 'markers',
+    type: 'scatter',
+    marker: {
+        color: 'blue',
+        size: 8,
+        symbol: 'circle'
+    },
+    name: 'Constellation'
+};
+const layoutfff = {
+    title: `Constellation Diagram`,
+    xaxis: { title: 'In-phase (Re)', zeroline: true },
+    yaxis: { title: 'Quadrature (Im)', zeroline: true },
+    showlegend: false
+};
+
+Plotly.newPlot('plot1fff', [tracefff], layoutfff);
 												            document.getElementById('scrolltoreceivedsubcarrier').scrollIntoView({ behavior: 'smooth' });
 												}
 /*
