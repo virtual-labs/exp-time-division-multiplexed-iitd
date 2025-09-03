@@ -8,7 +8,7 @@
 <body>
     <!-- sidebar and body -->
           <h2>
-            Orthogonal Frequency Division Multiplexing
+            Orthogonal Frequency Division Multiplexing (OFDM)
           </h2>
           <p>
             When a signal with high bandwidth traverses through a medium, it
