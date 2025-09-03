@@ -7,15 +7,9 @@
 </head>
 <body>
     <!-- sidebar and body -->
-    <div class="flex min-h-[380px]">
-      <div class="maincontent px-8 pb-6 flex-1">
-        <div
-          class="w-full text-[19.2px] text-[#313636]"
-          style="font-family: Raleway, sans-serif"
-        >
-          <h3 class="text-[24px] font-semibold text-black">
+          <h2>
             Orthogonal Frequency Division Multiplexing
-          </h3>
+          </h2>
           <p>
             When a signal with high bandwidth traverses through a medium, it
             tends to disperse more compared to a signal with lower bandwidth.
@@ -36,18 +30,18 @@
             OFDM converts frequency-selective channel to multiple (M)
             frequency-flat channels.
           </p>
-          <h3 class="text-[24px] font-semibold text-black py-2">
+          <h3>
             Block Diagram:
           </h3>
           <div class="flex flex-col justify-center items-center">
             <img src="./images/theory/ofdm/ofdm2.png" alt="ofdm_image" />
-            <p class="font-semibold">Fig: OFDM</p>
+            <br/>
+            <p class="font-semibold">Fig: Orthogonal Frequency Division Multiplexing (OFDM)</p>
           </div>
           <p>
             <br />
             In OFDM, modulation and demodulation are performed using IFFT and
             FFT.
-            <br />
             <br />
           </p>
           <p class="font-semibold">
@@ -74,8 +68,7 @@
           <div class="flex justify-center">
             <img src="./images/theory/ofdm/ofdm5.png" alt="ofdm_image" />
           </div>
-          <h3 class="text-[28px] font-semibold text-black py-2">
-            <br />
+          <h3>
             Effect of high Doppler in OFDM
           </h3>
           <p>
@@ -85,50 +78,31 @@
           <div class="flex justify-center">
             <img src="./images/theory/ofdm/ofdm6.png" alt="ofdm_image" />
           </div>
-          <p>
             <br />
-            Causes severe degradation in bit error performance for high Doppler
-            (error floors). Channel estimation and equalization in high Doppler
-            channels is difficult. <br />
-            <br />
-            To avoid ISI while transmitting many parallel low bandwidth signals,
-            the individual subcarriers must be orthogonal to each other.
-            Avoiding ISI by transmitting many orthogonal low bandwidth
-            subcarriers motivates OFDM. An OFDM modulator converts a high-rate
-            serial stream of symbols into many parallel low-rate streams. Each
-            orthogonal low-rate stream encounters a relatively flat channel with
-            minimal ISI, and can be easily equalized. <br />
-            <br />
-            To demonstrate, consider a pulse of duration Tsym=0.25 sec, a symbol
-            data rate Rsym=1 / Tsym=8 Hz, and additional pulses translated in
-            frequency by Rsym, 2Rsym, and 3Rsym. The frequency-translated pulses
-            are called subcarriers. <br />
-            <br />
-            Rsym is the symbol rate of each of the low-rate QAM streams <br />
-            Tsym=1 / Rsym (Tsym is the pulse duration of each <br />
-            <br />
-            An OFDM modulator sums all these subcarriers together to form its
-            output signal. Here, the subcarriers are baseband modulated using
-            the QAM-method. Mathematically, the sampled modulator output signal
-            s(k) is given by <br />
-          </p>
-          <div class="flex justify-center">
-            <img src="./images/theory/ofdm/ofdm7.png" alt="ofdm_image" />
-          </div>
-          <p>
-            Where, am,n is QAM symbol stream and it is a QAM-modulated symbol of
-            the mth subcarrier in the nth OFDM time symbol <br />
-            <br />
-            ‘k’ indicates kth position in a input symbol <br />
-            N is the number of subcarriers <br />
-          </p>
-          <h3 class="text-[28px] font-semibold text-black py-2">
-            <br />
-            OFDM Transmitter <br />
+        <p>
+        It causes severe degradation in how accurately data is received (known as 'bit error performance') in fast-changing environments (high Doppler), leading to persistent errors (error floors). It also makes it hard to predict and correct for channel distortions ('channel estimation and equalization') in these difficult conditions.
+        </p>
+        <p>
+        To avoid <strong>Inter-Symbol Interference (ISI)</strong> – where parts of one data symbol bleed into the next, causing confusion – when sending many smaller, parallel data signals, each individual signal (called a <strong>subcarrier</strong>) must be kept perfectly separate from the others. This 'perfect separation' is called <strong>orthogonality</strong>. The idea of avoiding ISI by transmitting many such orthogonal, low-bandwidth subcarriers is the core motivation behind OFDM.
+        </p>
+        <p>
+        An OFDM modulator acts like a dispatcher, taking a single, fast stream of data and breaking it down into many slower, parallel streams. Each of these perfectly separated (orthogonal) slower streams then travels through a much simpler part of the radio channel, experiencing very little ISI, and thus can be easily corrected for any remaining distortions.
+        </p>
+        <p>
+        To give an example: imagine a single burst of data lasting 0.25 seconds, so the symbol duration is 
+        T<sub>sym</sub> = 0.25 s. The corresponding symbol rate is R<sub>sym</sub> = 1/T<sub>sym</sub> = 4 Hz. 
+        Instead of sending all the data on one carrier, OFDM transmits it over multiple <strong>subcarriers</strong>. 
+        These subcarriers are placed at frequencies f<sub>0</sub>, f<sub>0</sub>+R<sub>sym</sub>, 
+        f<sub>0</sub>+2R<sub>sym</sub>, f<sub>0</sub>+3R<sub>sym</sub>, and so on. Each subcarrier is 
+        orthogonal to the others and carries a portion of the original data in parallel.
+        </p>
+          <h3>
+            OFDM Transmitter
           </h3>
           <div class="flex justify-center">
             <img src="./images/theory/ofdm/ofdm8.png" alt="ofdm_image" />
           </div>
+          <br/>
           <p>
             <span class="font-semibold">1. Data Encoding:</span>Convert the
             input data stream into symbols suitable for transmission (e.g.,
@@ -156,13 +130,13 @@
             Upconvert the analog OFDM signal to the desired carrier frequency
             and transmit it over the wireless channel.
           </p>
-          <h3 class="text-[28px] font-semibold text-black py-2">
-            <br />
-            OFDM Receiver <br />
+          <h3>
+            OFDM Receiver
           </h3>
           <div class="flex justify-center">
             <img src="./images/theory/ofdm/ofdm9.png" alt="ofdm_image" />
           </div>
+          <br/>
           <p>
             <span class="font-semibold">1. Signal Reception:</span>Receive the
             transmitted OFDM signal after it has traveled through the wireless
@@ -193,8 +167,5 @@
             received symbols to obtain the original transmitted data. <br />
           </p>
           <!--  -->
-        </div>
-      </div>
-    </div>
 </body>
 </html>
