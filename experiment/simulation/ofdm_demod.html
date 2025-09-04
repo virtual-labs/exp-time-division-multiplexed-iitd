@@ -66,191 +66,190 @@
   <body>
     <!-- sidebar and body -->
 	    <!-- sidebar and body -->
-        <div id="instructions">
-            <h1>Instructions for OFDM Modulation with 16-QAM</h1>
-            <ul>
-              <li class="step step4"><strong>Note:</strong> Use the input fields to enter the number of OFDM symbols, number of subcarriers, cyclic prefix length, and SNR (in dB).</li>
+      <div id = "modulation">
 
-              <li class="step step1"><strong>Step 1:</strong> Click on the <em>'Generate Message'</em> button to generate the input bitstream for modulation.</li>
-          
-              <li class="step step2"><strong>Step 2:</strong> Click on the <em>'Generate Subcarrier'</em> button to map the generated data bits into subcarriers using 16-QAM modulation.</li>
-          
-              <li class="step step3"><strong>Step 3:</strong> Click on the <em>'Time Domain OFDM Without CP'</em> button to perform IFFT and obtain the time-domain OFDM signal without adding a cyclic prefix.</li>
-          
-              <li class="step step4"><strong>Step 4:</strong> Click on the <em>'Time Domain OFDM With CP'</em> button to add the cyclic prefix to the time-domain OFDM signal, simulating a practical OFDM frame structure.</li>
-          
-          
-              <li class="step step2">16-QAM Modulation: Each group of 4 bits is mapped to one of 16 predefined complex constellation points using Gray coding. The constellation points are:
-                <br/>
-                (-3, -3), (-3, -1), (-1, -3), (-1, -1),<br/>
-                (-3, 3), (-3, 1), (-1, 3), (-1, 1),<br/>
-                (3, -3), (3, -1), (1, -3), (1, -1),<br/>
-                (3, 3), (3, 1), (1, 3), (1, 1)<br/>
-                Each point corresponds to a unique 4-bit symbol. For example, the binary data <code>0000</code> maps to <code>(-3, -3)</code>, <code>0001</code> to <code>(-3, -1)</code>, and so on. Gray coding ensures that adjacent points differ by only one bit to reduce bit errors.
-              </li>
-          
-              <li class="step step3">Subcarrier Output: The subcarrier output represents the absolute (magnitude) values of the QAM-modulated subcarriers before IFFT is applied.</li>
-            </ul>
-          </div>
-          
-	<hr/>
-	<br>
-    <div class="flex min-h-[10vh]">
-      <div class="px-6 pb-6 mt-1 flex-1">
-        <div class="">
-          <div class="flex flex-col justify-center">
-            <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-2">
-              <div class="">
-                <div class="flex items-center justify-center gap-1">
-        <label for="nSymbols">Number of OFDM Symbols:</label>
+      <div id="instructions">
+        <h1>Instructions for OFDM Modulation with 16-QAM</h1>
+        <ul>
+          <li class="step step4"><strong>Note:</strong> Use the input fields to enter the number of OFDM symbols, number of subcarriers, cyclic prefix length, and SNR (in dB).</li>
+      
+          <li class="step step1"><strong>Step 1:</strong> Click on the <em>'Generate Message'</em> button to generate the input bitstream for modulation.</li>
+      
+          <li class="step step2"><strong>Step 2:</strong> Click on the <em>'Generate Subcarrier'</em> button to map the generated data bits into subcarriers using 16-QAM modulation.</li>
+      
+          <li class="step step3"><strong>Step 3:</strong> Click on the <em>'Time Domain OFDM Without CP'</em> button to perform IFFT and obtain the time-domain OFDM signal without adding a cyclic prefix.</li>
+      
+          <li class="step step4"><strong>Step 4:</strong> Click on the <em>'Time Domain OFDM With CP'</em> button to add the cyclic prefix to the time-domain OFDM signal, simulating a practical OFDM frame structure.</li>
+      
+          <li class="step step2">16-QAM Modulation: Each group of 4 bits is mapped to one of 16 predefined complex constellation points using Gray coding. The constellation points are:
+            <br/>
+            (-3, -3), (-3, -1), (-1, -3), (-1, -1),<br/>
+            (-3, 3), (-3, 1), (-1, 3), (-1, 1),<br/>
+            (3, -3), (3, -1), (1, -3), (1, -1),<br/>
+            (3, 3), (3, 1), (1, 3), (1, 1)<br/>
+            Each point corresponds to a unique 4-bit symbol. For example, the binary data <code>0000</code> maps to <code>(-3, -3)</code>, <code>0001</code> to <code>(-3, -1)</code>, and so on. Gray coding ensures that adjacent points differ by only one bit to reduce bit errors.
+          </li>
+      
+          <li class="step step3">Subcarrier Output: The subcarrier output represents the absolute (magnitude) values of the QAM-modulated subcarriers before IFFT is applied.</li>
+        </ul>
+      </div>
+      
+      <hr/>
+      <br>
+      <div class="flex min-h-[10vh]">
+        <div class="px-6 pb-6 mt-1 flex-1">
+          <div class="">
+            <div class="flex flex-col justify-center">
+              <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-2">
+                <div class="">
+                  <div class="flex items-center justify-center gap-1">
+                    <label for="nSymbols">Number of OFDM Symbols:</label>
+                    <input
+                      class="max-lg:ml-10 border border-black px-2 py-1 rounded-sm"
+                      type="number" id="nSymbols" value="20" min="1"
+                    />
+                  </div>
+                </div>
+                <div class="flex items-center justify-center gap-1 mt-2">
+                  <label for="nSubcarriers">Number of OFDM Subcarriers (N):</label>
                   <input
-                    class="max-lg:ml-10 border border-black px-2 py-1 rounded-sm"
-type="number" id="nSymbols" value="20" min="1"
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number" id="nSubcarriers" value="8" min="1"
                   />
                 </div>
-              </div>
-              <div class="flex items-center justify-center gap-1 mt-2">
-        <label for="nSubcarriers">Number of OFDM Subcarriers (N):</label>
-                <input
-                  class="border border-black px-2 py-1 rounded-sm"
-type="number" id="nSubcarriers" value="8" min="1"
-                />
-              </div>
-              <div class="flex items-center justify-center gap-1 mt-2">
-        <label for="cyclicPrefix">Length of Cyclic Prefix (Ncp):</label>
-                <input
-                  class="border border-black px-2 py-1 rounded-sm"
-type="number" id="cyclicPrefix" value="4" min="1"
-                />
-              </div>
-			  
-			    <div class="flex items-center justify-center gap-1 mt-2">
-        <label for="samplingFrequency">Sampling Frequency (Fs):</label>
-                <input
-                  class="border border-black px-2 py-1 rounded-sm"
-type="number" id="samplingFrequency" value="1000" min="1"
-                />
-              </div>
-			  <br/>
-			   <div class="flex items-center justify-center gap-1 mt-2">
-        <label for="ofdmSymbolIndex">Show results for OFDM Symbol:</label>
-                <input
-                  class="border border-black px-2 py-1 rounded-sm"
-type="number" id="ofdmSymbolIndex" value="1" min="1"
-                />
-              </div>
-
-			   <div class="flex items-center justify-center gap-1 mt-2">
-        <label for="snr">SNR (dB):</label>
-                <input
-                  class="border border-black px-2 py-1 rounded-sm"
-type="number" id="snr" value="0" min="0" max = "20")
-                />
-              </div>
-			  
+                <div class="flex items-center justify-center gap-1 mt-2">
+                  <label for="cyclicPrefix">Length of Cyclic Prefix (Ncp):</label>
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number" id="cyclicPrefix" value="4" min="1"
+                  />
+                </div>
+      
+                <div class="flex items-center justify-center gap-1 mt-2">
+                  <label for="samplingFrequency">Sampling Frequency (Fs):</label>
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number" id="samplingFrequency" value="1000" min="1"
+                  />
+                </div>
+                <br/>
+                <div class="flex items-center justify-center gap-1 mt-2">
+                  <label for="ofdmSymbolIndex">Show results for OFDM Symbol:</label>
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number" id="ofdmSymbolIndex" value="1" min="1"
+                  />
+                </div>
+      
+                <div class="flex items-center justify-center gap-1 mt-2">
+                  <label for="snr">SNR (dB):</label>
+                  <input
+                    class="border border-black px-2 py-1 rounded-sm"
+                    type="number" id="snr" value="0" min="0" max="20"
+                  />
+                </div>
+      
               </div>
             </div>
-            </div>
+          </div>
         </div>
       </div>
-    </div>
-	<hr/>
-	
-	<div class = "container">
-<div class="left-half">
-  <div class="flex gap-1">
-    <div class="flex-1 flex flex-col items-center">
-      <div class="w-full" style="position: relative;">
-        <img
-          src="ofdm2409_1.png"
-          alt="psk1"
-          style="height: 28.125em; width: 34.375em; margin-left: 3em;"
-        />
-        
-        <button
-          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[0.125em]"
-          onclick="runQAMSystem()"
-        >
-          Generate Message
-        </button>
-
-        <button
-          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4em] left-[0.125em]"
-          onclick="plot1()"
-        >
-          Generate Subcarrier
-        </button>
-        
-        <button
-          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-2.5em] left-[0.125em]"
-          onclick="plot2()"
-        >
-          Time domain ofdm without cp
-        </button>
-
-        <button
-          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-5.5em] left-[0.125em]"
-          onclick="plot3()"
-        >
-          Time domain ofdm cp
-        </button>
+      <hr/>
       
- <!--      
-        <button
-          class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-9.5em] left-[11.375em]"
-          onclick="plotReceivedBitstreams(binaryReceivedData)"
-        >
-          Demodulate OFDM
-        </button>
- -->        
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-				
-	<div class = "middle">
-	            <div id = "scrolltomessage" class="flex items-center gap-2 justify-center max-lg:flex-col">
-              <div id="plot7" class="w-[600px] h-[450px]"></div>
-			</div>
-		    <div id = "scrolltosubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
-              <div id="plot1" class="w-[600px] h-[450px]"></div>
-              <div id="plot1ff" class="w-[600px] h-[450px]"></div>
-			</div>
-			<div id = "scrolltoofdmwithoutcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
-              <div id="plot2" class="w-[600px] h-[450px]"></div>
-			</div>
-			<div id = "scrolltoofdmwithcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
-                <div id="plot3" class="w-[600px] h-[450px]"></div>
+      <div class="container">
+        <div class="left-half">
+          <div class="flex gap-1">
+            <div class="flex-1 flex flex-col items-center">
+              <div class="w-full" style="position: relative;">
+                <img
+                  src="ofdm2409_1.png"
+                  alt="psk1"
+                  style="height: 28.125em; width: 34.375em; margin-left: 3em;"
+                />
+      
+                <button
+                  class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[0.125em]"
+                  onclick="runQAMSystem()"
+                >
+                  Generate Message
+                </button>
+      
+                <button
+                  class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4em] left-[0.125em]"
+                  onclick="plot1()"
+                >
+                  Generate Subcarrier
+                </button>
+      
+                <button
+                  class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-2.5em] left-[0.125em]"
+                  onclick="plot2()"
+                >
+                  Time domain ofdm without cp
+                </button>
+      
+                <button
+                  class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-5.5em] left-[0.125em]"
+                  onclick="plot3()"
+                >
+                  Time domain ofdm cp
+                </button>
+      
+                <!--      
+                <button
+                  class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-9.5em] left-[11.375em]"
+                  onclick="plotReceivedBitstreams(binaryReceivedData)"
+                >
+                  Demodulate OFDM
+                </button>
+                -->        
               </div>
-	</div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="middle">
+          <div id="scrolltomessage" class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="plot7" class="w-[600px] h-[450px]"></div>
+          </div>
+          <div id="scrolltosubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="plot1" class="w-[600px] h-[450px]"></div>
+            <div id="plot1ff" class="w-[600px] h-[450px]"></div>
+          </div>
+          <div id="scrolltoofdmwithoutcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="plot2" class="w-[600px] h-[450px]"></div>
+          </div>
+          <div id="scrolltoofdmwithcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
+            <div id="plot3" class="w-[600px] h-[450px]"></div>
+          </div>
+        </div>
+      
+        <div class="right-half hidden">
+          <br/>
+          <!-- Table to display SNR and SER values -->
+          <table id="snrTable" border="1" class="custom-table">
+            <thead>
+              <tr>
+                <th>SNR (in dB)</th>
+                <th>Symbol Error Rate (SER)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+      
+          <!-- Button to plot BER vs SER and BER vs SNR -->
+          <button class="button bg-blue-500 text-white rounded-md px-2 py-1 text-base" id="plotButton">
+            Plot SER vs SER
+          </button>
+      
+          <!-- Placeholder for the plot -->
+          <div id="plotArea"></div>
+        </div>
+      </div>
+      
+    </div>
 	
-	<div class = "right-half hidden">
-<br/>
-<!-- Table to display SNR and SER values -->
-<table id="snrTable" border="1" class = "custom-table">
-    <thead>
-        <tr>
-            <th>SNR (in dB)</th>
-            <th>Symbol Error Rate (SER)</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
 
-<!-- Button to plot BER vs SER and BER vs SNR -->
-<button   class="button bg-blue-500 text-white rounded-md px-2 py-1 text-base"
-id="plotButton">Plot SER vs SER</button>
-
-<!-- Placeholder for the plot -->
-<div id="plotArea"></div>
-	</div></div>
-	
-	
-	
-<div id = "demodulation">
 	    <!-- sidebar and body -->
 			  <div id = "container">
     <h1>Instructions for Demodulation of OFDM using 16-QAM</h1>
@@ -325,9 +324,6 @@ id="plotButton">Plot SER vs SER</button>
         <!--  -->
       </div>
     </div>
-
-  </div>
-
     <script>
 	
   const nSubcarriersInput = document.getElementById('nSubcarriers');
@@ -1131,8 +1127,6 @@ const layout = {
 
 Plotly.newPlot('plot3', [trace], layout);
 document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth' });
-
-saveData();
 }					
 			
             // Plot Received Subcarriers in Frequency Domain (after FFT at the receiver)
@@ -1340,40 +1334,61 @@ function plotReceivedBitstreams(binaryReceivedData) {
 }
 
 
-function saveData() {
-  const myData = {
-    nSymbols,
-    N,
-    Ncp,
-    Fs,
-    M,
-    ofdmSymbolIndex,
-    EbN0dB,
-    data,
-    binaryData,
-    modData,
-    ofdmTimeSignal,
-    ofdmWithCP,
-    NoisyOFDMWithCP,
-    receivedSignal,
-    receivedSubcarriers,
-    scaledReceivedSubcarriers,
-    receivedData,
-    numErrors,
-    bitErrorRate,
-    timeAxisOfdm,
-    timeAxisOfdmWithCP,
-    binaryReceivedData,
-    snrData
-  };
 
-  localStorage.setItem("sharedOFDMData", JSON.stringify(myData));
+function loadData() {
+  const saved = localStorage.getItem("sharedOFDMData");
+  if (saved) {
+    const parsed = JSON.parse(saved);
+
+    nSymbols = parsed.nSymbols ?? null;
+    N = parsed.N ?? null;
+    Ncp = parsed.Ncp ?? null;
+    Fs = parsed.Fs ?? null;
+    M = parsed.M ?? 16;
+    ofdmSymbolIndex = parsed.ofdmSymbolIndex ?? null;
+    EbN0dB = parsed.EbN0dB ?? null;
+    data = parsed.data ?? null;
+    binaryData = parsed.binaryData ?? null;
+    modData = parsed.modData ?? null;
+    ofdmTimeSignal = parsed.ofdmTimeSignal ?? null;
+    ofdmWithCP = parsed.ofdmWithCP ?? null;
+    NoisyOFDMWithCP = parsed.NoisyOFDMWithCP ?? null;
+    receivedSignal = parsed.receivedSignal ?? null;
+
+    // ✅ Rebuild complex numbers if saved
+    if (parsed.receivedSubcarriers) {
+      receivedSubcarriers = parsed.receivedSubcarriers.map(row =>
+        row.map(c => new Complex(c.real, c.imag))
+      );
+    }
+
+    if (parsed.scaledReceivedSubcarriers) {
+      scaledReceivedSubcarriers = parsed.scaledReceivedSubcarriers.map(row =>
+        row.map(c => new Complex(c.real, c.imag))
+      );
+    }
+
+    receivedData = parsed.receivedData ?? null;
+    numErrors = parsed.numErrors ?? null;
+    bitErrorRate = parsed.bitErrorRate ?? null;
+    timeAxisOfdm = parsed.timeAxisOfdm ?? null;
+    timeAxisOfdmWithCP = parsed.timeAxisOfdmWithCP ?? null;
+    binaryReceivedData = parsed.binaryReceivedData ?? null;
+    snrData = parsed.snrData ?? [];
+  }
 }
+
+
+// Load immediately when tab opens
+loadData();
+
+// Sync across tabs if localStorage changes
+window.addEventListener("storage", loadData);
 
     </script>
 	
 	<style>
-#demodulation {
+#modulation {
   display: none;
 }
 #container {
