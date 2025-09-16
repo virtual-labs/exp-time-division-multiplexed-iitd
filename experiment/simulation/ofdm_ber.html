@@ -217,7 +217,7 @@ type="number" id="snr" value="0" min="0" max = "20")
     <thead>
         <tr>
             <th>SNR (in dB)</th>
-            <th>Symbol Error Rate (SER)</th>
+            <th>Bit Error Rate (BER)</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -225,7 +225,7 @@ type="number" id="snr" value="0" min="0" max = "20")
 
 <!-- Button to plot BER vs SER and BER vs SNR -->
 <button   class="button bg-blue-500 text-white rounded-md px-2 py-1 text-base"
-id="plotButton">Plot SER vs SNR</button>
+id="plotButton">Plot BER vs SNR</button>
 
 <!-- Placeholder for the plot -->
 <div id="plotArea"></div>
@@ -650,9 +650,9 @@ function runQAMSystem() {
     // 16-QAM Demodulation of the received subcarriers
     let receivedData = qamdemodCustom(scaledReceivedSubcarriers, M);
     console.log("receivedData", receivedData);
-    
+    let receivedBinaryData = receivedData.map(symbols => symbols.map(value => value.toString(2).padStart(Math.log2(M), '0')));
     // Calculate symbol errors
-    let numErrors = data.flat().reduce((acc, val, idx) => acc + (val !== receivedData.flat()[idx]), 0);
+    let numErrors = binaryData.flat().reduce((acc, val, idx) => acc + (val !== receivedBinaryData.flat()[idx]), 0);
     console.log(`Number of symbol errors: ${numErrors}`);
     let bitErrorrate = numErrors / (nSymbols * N);
 	console.log(`BER: ${bitErrorrate}`);
@@ -754,13 +754,13 @@ document.getElementById('plotButton').addEventListener('click', function() {
     };
 
     let layout = {
-        title: 'BER vs SER',
+        title: 'BER vs SNR',
         xaxis: {
-            title: 'SNR (EbN0dB)',
+            title: 'SNR (dB)',
             type: 'linear'  // Linear scale for x-axis
         },
         yaxis: {
-            title: 'SER (Symbol Error Rate)',
+            title: 'BER (Bit Error Rate)',
             type: 'log',  // Logarithmic scale for y-axis
         }
     };
