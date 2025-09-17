@@ -132,6 +132,13 @@
                     type="number" id="samplingFrequency" value="1000" min="1"
                   />
                 </div>
+                <div class="flex items-center justify-center gap-1 mt-2">
+                  <label for="carrierFrequency">Carrier Frequency (Fs):</label>
+                          <input
+                            class="border border-black px-2 py-1 rounded-sm"
+          type="number" id="carrierFrequency" value="500" min="1"
+                          />
+                        </div>
                 <br/>
                 <div class="flex items-center justify-center gap-1 mt-2">
                   <label for="ofdmSymbolIndex">Show results for OFDM Symbol:</label>
@@ -254,9 +261,12 @@
 			  <div id = "container">
     <h1>Instructions for Demodulation of OFDM using 16-QAM</h1>
     <ul>
-      <li class="step step1">Step 1: Click on the 'Received Subcarrier' button to simulate reception and retrieve the subcarriers for a selected OFDM symbol (after CP removal and FFT).</li>
+      <li class="step step1">Step 1: Click on the 'Received OFDM Symbols' button to simulate reception and retrieve the OFDM Symbols for a selected OFDM symbol.</li>
+      <li class="step step1">Step 2: Click on the 'Received OFDM Symbols without CP' button to retrieve the OFDM Symbols after CP removal for a selected OFDM symbol.</li>
 
-		<li class="step step1">Step 2: You can Demodulate the OFDM Signal clicking on the 'Demodulate OFDM' button</li>
+      <li class="step step1">Step 3: Click on the 'Received Subcarrier' button to retrieve the subcarriers for a selected OFDM symbol (after CP removal and FFT).</li>
+
+		<li class="step step1">Step 4: You can Demodulate the OFDM Signal clicking on the 'Demodulate OFDM' button</li>
 		<li class="step step2">In the demodulation part, maximum likelihood detection is used to find the closest constellation point to each received symbol. After identifying the nearest point, the Gray code mapping is reversed to recover the 
 		original transmitted data. This approach ensures accurate data recovery even in the presence of noise.
     </ul>
@@ -282,9 +292,27 @@
             <div class="flex justify-center pt-4">
               <button
               class="button bg-blue-500 text-white rounded-md px-2 py-1"
+              onclick="receivedOFDMSymbol(NoisyOFDMWithCP)"
+            >
+              Received OFDM Symbols
+            </button>
+
+            </div>
+            <div class="flex justify-center pt-4">
+              <button
+              class="button bg-blue-500 text-white rounded-md px-2 py-1"
+              onclick="receivedOFDMSymbolWithoutCP(NoisyOFDMWithCP)"
+            >
+              Received OFDM Symbols without CP
+            </button>
+
+            </div>
+            <div class="flex justify-center pt-4">
+              <button
+              class="button bg-blue-500 text-white rounded-md px-2 py-1"
               onclick="plot4(scaledReceivedSubcarriers)"
             >
-              Received subcarrier
+              Received subcarriers
             </button>
 
             </div>
@@ -309,6 +337,12 @@
                 </div>
               </div>
               <div class="flex flex-col items-center gap-4 mt-4">
+                <div id = "scrolltoreceivedofdmsymbol" class="flex items-center gap-2 justify-center max-lg:flex-col">
+                  <div id="receivedOFDMSymbol" class="w-[600px] h-[450px]"></div>
+                </div>
+                <div id = "scrolltoreceivedofdmsymbolwithoutcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
+                  <div id="receivedOFDMSymbolWithoutCP" class="w-[600px] h-[450px]"></div>
+                </div>
               <div id = "scrolltoreceivedsubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
                 <div id="plot4" class="w-[600px] h-[450px]"></div>
               </div>
@@ -604,6 +638,7 @@ window.addEventListener('load', function() {
             let N;// = parseInt(document.getElementById('nSubcarriers').value);
             let Ncp;// = parseInt(document.getElementById('cyclicPrefix').value);
             let Fs;// = parseFloat(document.getElementById('samplingFrequency').value);
+            let Fc;
             let M;// = 16;  // Modulation order (16-QAM -> M = 16)
             let ofdmSymbolIndex;// = parseInt(document.getElementById('ofdmSymbolIndex').value) - 1;
             let EbN0dB;
@@ -688,7 +723,7 @@ function runQAMSystem() {
     console.log("ofdmWithCP", ofdmWithCP);
     
     // Here you can add noise if needed
-    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); //46
+    NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); //46
     console.log("NoisyOFDMWithCP", NoisyOFDMWithCP);
     
     // Receiver Side - Remove Cyclic Prefix and Demodulate
@@ -1123,14 +1158,15 @@ const layout = {
 Plotly.newPlot('plot3', [trace], layout);
 document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth' });
 }					
-			
+		
+
             // Plot Received Subcarriers in Frequency Domain (after FFT at the receiver)
             function plot4(scaledReceivedSubcarriers) {
     let nSymbols = parseInt(document.getElementById('nSymbols').value);
     let N = parseInt(document.getElementById('nSubcarriers').value);
     let ofdmSymbolIndex = parseInt(
     prompt(
-        `Enter Received Subcarrier Number (1 to ${nSymbols}):\nTo see another subcarrier, just click on 'Generate Subcarrier' button again.`,
+        `Enter Received Subcarrier Number:\nTo see another subcarrier, just click on 'Generate Subcarrier' button again.`,
         "1"
     )
 ) - 1;
@@ -1249,13 +1285,138 @@ function plotReceivedBitstreams(binaryReceivedData) {
         font: { color: "black" },
       }));
     Plotly.newPlot('plot8', [trace2], {
-        title: `Binary Bitsream of Received <br> ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+        title: `Received Binary Bitsream`,
         xaxis: { title: 'Bit Index' },
         yaxis: { title: 'Bit Value' },
         annotations: annotations
     });
 	            document.getElementById('scrolltoreceivedbits').scrollIntoView({ behavior: 'smooth' });
 }
+
+
+function interpolateComplex(x, factor) {
+    const N = x.length;
+    const result = [];
+    for (let i = 0; i < N - 1; i++) {
+        for (let j = 0; j < factor; j++) {
+            const alpha = j / factor;
+            result.push({
+                real: x[i].real * (1 - alpha) + x[i + 1].real * alpha,
+                imag: x[i].imag * (1 - alpha) + x[i + 1].imag * alpha
+            });
+        }
+    }
+    result.push({...x[N-1]});
+    return result;
+}
+
+function receivedOFDMSymbol(NoisyOFDMWithCP) {
+  console.log(scaledReceivedSubcarriers);
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;
+    let Fc = parseFloat(document.getElementById('carrierFrequency').value);
+
+    let ofdmSymbolIndex = parseInt(prompt(`Enter Received OFDM Symbol Number:`, "1")) - 1;
+/*
+    let modData = qammodCustom(data, M);
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
+    let  NoisyOFDMWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
+    let ofdmWithCP = NoisyOFDMWithCP.map(row => addAWGN(row, EbN0dB)); 
+*/
+    const t = Array.from({length: N + Ncp}, (_, i) => i / Fs);
+
+    const xRe = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yRe = Array.from({length: N + Ncp}, (_, i) => [0, NoisyOFDMWithCP[ofdmSymbolIndex][i].real, null]).flat();
+    const xIm = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yIm = Array.from({length: N + Ncp}, (_, i) => [0, NoisyOFDMWithCP[ofdmSymbolIndex][i].imag, null]).flat();
+
+    const traceRe = { x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter', name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 } };
+    const traceIm = { x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter', name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 } };
+
+    // --- Passband (smoothed using interpolation) ---
+    const oversample = 1000;
+    const ofdmInterp = interpolateComplex(NoisyOFDMWithCP[ofdmSymbolIndex], oversample);
+    const tHigh = Array.from({length: ofdmInterp.length}, (_, i) => i / (Fs * oversample));
+    const passband = ofdmInterp.map((c,i) => c.real*Math.cos(2*Math.PI*Fc*tHigh[i]) - c.imag*Math.sin(2*Math.PI*Fc*tHigh[i]));
+
+    const tracePass = { x: tHigh, y: passband, mode: 'lines', type: 'scatter', name: 'Passband', line: { color: 'green' } };
+
+    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} with CP (Baseband + Passband)`, xaxis: { title: 'Time (s)' }, yaxis: { title: 'Amplitude' } };
+    Plotly.newPlot('receivedOFDMSymbol', [traceRe, traceIm, tracePass], layout);
+    document.getElementById('scrolltoreceivedofdmsymbol').scrollIntoView({ behavior: 'smooth' });
+}
+
+function receivedOFDMSymbolWithoutCP(NoisyOFDMWithCP) {
+    if (!NoisyOFDMWithCP) {
+        alert("Error: NoisyOFDMWithCP is not defined. Run OFDM simulation first!");
+        return;
+    }
+
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+
+    let ofdmSymbolIndex = parseInt(
+        prompt(`Enter Received OFDM Symbol Number:`, "1")
+    ) - 1;
+
+    // Remove CP
+    const receivedSignal = NoisyOFDMWithCP.map(row => row.slice(Ncp));
+
+    const xAxis = Array.from({ length: N }, (_, i) => i);
+
+    // Real part impulses
+    const traceRe = {
+        x: xAxis.flatMap(x => [x, x, null]),
+        y: receivedSignal[ofdmSymbolIndex].flatMap(c => [0, c.real, null]),
+        mode: 'lines+markers',
+        type: 'scatter',
+        line: { color: 'blue' },
+        name: 'Real Part'
+    };
+
+    // Imaginary part impulses
+    const traceIm = {
+        x: xAxis.flatMap(x => [x, x, null]),
+        y: receivedSignal[ofdmSymbolIndex].flatMap(c => [0, c.imag, null]),
+        mode: 'lines+markers',
+        type: 'scatter',
+        line: { color: 'red' },
+        name: 'Imaginary Part'
+    };
+
+    const layout = {
+        title: `OFDM Symbol ${ofdmSymbolIndex + 1} (CP Removed)`,
+        xaxis: { title: 'Sample Index' },
+        yaxis: { title: 'Amplitude' }
+    };
+
+    Plotly.newPlot('receivedOFDMSymbolWithoutCP', [traceRe, traceIm], layout);
+
+    // Optional: Constellation diagram
+    const traceConst = {
+        x: receivedSignal[ofdmSymbolIndex].map(c => c.real),
+        y: receivedSignal[ofdmSymbolIndex].map(c => c.imag),
+        mode: 'markers',
+        type: 'scatter',
+        marker: { color: 'blue', size: 8 },
+        name: 'Constellation'
+    };
+
+    const layoutConst = {
+        title: `OFDM Symbol ${ofdmSymbolIndex + 1} without CP`,
+        xaxis: { title: 'OFDM Symbol Index', zeroline: true },
+        yaxis: { title: 'Value (Re & Im)', zeroline: true },
+        showlegend: false
+    };
+
+    Plotly.newPlot('receivedOFDMSymbolWithoutCP', [traceRe, traceIm], layoutConst);
+
+    document.getElementById('scrolltoreceivedofdmsymbolwithoutcp')?.scrollIntoView({ behavior: 'smooth' });
+}
+
 
 
 
@@ -1268,6 +1429,7 @@ function loadData() {
     N = parsed.N ?? null;
     Ncp = parsed.Ncp ?? null;
     Fs = parsed.Fs ?? null;
+    Fc = parsed.Fc ?? null;
     M = parsed.M ?? 16;
     ofdmSymbolIndex = parsed.ofdmSymbolIndex ?? null;
     EbN0dB = parsed.EbN0dB ?? null;
@@ -1275,8 +1437,15 @@ function loadData() {
     binaryData = parsed.binaryData ?? null;
     modData = parsed.modData ?? null;
     ofdmTimeSignal = parsed.ofdmTimeSignal ?? null;
+
     ofdmWithCP = parsed.ofdmWithCP ?? null;
-    NoisyOFDMWithCP = parsed.NoisyOFDMWithCP ?? null;
+    //NoisyOFDMWithCP = parsed.NoisyOFDMWithCP ?? null;
+    if (parsed.NoisyOFDMWithCP) {
+      NoisyOFDMWithCP  = parsed.NoisyOFDMWithCP.map(row =>
+        row.map(c => new Complex(c.real, c.imag))
+      );
+    }
+
     receivedSignal = parsed.receivedSignal ?? null;
 
     // ✅ Rebuild complex numbers if saved

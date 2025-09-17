@@ -75,6 +75,7 @@
               <li class="step step3"><strong>Step 4:</strong> Click on the <em>'Time Domain OFDM Without CP'</em> button to perform IFFT and obtain the time-domain OFDM signal without adding a cyclic prefix.</li>
           
               <li class="step step4"><strong>Step 5:</strong> Click on the <em>'Time Domain OFDM With CP'</em> button to add the cyclic prefix to the time-domain OFDM signal, simulating a practical OFDM frame structure.</li>
+              <li class="step step4"><strong>Step 6:</strong> Click on the <em>'Show Frequency Spectrums'</em> button to view the frequency spectra of OFDM</li>
           
           
               <li class="step step2">16-QAM Modulation: Each group of 4 bits is mapped to one of 16 predefined complex constellation points using Gray coding. The constellation points are:
@@ -209,7 +210,7 @@ type="number" id="snr" value="20" min="0" max = "20")
         <button
         class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-8.5em] left-[0.125em]"
       >
-        Plot Frequency Spectrum
+        Show Frequency Spectrums
       </button>
     </a>
  <!--      
@@ -663,6 +664,7 @@ window.addEventListener('load', function() {
             let N;// = parseInt(document.getElementById('nSubcarriers').value);
             let Ncp;// = parseInt(document.getElementById('cyclicPrefix').value);
             let Fs;// = parseFloat(document.getElementById('samplingFrequency').value);
+            let Fc;
             let M;// = 16;  // Modulation order (16-QAM -> M = 16)
             let ofdmSymbolIndex;// = parseInt(document.getElementById('ofdmSymbolIndex').value) - 1;
             let EbN0dB;
@@ -746,7 +748,7 @@ function runQAMSystem() {
     console.log("ofdmWithCP", ofdmWithCP);
     
     // Here you can add noise if needed
-    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); //46
+    NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); //46
     console.log("NoisyOFDMWithCP", NoisyOFDMWithCP);
     
     // Receiver Side - Remove Cyclic Prefix and Demodulate
@@ -1152,7 +1154,7 @@ function plot2() {
 
     const tracePass = { x: tHigh, y: passband, mode: 'lines', type: 'scatter', name: 'Passband', line: { color: 'green' } };
 
-    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} (Baseband + Passband)`, xaxis: { title: 'Time (s)' }, yaxis: { title: 'Amplitude' } };
+    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} without CP (Baseband + Passband)`, xaxis: { title: 'Time (s)' }, yaxis: { title: 'Amplitude' } };
     Plotly.newPlot('plot2', [traceRe, traceIm, tracePass], layout);
     document.getElementById('scrolltoofdmwithoutcp').scrollIntoView({ behavior: 'smooth' });
 }
@@ -1171,6 +1173,7 @@ function plot3() {
     let modData = qammodCustom(data, M);
     let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
     let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
+    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB));
 
     const t = Array.from({length: N + Ncp}, (_, i) => i / Fs);
 
@@ -1464,6 +1467,7 @@ function saveData() {
     N,
     Ncp,
     Fs,
+    Fc,
     M,
     ofdmSymbolIndex,
     EbN0dB,
