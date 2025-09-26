@@ -70,7 +70,7 @@
 
               <li class="step step1"><strong>Step 1:</strong> Click on the <em>'Generate Message'</em> button to generate the input bitstream for modulation.</li>
               <li class="step step1"><strong>Step 2:</strong> Click the <em>'Generate QAM'</em> button to generate the 16-QAM modulated signal from the input bitstream.</li>          
-              <li class="step step2"><strong>Step 3:</strong> Click on the <em>'Generate Subcarrier'</em> button to map the generated data bits into subcarriers using 16-QAM modulation.</li>
+              <li class="step step2"><strong>Step 3:</strong> Click on the <em>'Frequency domain ofdm'</em> button to map the generated modulated symbols into ofdm symbols.</li>
           
               <li class="step step3"><strong>Step 4:</strong> Click on the <em>'Time Domain OFDM Without CP'</em> button to perform IFFT and obtain the time-domain OFDM signal without adding a cyclic prefix.</li>
           
@@ -168,7 +168,7 @@ type="number" id="snr" value="20" min="0" max = "20")
         <img
           src="ofdm2409_1.png"
           alt="psk1"
-          style="height: 28.125em; width: 34.375em; margin-left: 3em;"
+          style="height: 28.125em; width: 34.375em; margin-left: 5em;"
         />
         
         <button
@@ -189,7 +189,7 @@ type="number" id="snr" value="20" min="0" max = "20")
           class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4em] left-[0.125em]"
           onclick="plot1()"
         >
-          Generate Subcarrier
+          Frequency domain ofdm
         </button>
         
         <button
@@ -208,7 +208,7 @@ type="number" id="snr" value="20" min="0" max = "20")
 
         <a href = "./ofdm_spectrum.html" target = "_blank">
         <button
-        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-8.5em] left-[0.125em]"
+        class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-8.5em] left-[0.125em]"
       >
         Show Frequency Spectrums
       </button>
@@ -904,7 +904,7 @@ function plot1() {
     // Prompt the user for OFDM symbol index
     let ofdmSymbolIndex = parseInt(
     prompt(
-        `Enter Subcarrier Number (1 to ${nSymbols}):\nTo see another subcarrier, just click on 'Generate Subcarrier' button again.`,
+        `Enter OFDM Symbol Number (1 to ${nSymbols}):\nTo see another frequency domain OFDM Symbol, just click on 'Frequency domain ofdm' button again.`,
         "1"
     )
 ) - 1;
@@ -940,7 +940,7 @@ function plot1() {
     };
 
     const layout = {
-        title: `Subcarrier ${ofdmSymbolIndex + 1}`,
+        title: `Frequency Domain OFDM Symbol ${ofdmSymbolIndex + 1}`,
         xaxis: { title: 'Subcarrier Index' },
         yaxis: { title: 'Value (Re & Im)' }
     };
@@ -956,7 +956,7 @@ function plot1() {
         name: 'Constellation'
     };
     const layoutff = {
-        title: `Constellation Diagram - Subcarrier ${ofdmSymbolIndex + 1}`,
+        title: `Constellation Diagram`,
         xaxis: { title: 'In-phase (Re)', zeroline: true },
         yaxis: { title: 'Quadrature (Im)', zeroline: true },
         showlegend: false
@@ -1146,19 +1146,13 @@ function plot2() {
     const traceRe = { x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter', name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 } };
     const traceIm = { x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter', name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 } };
 
-    // --- Passband (smoothed using interpolation) ---
-    const oversample = 1000;  // Increase for smoother sinusoid
-    const ofdmInterp = interpolateComplex(ofdmTimeSignal[ofdmSymbolIndex], oversample);
-    const tHigh = Array.from({length: ofdmInterp.length}, (_, i) => i / (Fs * oversample));
-    const passband = ofdmInterp.map((c,i) => c.real*Math.cos(2*Math.PI*Fc*tHigh[i]) - c.imag*Math.sin(2*Math.PI*Fc*tHigh[i]));
+    const tHigh = Array.from({length: N}, (_, i) => i);
 
-    const tracePass = { x: tHigh, y: passband, mode: 'lines', type: 'scatter', name: 'Passband', line: { color: 'green' } };
-
-    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} without CP (Baseband + Passband)`, xaxis: { title: 'Time (s)' }, yaxis: { title: 'Amplitude' } };
-    Plotly.newPlot('plot2', [traceRe, traceIm, tracePass], layout);
+    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} without CP (after IFFT)`, xaxis: { title: 'Time-Domain OFDM samples' }, yaxis: { title: 'Amplitude' } };
+    Plotly.newPlot('plot2', [traceRe, traceIm], layout);
     document.getElementById('scrolltoofdmwithoutcp').scrollIntoView({ behavior: 'smooth' });
 }
-
+/*
 // --- Plot OFDM Symbol with CP ---
 function plot3() {
     let nSymbols = parseInt(document.getElementById('nSymbols').value);
@@ -1199,7 +1193,93 @@ function plot3() {
 
     saveData();
 }
-			
+*/
+function plot3() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;
+    let Fc = parseFloat(document.getElementById('carrierFrequency').value);
+
+    let ofdmSymbolIndex = parseInt(prompt(`Enter OFDM Symbol Number (1 to ${nSymbols}):`, "1")) - 1;
+
+    let modData = qammodCustom(data, M); // [nSymbols][N]
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row)); // IFFT
+    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]); // Add CP
+    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); // Noise
+
+    const t = Array.from({ length: N + Ncp }, (_, i) => i / Fs);
+
+    const xRe = t.flatMap(x => [x, x, null]);
+    const yRe = ofdmWithCP[ofdmSymbolIndex].map(p => p.real).flatMap(y => [0, y, null]);
+    const xIm = t.flatMap(x => [x, x, null]);
+    const yIm = ofdmWithCP[ofdmSymbolIndex].map(p => p.imag).flatMap(y => [0, y, null]);
+
+    const traceRe = {
+        x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter',
+        name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 }
+    };
+
+    const traceIm = {
+        x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter',
+        name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 }
+    };
+
+    // --- Passband Signal ---
+    const oversample = 1000;
+    const ofdmInterp = interpolateComplex(ofdmWithCP[ofdmSymbolIndex], oversample);
+    const tHigh = Array.from({ length: ofdmInterp.length }, (_, i) => i / (Fs * oversample));
+    const passband = ofdmInterp.map((c, i) =>
+        c.real * Math.cos(2 * Math.PI * Fc * tHigh[i]) -
+        c.imag * Math.sin(2 * Math.PI * Fc * tHigh[i])
+    );
+
+    const tracePass = {
+        x: tHigh, y: passband, mode: 'lines', type: 'scatter',
+        name: 'Passband', line: { color: 'green' }
+    };
+
+    // === Individual Subcarrier Passband Visualization ===
+    const subcarrierTraces = [];
+    const subSymbols = modData[ofdmSymbolIndex]; // QAM symbols for this symbol
+    const deltaF = Fs / N; // Subcarrier spacing
+    const tSubHigh = Array.from({ length: (N + Ncp) * oversample }, (_, i) => i / (Fs * oversample));
+
+    for (let k = 0; k < N; k++) {
+        const symbol = subSymbols[k];
+        const fk = Fc + deltaF * k; // Shift to passband
+
+        const wave = tSubHigh.map(t =>
+            symbol.real * Math.cos(2 * Math.PI * fk * t) -
+            symbol.imag * Math.sin(2 * Math.PI * fk * t)
+        );
+
+        subcarrierTraces.push({
+            x: tSubHigh,
+            y: wave,
+            mode: 'lines',
+            type: 'scatter',
+            name: `Subcarrier ${k}`,
+            line: { width: 1, dash: 'dot' },
+            visible: (k < 5) ? true : 'legendonly' // Show only first 5 by default
+        });
+    }
+
+    const layout = {
+        title: `OFDM Symbol ${ofdmSymbolIndex + 1} with CP`,
+        xaxis: { title: 'Time (s)' },
+        yaxis: { title: 'Amplitude' }
+    };
+
+    Plotly.newPlot('plot3', [traceRe, traceIm, ...subcarrierTraces], layout);
+    document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth' });
+
+    saveData();
+}
+
+
+
 			
             // Plot Received Subcarriers in Frequency Domain (after FFT at the receiver)
 			function plot4(scaledReceivedSubcarriers) {

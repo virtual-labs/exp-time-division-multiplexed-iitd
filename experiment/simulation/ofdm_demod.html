@@ -264,7 +264,7 @@
       <li class="step step1">Step 1: Click on the 'Received OFDM Symbols' button to simulate reception and retrieve the OFDM Symbols for a selected OFDM symbol.</li>
       <li class="step step1">Step 2: Click on the 'Received OFDM Symbols without CP' button to retrieve the OFDM Symbols after CP removal for a selected OFDM symbol.</li>
 
-      <li class="step step1">Step 3: Click on the 'Received Subcarrier' button to retrieve the subcarriers for a selected OFDM symbol (after CP removal and FFT).</li>
+      <li class="step step1">Step 3: Click on the 'Received OFDM Symbols (after FFT)' button to retrieve OFDM Symbols (after CP removal and FFT).</li>
 
 		<li class="step step1">Step 4: You can Demodulate the OFDM Signal clicking on the 'Demodulate OFDM' button</li>
 		<li class="step step2">In the demodulation part, maximum likelihood detection is used to find the closest constellation point to each received symbol. After identifying the nearest point, the Gray code mapping is reversed to recover the 
@@ -312,7 +312,7 @@
               class="button bg-blue-500 text-white rounded-md px-2 py-1"
               onclick="plot4(scaledReceivedSubcarriers)"
             >
-              Received subcarriers
+              Received OFDM Symbols (after FFT)
             </button>
 
             </div>
@@ -1166,7 +1166,7 @@ document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth
     let N = parseInt(document.getElementById('nSubcarriers').value);
     let ofdmSymbolIndex = parseInt(
     prompt(
-        `Enter Received Subcarrier Number:\nTo see another subcarrier, just click on 'Generate Subcarrier' button again.`,
+        `Enter OFDM Symbol Number:\nTo see another OFDM Symbol, just click on the same button again.`,
         "1"
     )
 ) - 1;
@@ -1194,7 +1194,7 @@ document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth
     };
 
     const layout = {
-        title: `Received Subcarrier ${ofdmSymbolIndex + 1}`,
+        title: `Received OFDM Symbol ${ofdmSymbolIndex + 1} (after FFT)`,
         xaxis: { title: 'Subcarrier Index' },
         yaxis: { title: 'Value (Re & Im)' }
     };
@@ -1212,7 +1212,7 @@ document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth
     };
 
     const layoutConst = {
-      title: `Constellation Diagram - Subcarrier ${ofdmSymbolIndex + 1}`,
+      title: `Constellation Diagram`,
         xaxis: { title: 'In-phase (Re)', zeroline: true },
         yaxis: { title: 'Quadrature (Im)', zeroline: true },
         showlegend: false
@@ -1326,26 +1326,21 @@ function receivedOFDMSymbol(NoisyOFDMWithCP) {
     let  NoisyOFDMWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
     let ofdmWithCP = NoisyOFDMWithCP.map(row => addAWGN(row, EbN0dB)); 
 */
-    const t = Array.from({length: N + Ncp}, (_, i) => i / Fs);
+    const t = Array.from({length: N + Ncp}, (_, i) => i);
 
-    const xRe = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const xRe = Array.from({length: N + Ncp}, (_, i) => i).flatMap(x => [x, x, null]);
     const yRe = Array.from({length: N + Ncp}, (_, i) => [0, NoisyOFDMWithCP[ofdmSymbolIndex][i].real, null]).flat();
-    const xIm = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const xIm = Array.from({length: N + Ncp}, (_, i) => i).flatMap(x => [x, x, null]);
     const yIm = Array.from({length: N + Ncp}, (_, i) => [0, NoisyOFDMWithCP[ofdmSymbolIndex][i].imag, null]).flat();
 
     const traceRe = { x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter', name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 } };
     const traceIm = { x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter', name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 } };
 
-    // --- Passband (smoothed using interpolation) ---
-    const oversample = 1000;
-    const ofdmInterp = interpolateComplex(NoisyOFDMWithCP[ofdmSymbolIndex], oversample);
-    const tHigh = Array.from({length: ofdmInterp.length}, (_, i) => i / (Fs * oversample));
-    const passband = ofdmInterp.map((c,i) => c.real*Math.cos(2*Math.PI*Fc*tHigh[i]) - c.imag*Math.sin(2*Math.PI*Fc*tHigh[i]));
 
-    const tracePass = { x: tHigh, y: passband, mode: 'lines', type: 'scatter', name: 'Passband', line: { color: 'green' } };
+    const tHigh = Array.from({ length: N + Ncp}, (_, i) => i);
 
-    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} with CP (Baseband + Passband)`, xaxis: { title: 'Time (s)' }, yaxis: { title: 'Amplitude' } };
-    Plotly.newPlot('receivedOFDMSymbol', [traceRe, traceIm, tracePass], layout);
+    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} with CP`, xaxis: { title: 'Time-domin OFDM samples' }, yaxis: { title: 'Amplitude' } };
+    Plotly.newPlot('receivedOFDMSymbol', [traceRe, traceIm], layout);
     document.getElementById('scrolltoreceivedofdmsymbol').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -1406,8 +1401,8 @@ function receivedOFDMSymbolWithoutCP(NoisyOFDMWithCP) {
     };
 
     const layoutConst = {
-        title: `OFDM Symbol ${ofdmSymbolIndex + 1} without CP`,
-        xaxis: { title: 'OFDM Symbol Index', zeroline: true },
+        title: `OFDM Symbol ${ofdmSymbolIndex + 1} without CP `,
+        xaxis: { title: 'Time-domain OFDM samples', zeroline: true },
         yaxis: { title: 'Value (Re & Im)', zeroline: true },
         showlegend: false
     };
