@@ -216,6 +216,7 @@
         </div>
       
         <div class="middle">
+          
           <div id="scrolltomessage" class="flex items-center gap-2 justify-center max-lg:flex-col">
             <div id="plot7" class="w-[600px] h-[450px]"></div>
           </div>
@@ -267,8 +268,6 @@
       <li class="step step1">Step 3: Click on the 'Received OFDM Symbols (after FFT)' button to retrieve OFDM Symbols (after CP removal and FFT).</li>
 
 		<li class="step step1">Step 4: You can Demodulate the OFDM Signal clicking on the 'Demodulate OFDM' button</li>
-		<li class="step step2">In the demodulation part, maximum likelihood detection is used to find the closest constellation point to each received symbol. After identifying the nearest point, the Gray code mapping is reversed to recover the 
-		original transmitted data. This approach ensures accurate data recovery even in the presence of noise.
     </ul>
 </div>
     <div class="flex min-h-[80vh]">
@@ -290,6 +289,12 @@
         <div class="mt-4 border-t-2">
           <div class="flex flex-col">
             <div class="flex justify-center pt-4">
+              <button
+              class="button bg-blue-500 text-white rounded-md px-2 py-1 mr-2"
+              onclick="plotTransmittedSignalReceived();"
+            >
+              Received Signal
+            </button>
               <button
               class="button bg-blue-500 text-white rounded-md px-2 py-1"
               onclick="receivedOFDMSymbol(NoisyOFDMWithCP)"
@@ -346,6 +351,7 @@
                 </div>
               </div>
               <div class="flex flex-col items-center gap-4 mt-4">
+                <div id = "graph"></div>
                 <div id = "scrolltoreceivedofdmsymbol" class="flex items-center gap-2 justify-center max-lg:flex-col">
                   <div id="allPlotsContainer1" class="w-[600px] h-auto"></div>
                 </div>
@@ -480,29 +486,34 @@ inputFields.forEach(field => {
 
         // Cooley-Tukey FFT function
         function cooleyTukeyFFT(x) {
-            const N = x.length;
-            if (N <= 1) return x;
+    const N = x.length;
+    if (N <= 1) return x;
 
-            const half = N / 2;
-            const even = cooleyTukeyFFT(x.filter((_, i) => i % 2 === 0));
-            const odd = cooleyTukeyFFT(x.filter((_, i) => i % 2 !== 0));
+    const half = N / 2;
+    const even = cooleyTukeyFFT(x.filter((_, i) => i % 2 === 0));
+    const odd = cooleyTukeyFFT(x.filter((_, i) => i % 2 !== 0));
 
-            const T = Array.from({ length: half }, (_, k) => {
-                const theta = -2 * Math.PI * k / N;
-                const w = new Complex(Math.cos(theta), Math.sin(theta));
-                return even[k].add(w.multiply(odd[k]));
-            });
+    const T = Array.from({ length: half }, (_, k) => {
+        const theta = -2 * Math.PI * k / N;
+        const w = new Complex(Math.cos(theta), Math.sin(theta));
+        return w.multiply(odd[k]);
+    });
 
-            return [...T, ...T.map((t, k) => even[k].subtract(t))];
-        }
+    const combined = [];
+    for (let k = 0; k < half; k++) {
+        combined[k] = even[k].add(T[k]);
+        combined[k + half] = even[k].subtract(T[k]);
+    }
 
-        // Cooley-Tukey IFFT function
-        function cooleyTukeyIFFT(x) {
-            const N = x.length;
-            const conjugated = x.map(c => new Complex(c.real, -c.imag));
-            const result = cooleyTukeyFFT(conjugated);
-            return result.map(c => new Complex(c.real / N, -c.imag / N));
-        }
+    return combined;
+}
+
+function cooleyTukeyIFFT(x) {
+    const N = x.length;
+    const conjugated = x.map(c => new Complex(c.real, -c.imag));
+    const result = cooleyTukeyFFT(conjugated);
+    return result.map(c => new Complex(c.real / N, -c.imag / N));
+}
 
         // Custom 16-QAM Modulation Function
 // Gray code mapping for 16-QAM symbols
@@ -573,7 +584,22 @@ function qamdemodCustom(modData, M) {
     );
 }
 
+function bpskDemodCustom(modData) {
+    const modDataArray = modData.flat();
+    const demodData = modDataArray.map(symbol => {
+        // Check the real part of the symbol
+        if (symbol.real > 0) {
+            return 1; // Mapped to 1+0j
+        } else {
+            return 0; // Mapped to -1+0j
+        }
+    });
 
+    // Reshape to the original 2D structure
+    return Array.from({ length: modData.length }, (_, i) =>
+        demodData.slice(i * modData[0].length, (i + 1) * modData[0].length)
+    );
+}
 
         // Helper function to get ordinal suffix
         function getOrdinalSuffix(n) {
@@ -774,7 +800,7 @@ let binaryData = data.map(symbols =>
     console.log("scaledReceivedSubcarriers", scaledReceivedSubcarriers);
     
     // 16-QAM Demodulation of the received subcarriers
-    let receivedData = qamdemodCustom(scaledReceivedSubcarriers, M);
+    let receivedData = bpskDemodCustom(scaledReceivedSubcarriers);
     console.log("receivedData", receivedData);
     
     // Calculate symbol errors
@@ -947,7 +973,7 @@ document.getElementById('plotButton').addEventListener('click', function() {
     console.log("scaledReceivedSubcarriers", scaledReceivedSubcarriers);
     
     // 16-QAM Demodulation of the received subcarriers
-    let receivedData = qamdemodCustom(scaledReceivedSubcarriers, M);
+    let receivedData = bpskDemodCustom(scaledReceivedSubcarriers);
     console.log("receivedData", receivedData);
             // Calculate symbol errors
             let numErrors = data.flat().reduce((acc, val, idx) => acc + (val !== receivedData.flat()[idx]), 0);
@@ -1059,7 +1085,7 @@ Plotly.newPlot('plot1ff', [traceff], layoutff);
     console.log("scaledReceivedSubcarriers", scaledReceivedSubcarriers);
     
     // 16-QAM Demodulation of the received subcarriers
-    let receivedData = qamdemodCustom(scaledReceivedSubcarriers, M);
+    let receivedData = bpskDemodCustom(scaledReceivedSubcarriers);
     console.log("receivedData", receivedData);
             // Calculate symbol errors
             let numErrors = data.flat().reduce((acc, val, idx) => acc + (val !== receivedData.flat()[idx]), 0);
@@ -1142,7 +1168,7 @@ Plotly.newPlot('plot1ff', [traceff], layoutff);
     console.log("scaledReceivedSubcarriers", scaledReceivedSubcarriers);
     
     // 16-QAM Demodulation of the received subcarriers
-    let receivedData = qamdemodCustom(scaledReceivedSubcarriers, M);
+    let receivedData = bpskDemodCustom(scaledReceivedSubcarriers);
     console.log("receivedData", receivedData);
             // Calculate symbol errors
             let numErrors = data.flat().reduce((acc, val, idx) => acc + (val !== receivedData.flat()[idx]), 0);
@@ -1189,8 +1215,8 @@ document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth
 
             // Plot Received Subcarriers in Frequency Domain (after FFT at the receiver)
             function plot4(scaledReceivedSubcarriers) {
-    //let nSymbols = parseInt(document.getElementById('nSymbols').value);
-    let N = parseInt(document.getElementById('nSubcarriers').value);
+    //let nSymbols = 2; //parseInt(document.getElementById('nSymbols').value);
+    //let N = 4; //parseInt(document.getElementById('nSubcarriers').value);
     const container = document.getElementById('allPlotsContainer3');
     
     // Clear previous plots before adding new ones
@@ -1386,30 +1412,55 @@ function interpolateComplex(x, factor) {
 }
 
 function receivedOFDMSymbol(NoisyOFDMWithCP) {
-    let nSymbols = parseInt(document.getElementById('nSymbols').value);
-    let N = parseInt(document.getElementById('nSubcarriers').value);
-    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
-    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
-    let M = 16;
-    let Fc = parseFloat(document.getElementById('carrierFrequency').value);
+    //let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    //let N = parseInt(document.getElementById('nSubcarriers').value);
+    //let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    //let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    //let M = 16;
+    //let Fc = parseFloat(document.getElementById('carrierFrequency').value);
 
     // Clear previous plots
     const container = document.getElementById('allPlotsContainer1');
-    //container.innerHTML = '';  // Remove previous plots
+    container.innerHTML = '';  // Clear any existing plots
 
-    // Iterate over all OFDM symbols and plot each one
+    // Iterate over all OFDM symbols
     for (let ofdmSymbolIndex = 0; ofdmSymbolIndex < nSymbols; ofdmSymbolIndex++) {
         const t = Array.from({ length: N + Ncp }, (_, i) => i);
 
-        // Real part plotting data
-        const xRe = Array.from({ length: N + Ncp }, (_, i) => i).flatMap(x => [x, x, null]);
-        const yRe = Array.from({ length: N + Ncp }, (_, i) => [0, NoisyOFDMWithCP[ofdmSymbolIndex][i].real, null]).flat();
+        // Real and Imaginary plotting data initialization
+        const xRe = [];
+        const yRe = [];
+        const xIm = [];
+        const yIm = [];
 
-        // Imaginary part plotting data
-        const xIm = Array.from({ length: N + Ncp }, (_, i) => i).flatMap(x => [x, x, null]);
-        const yIm = Array.from({ length: N + Ncp }, (_, i) => [0, NoisyOFDMWithCP[ofdmSymbolIndex][i].imag, null]).flat();
+        // Ensure data exists for the current OFDM symbol and iterate over each subcarrier
+        if (NoisyOFDMWithCP[ofdmSymbolIndex]) {
+            for (let i = 0; i < N + Ncp; i++) {
+                // Check if data exists at the given index
+                if (NoisyOFDMWithCP[ofdmSymbolIndex][i]) {
+                    let symbol = NoisyOFDMWithCP[ofdmSymbolIndex][i];
 
-        // Real part trace
+                    // Ensure 'real' and 'imag' properties exist
+                    if (symbol.real !== undefined && symbol.imag !== undefined) {
+                        // Real part plotting
+                        xRe.push(i, i, null);  // x-axis points for real part
+                        yRe.push(0, symbol.real, null);  // y-axis points for real part
+
+                        // Imaginary part plotting
+                        xIm.push(i, i, null);  // x-axis points for imaginary part
+                        yIm.push(0, symbol.imag, null);  // y-axis points for imaginary part
+                    } else {
+                        console.warn(`Symbol at index ${i} does not have 'real' and 'imag' properties.`);
+                    }
+                } else {
+                    console.warn(`No data at NoisyOFDMWithCP[${ofdmSymbolIndex}][${i}]`);
+                }
+            }
+        } else {
+            console.warn(`No data at NoisyOFDMWithCP[${ofdmSymbolIndex}]`);
+        }
+
+        // Plot real part trace
         const traceRe = {
             x: xRe,
             y: yRe,
@@ -1420,7 +1471,7 @@ function receivedOFDMSymbol(NoisyOFDMWithCP) {
             marker: { size: 6 }
         };
 
-        // Imaginary part trace
+        // Plot imaginary part trace
         const traceIm = {
             x: xIm,
             y: yIm,
@@ -1431,7 +1482,7 @@ function receivedOFDMSymbol(NoisyOFDMWithCP) {
             marker: { size: 6 }
         };
 
-        // Layout for each plot
+        // Layout for the plot
         const layout = {
             title: `OFDM Symbol ${ofdmSymbolIndex + 1} with CP`,
             xaxis: { title: 'Time-domain OFDM samples' },
@@ -1439,7 +1490,7 @@ function receivedOFDMSymbol(NoisyOFDMWithCP) {
         };
 
         // Create container div for each plot
-        const plotDiv = document.createElement('div1');
+        const plotDiv = document.createElement('div');
         plotDiv.id = `plota_${ofdmSymbolIndex}`;
         plotDiv.style.marginBottom = "30px";
         container.appendChild(plotDiv);
@@ -1448,9 +1499,10 @@ function receivedOFDMSymbol(NoisyOFDMWithCP) {
         Plotly.newPlot(plotDiv.id, [traceRe, traceIm], layout);
     }
 
-    // Optionally scroll to plot area
+    // Optionally scroll to the plot area
     container.scrollIntoView({ behavior: 'smooth' });
 }
+
 
 
 function receivedOFDMSymbolWithoutCP(NoisyOFDMWithCP) {
@@ -1459,11 +1511,11 @@ function receivedOFDMSymbolWithoutCP(NoisyOFDMWithCP) {
         return;
     }
 
-    let N = parseInt(document.getElementById('nSubcarriers').value);
-    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    //let N = 4; //parseInt(document.getElementById('nSubcarriers').value);
+    //let Ncp = 2; //parseInt(document.getElementById('cyclicPrefix').value);
 
     // Get the number of OFDM symbols
-    let nSymbols = NoisyOFDMWithCP.length;
+    //let nSymbols = 2; //NoisyOFDMWithCP.length;
 
     // Remove CP from each OFDM symbol
     const receivedSignal = NoisyOFDMWithCP.map(row => row.slice(Ncp));
@@ -1542,6 +1594,112 @@ function receivedOFDMSymbolWithoutCP(NoisyOFDMWithCP) {
     container.scrollIntoView({ behavior: 'smooth' });
 }
 
+function plotTransmittedSignalReceived() {
+    let fs = Fs; //parseInt(document.getElementById('samplingFrequency').value);         // Sampling frequency in Hz (10 MHz)
+    let upsampleFactor = 100; // Upsampling factor (higher value means smoother signal)
+
+    
+
+    // Calculate the data rate dynamically if not provided
+    numSubcarriers = N; //parseInt(document.getElementById("nSubcarriers").value) || numSubcarriers;
+    bitsPerSymbol = 1; // Fixed bits per symbol to 1
+    symbolRate = 1; // Fixed symbol rate (1 MHz)
+
+    // Calculate symbol duration (symbolDuration)
+    const symbolDuration = 1 / symbolRate; // Duration of one symbol (inverse of symbol rate)
+    console.log("Symbol Duration (s):", symbolDuration);
+
+    // Calculate data rate based on symbol rate, number of subcarriers, and bits per symbol
+    let dataRate = symbolRate * numSubcarriers * bitsPerSymbol;
+    //document.getElementById("dataRate").value = dataRate;
+    //console.log("Calculated Data Rate (bps):", dataRate);
+
+    // Signal processing function
+    const generateSignal = (symbolDuration, symbolRate) => {
+        // Carrier frequency for passband modulation (example: 500 Hz for simplicity)
+        const fc = Fc; //parseInt(document.getElementById('carrierFrequency').value);;  // Carrier frequency in Hz
+
+        const N = transmittedSignalReceived.length; // Number of symbols
+        let totalSamples = N * fs / symbolRate; // Total number of samples, considering sampling rate and symbol rate
+        let timeArray = Array.from({ length: totalSamples }, (_, index) => index / fs); // Time array for sampling
+
+        // Upsample the signal by inserting zeros between the samples
+        let upsampledSignal = [];
+        transmittedSignalReceived.forEach(symbol => {
+            // Insert 'upsampleFactor' zeros after each symbol
+            for (let i = 0; i < upsampleFactor; i++) {
+                upsampledSignal.push({ real: symbol.real, imag: symbol.imag });
+            }
+        });
+
+        // Create a new time array for the upsampled signal
+        let upsampledTimeArray = Array.from({ length: upsampledSignal.length }, (_, index) => index / (fs * upsampleFactor));
+
+        // Convert baseband signal to passband (using carrier frequency)
+        let passbandSignal = upsampledSignal.map((symbol, index) => {
+            let t = upsampledTimeArray[index];
+            let realPassband = symbol.real * Math.cos(2 * Math.PI * fc * t);
+            let imagPassband = symbol.imag * Math.sin(2 * Math.PI * fc * t);
+            return realPassband + imagPassband;
+        });
+
+        // Plot baseband and passband signals
+        plotSignals(upsampledTimeArray, passbandSignal);
+    }
+
+    // Plotting function using Plotly
+    const plotSignals = (timeArray, passbandSignal) => {
+        let basebandReal = transmittedSignalReceived.map(symbol => symbol.real); // Real part of the baseband signal
+        let basebandImag = transmittedSignalReceived.map(symbol => symbol.imag); // Imaginary part of the baseband signal
+
+        // Baseband signal trace (real and imaginary parts)
+        let basebandTraceReal = {
+            x: timeArray,
+            y: basebandReal,  
+            mode: 'lines',
+            name: 'Baseband Signal (Real)',
+            line: { color: 'blue' }
+        };
+
+        let basebandTraceImag = {
+            x: timeArray,
+            y: basebandImag,
+            mode: 'lines',
+            name: 'Baseband Signal (Imaginary)',
+            line: { color: 'green' }
+        };
+
+        // Passband signal trace
+        let passbandTrace = {
+            x: timeArray,
+            y: passbandSignal,
+            mode: 'lines',
+            name: 'Passband Signal',
+            line: { color: 'red' }
+        };
+
+        // Layout for the plot
+        let layout = {
+            title: 'Received Signal',
+            xaxis: { title: 'Time (s)' },
+            yaxis: { title: 'Amplitude' },
+            showlegend: false,
+            plot_bgcolor: 'white',
+            paper_bgcolor: 'white',
+            margin: { t: 40, b: 40, l: 60, r: 60 }
+        };
+
+        // Create the plot with all three traces
+        Plotly.newPlot('graph', [passbandTrace], layout);
+   
+
+    //const containerpp = document.getElementById('scrolltograph');
+    // containerpp.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Call the signal generation function to initiate the process
+    generateSignal(symbolDuration, symbolRate);
+}
 
 
 
@@ -1593,6 +1751,16 @@ function loadData() {
     timeAxisOfdmWithCP = parsed.timeAxisOfdmWithCP ?? null;
     binaryReceivedData = parsed.binaryReceivedData ?? null;
     snrData = parsed.snrData ?? [];
+    //transmittedSignalReceived = parsed.transmittedSignalReceived ?? null;
+    //NoisyOFDMWithCP = parsed.NoisyOFDMWithCP ?? null;
+    if (parsed.transmittedSignalReceived) {
+  console.log(parsed.transmittedSignalReceived); // Log the structure for verification
+  // If it's a flat array, directly map to Complex
+  transmittedSignalReceived = parsed.transmittedSignalReceived.map(c =>
+    new Complex(c.real, c.imag)
+  );
+}
+
   }
 }
 
