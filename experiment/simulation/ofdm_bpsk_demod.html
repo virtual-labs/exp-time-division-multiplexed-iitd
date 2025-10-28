@@ -262,7 +262,7 @@
 			  <div id = "container">
     <h1>Instructions for Demodulation of OFDM using BPSK</h1>
     <ul>
-      <li class="step step1">Step 1: Click on the 'Received OFDM Symbols' button to simulate reception and retrieve the OFDM Symbols for a selected OFDM symbol.</li>
+      <li class="step step1">Step 1: Click on the 'Received OFDM Symbols' button to simulate reception and retrieve the OFDM Symbols for a OFDM Signal.</li>
       <li class="step step1">Step 2: Click on the 'Received OFDM Symbols without CP' button to retrieve the OFDM Symbols after CP removal for a selected OFDM symbol.</li>
 
       <li class="step step1">Step 3: Click on the 'Received OFDM Symbols (after FFT)' button to retrieve OFDM Symbols (after CP removal and FFT).</li>
@@ -1595,86 +1595,59 @@ function receivedOFDMSymbolWithoutCP(NoisyOFDMWithCP) {
 }
 
 function plotTransmittedSignalReceived() {
-    let fs = Fs; //parseInt(document.getElementById('samplingFrequency').value);         // Sampling frequency in Hz (10 MHz)
-    let upsampleFactor = 100; // Upsampling factor (higher value means smoother signal)
+  let fs = Fs; //parseInt(document.getElementById('samplingFrequency').value); // Sampling frequency in Hz
+    //let baudRate = 12; //parseInt(document.getElementById('baudRate').value); // Baud rate or symbol rate
 
-    
-
-    // Calculate the data rate dynamically if not provided
-    numSubcarriers = N; //parseInt(document.getElementById("nSubcarriers").value) || numSubcarriers;
-    bitsPerSymbol = 1; // Fixed bits per symbol to 1
-    symbolRate = 1; // Fixed symbol rate (1 MHz)
-
-    // Calculate symbol duration (symbolDuration)
-    const symbolDuration = 1 / symbolRate; // Duration of one symbol (inverse of symbol rate)
-    console.log("Symbol Duration (s):", symbolDuration);
-
-    // Calculate data rate based on symbol rate, number of subcarriers, and bits per symbol
-    let dataRate = symbolRate * numSubcarriers * bitsPerSymbol;
-    //document.getElementById("dataRate").value = dataRate;
-    //console.log("Calculated Data Rate (bps):", dataRate);
-
-    // Signal processing function
-    const generateSignal = (symbolDuration, symbolRate) => {
-        // Carrier frequency for passband modulation (example: 500 Hz for simplicity)
-        const fc = Fc; //parseInt(document.getElementById('carrierFrequency').value);;  // Carrier frequency in Hz
+    // Signal processing function to generate the passband signal
+    const generateSignal = (baudRate) => {
+        const fc = Fc; //parseInt(document.getElementById('carrierFrequency').value); // Carrier frequency for passband modulation (example: 500 Hz)
 
         const N = transmittedSignalReceived.length; // Number of symbols
-        let totalSamples = N * fs / symbolRate; // Total number of samples, considering sampling rate and symbol rate
+        let symbolDuration = 1 / baudRate; // Duration of one symbol in seconds
+        let totalDuration = N / baudRate;  // Total duration of the signal in seconds
+
+        // Total samples based on sampling rate and total duration
+        let totalSamples = fs * totalDuration; // Total number of samples based on fs
+
+        // Create a time array that spans from 0 to the total duration
         let timeArray = Array.from({ length: totalSamples }, (_, index) => index / fs); // Time array for sampling
 
         // Upsample the signal by inserting zeros between the samples
+        let upsampleFactor = Math.floor(fs / baudRate); // How many samples per symbol
         let upsampledSignal = [];
         transmittedSignalReceived.forEach(symbol => {
-            // Insert 'upsampleFactor' zeros after each symbol
+            // Repeat each symbol 'upsampleFactor' times
             for (let i = 0; i < upsampleFactor; i++) {
                 upsampledSignal.push({ real: symbol.real, imag: symbol.imag });
             }
         });
 
         // Create a new time array for the upsampled signal
-        let upsampledTimeArray = Array.from({ length: upsampledSignal.length }, (_, index) => index / (fs * upsampleFactor));
+        let upsampledTimeArray = Array.from({ length: upsampledSignal.length }, (_, index) => index / fs);
 
         // Convert baseband signal to passband (using carrier frequency)
         let passbandSignal = upsampledSignal.map((symbol, index) => {
             let t = upsampledTimeArray[index];
-            let realPassband = symbol.real * Math.cos(2 * Math.PI * fc * t);
-            let imagPassband = symbol.imag * Math.sin(2 * Math.PI * fc * t);
-            return realPassband + imagPassband;
+            let realPassband = symbol.real * Math.cos(2 * Math.PI * fc * t); // Real part
+            let imagPassband = symbol.imag * Math.sin(2 * Math.PI * fc * t); // Imaginary part
+            return realPassband + imagPassband; // Combine real and imaginary parts
         });
 
-        // Plot baseband and passband signals
-        plotSignals(upsampledTimeArray, passbandSignal);
-    }
+        // Plot only the passband signal
+        plotSignals(upsampledTimeArray, passbandSignal, upsampleFactor);
+    };
 
-    // Plotting function using Plotly
-    const plotSignals = (timeArray, passbandSignal) => {
-        let basebandReal = transmittedSignalReceived.map(symbol => symbol.real); // Real part of the baseband signal
-        let basebandImag = transmittedSignalReceived.map(symbol => symbol.imag); // Imaginary part of the baseband signal
-
-        // Baseband signal trace (real and imaginary parts)
-        let basebandTraceReal = {
-            x: timeArray,
-            y: basebandReal,  
-            mode: 'lines',
-            name: 'Baseband Signal (Real)',
-            line: { color: 'blue' }
-        };
-
-        let basebandTraceImag = {
-            x: timeArray,
-            y: basebandImag,
-            mode: 'lines',
-            name: 'Baseband Signal (Imaginary)',
-            line: { color: 'green' }
-        };
+    // Plotting function using Plotly for passband signal only
+    const plotSignals = (timeArray, passbandSignal, upsampleFactor) => {
+        // Adjust the time axis by dividing it by the upsampling factor to account for symbol rate
+        let scaledTimeArray = timeArray.map(t => t / upsampleFactor * fs/baudRate);
 
         // Passband signal trace
         let passbandTrace = {
-            x: timeArray,
+            x: scaledTimeArray,
             y: passbandSignal,
             mode: 'lines',
-            name: 'Passband Signal',
+            name: 'Received Signal',
             line: { color: 'red' }
         };
 
@@ -1689,16 +1662,12 @@ function plotTransmittedSignalReceived() {
             margin: { t: 40, b: 40, l: 60, r: 60 }
         };
 
-        // Create the plot with all three traces
+        // Create the plot with the passband trace
         Plotly.newPlot('graph', [passbandTrace], layout);
-   
-
-    //const containerpp = document.getElementById('scrolltograph');
-    // containerpp.scrollIntoView({ behavior: 'smooth' });
-    }
+    };
 
     // Call the signal generation function to initiate the process
-    generateSignal(symbolDuration, symbolRate);
+    generateSignal(baudRate);
 }
 
 
@@ -1720,6 +1689,7 @@ function loadData() {
     binaryData = parsed.binaryData ?? null;
     modData = parsed.modData ?? null;
     ofdmTimeSignal = parsed.ofdmTimeSignal ?? null;
+    baudRate = parsed.baudRate ?? null;
 
     ofdmWithCP = parsed.ofdmWithCP ?? null;
     //NoisyOFDMWithCP = parsed.NoisyOFDMWithCP ?? null;
