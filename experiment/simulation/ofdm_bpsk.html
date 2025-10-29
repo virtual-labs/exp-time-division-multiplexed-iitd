@@ -104,7 +104,7 @@ type="number" id="nSymbols" value="2" min="1"
         <label for="nSubcarriers">Number of OFDM Subcarriers (N):</label>
                 <input
                   class="border border-black px-2 py-1 rounded-sm"
-type="number" id="nSubcarriers" value="4" min="1"
+type="number" id="nSubcarriers" value="4" min="1" readonly
                 />
               </div>
               <div class="flex items-center justify-center gap-1 mt-2">
@@ -434,30 +434,43 @@ id="plotButton">Plot SER vs SER</button>
   </a>
   </div>
   <script>
-    function checkFrequencies() {
-        // Get values from input fields
-        let carrierFrequency = parseFloat(document.getElementById('carrierFrequency').value);
-        let samplingFrequency = parseFloat(document.getElementById('samplingFrequency').value);
-        
-        // Check the frequencies
-        if (carrierFrequency >= samplingFrequency) {
-            alert("Sampling frequency should be higher than the carrier frequency.");
-            window.location.reload(true); 
-        } else {
-            console.log("Sampling frequency is higher than the carrier frequency.");
-        }
+function checkFrequencies() {
+    // Get values from input fields
+    let carrierFrequency = parseFloat(document.getElementById('carrierFrequency').value);
+    let samplingFrequency = parseFloat(document.getElementById('samplingFrequency').value);
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+
+    let errorMessage = '';
+
+    // Check the frequencies
+    if (carrierFrequency >= samplingFrequency) {
+        errorMessage += "Sampling frequency should be higher than the carrier frequency.\n";
     }
 
-    // Function to attach event listeners to all buttons
-    function attachEventListeners() {
-        let buttons = document.querySelectorAll('button');
-        buttons.forEach(button => {
-            button.addEventListener('click', checkFrequencies);
-        });
+    // Check number of OFDM symbols
+    if (nSymbols > 8) {
+        errorMessage += "Choose number of OFDM Symbols up to 8.\n";
     }
 
-    // Attach event listeners when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', attachEventListeners);
+    if (errorMessage) {
+        alert(errorMessage);
+        window.location.reload(true);
+    } else {
+        console.log("Frequencies and number of symbols are valid.");
+    }
+}
+
+// Attach event listeners to all buttons
+function attachEventListeners() {
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('click', checkFrequencies);
+    });
+}
+
+// Attach event listeners when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', attachEventListeners);
+
 
 </script>
 
@@ -1241,6 +1254,10 @@ function interpolateComplex(x, factor) {
 
 // --- Plot OFDM Symbol Baseband + Passband ---
 function plot2() {
+    // Clear the existing content in the plot container to avoid duplicate tables
+    const container = document.getElementById('plotContainer');
+    container.innerHTML = ''; // Clears the content of the container
+
     let nSymbols = parseInt(document.getElementById('nSymbols').value);
     let N = parseInt(document.getElementById('nSubcarriers').value);
     let Fs = parseFloat(document.getElementById('samplingFrequency').value);
@@ -1252,45 +1269,37 @@ function plot2() {
 
     const t = Array.from({length: N}, (_, i) => i / Fs);
 
-    // --- Baseband traces remain the same ---
-    const xRe = Array.from({length: N}, (_, i) => i).flatMap(x => [x, x, null]);
-    const yRe = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[0][i].real, null]).flat();
-    const xIm = Array.from({length: N}, (_, i) => i).flatMap(x => [x, x, null]);
-    const yIm = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[0][i].imag, null]).flat();
-
-    const traceRe = { x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter', name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 } };
-    const traceIm = { x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter', name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 } };
-
-    const layout = {
-        xaxis: { title: 'Time-Domain OFDM samples' },
-        yaxis: { title: 'Amplitude' }
-    };
-
-    // Create a container div for each plot and append it to a parent container
-    const container = document.getElementById('plotContainer'); // The parent container
-
+    // Create a container div for each table and append it to a parent container
     for (let ofdmSymbolIndex = 0; ofdmSymbolIndex < nSymbols; ofdmSymbolIndex++) {
-        // Create a new div for each plot
-        const plotDiv = document.createElement('div');
-        plotDiv.id = `plotb_${ofdmSymbolIndex}`;
-        plotDiv.style.marginBottom = "30px";  // Add space between the plots
-        container.appendChild(plotDiv);
+        // Create a new table for each OFDM symbol
+        const table = document.createElement('table');
+        table.id = `tableb_${ofdmSymbolIndex}`;
+        table.style.marginTop = "20px";
+        table.style.width = "100%";
+        table.setAttribute('border', '1');
+        container.appendChild(table);
 
-        // Update the data for each symbol
-        const updatedYRe = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[ofdmSymbolIndex][i].real, null]).flat();
-        const updatedYIm = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[ofdmSymbolIndex][i].imag, null]).flat();
+        // Create the table body
+        const tableBody = table.createTBody();
 
-        const updatedTraceRe = { ...traceRe, y: updatedYRe };
-        const updatedTraceIm = { ...traceIm, y: updatedYIm };
+        // Add data for each OFDM symbol in one row
+        const row = tableBody.insertRow();
+        let symbolData = [`OFDM Symbol ${ofdmSymbolIndex + 1} (after IFFT)`];
 
-        // Update layout with dynamic title
-        layout.title = `OFDM Symbol ${ofdmSymbolIndex + 1} (after IFFT)`;
+        for (let i = 0; i < N; i++) {
+            const realValue = ofdmTimeSignal[ofdmSymbolIndex][i].real.toFixed(4); // Real part rounded
+            const imagValue = ofdmTimeSignal[ofdmSymbolIndex][i].imag.toFixed(4); // Imaginary part rounded
+            const complexValue = `${realValue} + j${imagValue}`;  // Format as "Real + jImaginary"
+            symbolData.push(complexValue); // Add the formatted complex number to the array
+        }
 
-        // Plot each symbol into its own container div
-        Plotly.newPlot(plotDiv.id, [updatedTraceRe, updatedTraceIm], layout);
+        // Insert all values into the table row
+        symbolData.forEach((data, index) => {
+            row.insertCell(index).textContent = data;
+        });
     }
 
-    // Optionally scroll to the plot container (if you want to scroll to the newly created plots)
+    // Optionally scroll to the table container (if you want to scroll to the newly created tables)
     container.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -1337,111 +1346,68 @@ function plot3() {
 }
 */
 function plot3() {
+    // Clear the previous content in the container to avoid multiple table generation
+    const container = document.getElementById('plots-container');
+    container.innerHTML = ''; // Clears the content of the container
+
     let nSymbols = parseInt(document.getElementById('nSymbols').value);
     let N = parseInt(document.getElementById('nSubcarriers').value);
-    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);  // Get the length of the cyclic prefix
     let Fs = parseFloat(document.getElementById('samplingFrequency').value);
     let M = 16;
     let Fc = parseFloat(document.getElementById('carrierFrequency').value);
 
     let modData = data; // [nSymbols][N]
-    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row)); // IFFT
-    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]); // Add CP
-    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); // Noise
-    
-    //const t = Array.from({ length: N + Ncp }, (_, i) => i / Fs);
-    const t = Array.from({ length: N + Ncp }, (_, i) => i);
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row)); // Apply IFFT
+    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]); // Add Cyclic Prefix
+    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); // Add noise
 
-    // Create a container div for the plots
-    const container = document.getElementById('plots-container');
-    container.innerHTML = ''; // Clear previous plots
-
-    // Loop over all the OFDM symbols and create a plot for each
+    // Loop over all the OFDM symbols and create a table for each
     for (let ofdmSymbolIndex = 0; ofdmSymbolIndex < nSymbols; ofdmSymbolIndex++) {
+        // Create a new table for each OFDM symbol
+        const table = document.createElement('table');
+        table.id = `tablec_${ofdmSymbolIndex}`;
+        table.style.marginTop = "20px";
+        table.style.width = "100%";
+        table.setAttribute('border', '1');
+        container.appendChild(table);
 
-        // Plot the Real and Imaginary components for the current symbol
-        const xRe = t.flatMap(x => [x, x, null]);
-        const yRe = ofdmWithCP[ofdmSymbolIndex].map(p => p.real).flatMap(y => [0, y, null]);
-        const xIm = t.flatMap(x => [x, x, null]);
-        const yIm = ofdmWithCP[ofdmSymbolIndex].map(p => p.imag).flatMap(y => [0, y, null]);
+        // Create the table body
+        const tableBody = table.createTBody();
 
-        const traceRe = {
-            x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter',
-            name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 }
-        };
+        // Add data for each OFDM symbol in one row
+        const row = tableBody.insertRow();
+        let symbolData = [`OFDM Symbol ${ofdmSymbolIndex + 1} (with CP)`];
 
-        const traceIm = {
-            x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter',
-            name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 }
-        };
-
-        // --- Passband Signal ---
-        const oversample = 1000;
-        const ofdmInterp = interpolateComplex(ofdmWithCP[ofdmSymbolIndex], oversample);
-        const tHigh = Array.from({ length: ofdmInterp.length }, (_, i) => i / (Fs * oversample));
-        const passband = ofdmInterp.map((c, i) =>
-            c.real * Math.cos(2 * Math.PI * Fc * tHigh[i]) -
-            c.imag * Math.sin(2 * Math.PI * Fc * tHigh[i])
-        );
-
-        const tracePass = {
-            x: tHigh, y: passband, mode: 'lines', type: 'scatter',
-            name: 'Passband', line: { color: 'green' }
-        };
-
-        // === Individual Subcarrier Passband Visualization ===
-        const subcarrierTraces = [];
-        const subSymbols = modData[ofdmSymbolIndex]; // QAM symbols for this symbol
-        const deltaF = Fs / N; // Subcarrier spacing
-        const tSubHigh = Array.from({ length: (N + Ncp) * oversample }, (_, i) => i / (Fs * oversample));
-
-        for (let k = 0; k < N; k++) {
-            const symbol = subSymbols[k];
-            const fk = Fc + deltaF * k; // Shift to passband
-
-            const wave = tSubHigh.map(t =>
-                symbol.real * Math.cos(2 * Math.PI * fk * t) -
-                symbol.imag * Math.sin(2 * Math.PI * fk * t)
-            );
-
-            subcarrierTraces.push({
-                x: tSubHigh,
-                y: wave,
-                mode: 'lines',
-                type: 'scatter',
-                name: `Subcarrier ${k}`,
-                line: { width: 1, dash: 'dot' },
-                visible: (k < 5) ? true : 'legendonly' // Show only first 5 by default
-            });
+        // Extract complex values for each subcarrier and format them
+        // First, include the Cyclic Prefix (CP) values
+        for (let i = 0; i < Ncp; i++) {
+            const realValue = ofdmWithCP[ofdmSymbolIndex][i].real.toFixed(4); // Real part of CP rounded
+            const imagValue = ofdmWithCP[ofdmSymbolIndex][i].imag.toFixed(4); // Imaginary part of CP rounded
+            const complexValue = `${realValue} + j${imagValue}`;  // Format as "Real + jImaginary"
+            symbolData.push(complexValue); // Add the formatted complex number of CP to the array
         }
 
-        // Create a new container for the current OFDM symbol plot
-        const plotDiv = document.createElement('div');
-        plotDiv.id = `plotc_${ofdmSymbolIndex}`;
-        plotDiv.style.marginBottom = "30px";
-        container.appendChild(plotDiv);
+        // Then, add the actual OFDM symbol data (after CP)
+        for (let i = 0; i < N; i++) {
+            const realValue = ofdmWithCP[ofdmSymbolIndex][i + Ncp].real.toFixed(4); // Real part of the symbol
+            const imagValue = ofdmWithCP[ofdmSymbolIndex][i + Ncp].imag.toFixed(4); // Imaginary part of the symbol
+            const complexValue = `${realValue} + j${imagValue}`;  // Format as "Real + jImaginary"
+            symbolData.push(complexValue); // Add the formatted complex number to the array
+        }
 
-        // Set the layout for the plot
-        const layout = {
-            title: `OFDM Symbol ${ofdmSymbolIndex + 1} with Cyclic Prefix`,
-            //xaxis: { title: 'Time (s)' },
-            xaxis: { title: 'Time-Domain OFDM Samples' },
-            yaxis: { title: 'Amplitude' }
-        };
-
-        // Plot the current OFDM symbol
-        //Plotly.newPlot(plotDiv.id, [traceRe, traceIm, ...subcarrierTraces], layout);
-        Plotly.newPlot(plotDiv.id, [traceRe, traceIm], layout);
+        // Insert all values into the table row
+        symbolData.forEach((data, index) => {
+            row.insertCell(index).textContent = data;
+        });
     }
 
-    // Optionally scroll to plot area
+    // Optionally scroll to the table container (if you want to scroll to the newly created tables)
     container.scrollIntoView({ behavior: 'smooth' });
 
+    // Optionally save data (if needed)
     saveData();
 }
-
-
-
 
 			
             // Plot Received Subcarriers in Frequency Domain (after FFT at the receiver)
@@ -1710,7 +1676,7 @@ const colorChunks = (bits, N) => {
   let colorIndex = 0;
 
   // Define a set of colors to use for each chunk (you can customize this array)
-  const colors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2']; // Example colors
+  const colors = ['black', 'black', 'black', 'black', 'black']; // Example colors
 
   for (let i = 0; i < bits.length; i++) {
     // Apply color to each chunk of N bits
@@ -1744,7 +1710,72 @@ table.innerHTML = tableData
 }
 
 
+function colorBits(){
+  let nSymbols = parseInt(document.getElementById('nSymbols').value); // Number of OFDM symbols
+let N = parseInt(document.getElementById('nSubcarriers').value); // Number of subcarriers
 
+// Array to hold the extracted bits
+let bits = [];
+
+// Extract bits (1 or 0) from modData real parts
+for (let sym = 0; sym < nSymbols; sym++) {
+  for (let i = 0; i < N; i++) {
+    // Check if the real part is positive or negative to decide 1 or 0
+    bits.push(modData[sym][i].real > 0 ? '1' : '0');
+  }
+}
+
+// Show the bitstream in an element with id="bitstreamOutput"
+document.getElementById('bitstreamOutput').textContent = bits.join('');
+
+// Prepare data for the bitstream table with coloring
+const tableData = Array.from({ length: 1 }, () => {
+  // First row will be "bit1", "bit2", "bit3", etc., as column headers
+  const headerRow = [];
+  for (let i = 0; i < bits.length; i++) {
+    headerRow.push(`bit ${i + 1}`);
+  }
+  return headerRow; // Return the header row
+});
+
+// Add bits as data (second row) and apply coloring
+const colorChunks = (bits, N) => {
+  const coloredBits = [];
+  let colorIndex = 0;
+
+  // Define a set of colors to use for each chunk (you can customize this array)
+  const colors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2']; // Example colors
+
+  for (let i = 0; i < bits.length; i++) {
+    // Apply color to each chunk of N bits
+    if (i % N === 0 && i !== 0) {
+      colorIndex = (colorIndex + 1) % colors.length; // Cycle through the colors
+    }
+    coloredBits.push(`<span style="color:${colors[colorIndex]}; font-weight: bold;">${bits[i]}</span>`);
+  }
+
+  return coloredBits;
+};
+
+// Get the colored bits
+const coloredBits = colorChunks(bits, N);
+
+// Add the colored bits as the second row
+tableData.push(coloredBits);
+
+// Render the table in the "bitstreamTable" element
+const table = document.getElementById("bitstreamTable");
+table.innerHTML = tableData
+  .map((row, rowIndex) =>
+    `<tr>${row.map((cell, colIndex) => {
+      return rowIndex === 0
+        ? `<th>${cell}</th>`  // For the header row
+        : `<td>${cell}</td>`; // For the data row
+    }).join("")}</tr>`
+  )
+  .join("");
+
+}
 
 
 function plotModData() {
@@ -1887,6 +1918,7 @@ function plotReceivedBitstreams(binaryReceivedData) {
     }
 */
 function renderGlobalTable(data) {
+  colorBits();
   let m = parseInt(document.getElementById('nSymbols').value); // number of rows (OFDM symbols)
   let n = parseInt(document.getElementById('nSubcarriers').value); // number of columns (subcarriers)
 
@@ -1991,51 +2023,46 @@ function renderGlobalTable2(data) {
 
 
 function basebandGraph() {
-    // Assuming `t` is your time axis or sample points
-    const t = Array.from({ length: transmittedSignal.length }, (_, i) => i);
-
-    // Create x and y values for real and imaginary components
-    const xRe = t.flatMap(x => [x, x, null]);  // Creates points for impulses
-    const yRe = transmittedSignal.map(p => p.real).flatMap(y => [0, y, null]);  // Real values with zero-line connections
-
-    const xIm = t.flatMap(x => [x, x, null]);  // Creates points for impulses
-    const yIm = transmittedSignal.map(p => p.imag).flatMap(y => [0, y, null]);  // Imaginary values with zero-line connections
-
-    // Define the trace for real part (impulse-like)
-    const traceRe = {
-        x: xRe, 
-        y: yRe, 
-        mode: 'lines+markers',  // 'lines+markers' mode to show both lines and markers (impulses)
-        type: 'scatter',
-        name: 'Baseband Real', 
-        line: { color: 'blue', width: 2 },  // Blue lines for the real part
-        marker: { color: 'blue', size: 6 }  // Blue markers for the impulses
-    };
-
-    // Define the trace for imaginary part (impulse-like)
-    const traceIm = {
-        x: xIm, 
-        y: yIm, 
-        mode: 'lines+markers',  // 'lines+markers' mode to show both lines and markers (impulses)
-        type: 'scatter',
-        name: 'Baseband Imag', 
-        line: { color: 'red', width: 2 },  // Red lines for the imaginary part
-        marker: { color: 'red', size: 6 }  // Red markers for the impulses
-    };
-
-    // Layout configuration for the plot
-    const layout = {
-        title: `Final OFDM Signal`,
-        xaxis: { title: 'Time-Domain OFDM Samples' },
-        yaxis: { title: 'Amplitude' }
-    };
-
-    // Plot the data
-    Plotly.newPlot('basebandGraph', [traceRe, traceIm], layout);
-
-    // Optionally scroll to plot area
+    // Assuming transmittedSignal is an array of { real, imag }
     const container = document.getElementById('basebandGraph');
+    container.innerHTML = ''; // Clear any previous content
 
+    // Create the table
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+    table.style.marginTop = '10px';
+    table.style.textAlign = 'center';
+    table.style.fontFamily = 'monospace';
+
+    // Create a single row
+    const row = document.createElement('tr');
+
+
+    // Second column: label
+    const labelCol = document.createElement('td');
+    labelCol.textContent = 'Final OFDM Signal';
+    labelCol.style.border = '1px solid #ccc';
+    labelCol.style.padding = '8px';
+    labelCol.style.fontWeight = 'bold';
+    labelCol.style.background = 'blue';
+    row.appendChild(labelCol);
+
+    // Add columns for each complex value
+    transmittedSignal.forEach(p => {
+        const cell = document.createElement('td');
+        cell.textContent = `${p.real.toFixed(3)} + j${p.imag.toFixed(3)}`;
+        cell.style.border = '1px solid #ccc';
+        cell.style.padding = '6px';
+        cell.style.color = 'white';
+        row.appendChild(cell);
+    });
+
+    // Add row to the table
+    table.appendChild(row);
+    container.appendChild(table);
+
+    // Optional scroll
     container.scrollIntoView({ behavior: 'smooth' });
 }
 
