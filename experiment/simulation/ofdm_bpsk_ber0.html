@@ -100,7 +100,7 @@ type="number" id="cyclicPrefix" value="16" min="1"
                 />
               </div>
 			  
-			    <div class="hidden flex items-center justify-center gap-1 mt-2">
+			    <div class="flex items-center justify-center gap-1 mt-2">
         <label for="samplingFrequency">Sampling Frequency (Fs):</label>
                 <input
                   class="border border-black px-2 py-1 rounded-sm"
@@ -142,12 +142,7 @@ type="number" id="snr" value="0" min="0" max = "20")
           alt="psk1"
           style="height: 28.125em; width: 34.375em; margin-left: 3em;"
         />
-        <img
-        src="ofdm_demod.png"
-        alt="ofdm_demod"
-        style="height: 28.125em; width: 34.375em; margin-left: 3em;"
-      />
-      
+        
         <button
           class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[0.125em]"
           onclick="runQAMSystem()"
@@ -197,26 +192,7 @@ type="number" id="snr" value="0" min="0" max = "20")
 
 
 				
-	<div class = "middle">
-        <br/>
-        <!-- Table to display SNR and SER values -->
-        <table id="snrTable" border="1" class = "custom-table">
-            <thead>
-                <tr>
-                    <th>SNR (in dB)</th>
-                    <th>Bit Error Rate (BER)</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        
-        <!-- Button to plot BER vs SER and BER vs SNR -->
-        <button   class="button bg-blue-500 text-white rounded-md px-2 py-1 text-base"
-        id="plotButton">Plot BER vs SNR</button>
-        
-        <!-- Placeholder for the plot -->
-        <div id="plotArea"></div>
-        <div class = "hidden">
+	<div class = "middle hidden">
 	            <div id = "scrolltomessage" class="flex items-center gap-2 justify-center max-lg:flex-col">
               <div id="plot7" class="w-[600px] h-[450px]"></div>
 			</div>
@@ -232,26 +208,27 @@ type="number" id="snr" value="0" min="0" max = "20")
 			  			<div id = "scrolltoreceivedsubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
                 <div id="plot4" class="w-[600px] h-[450px]"></div>
               </div>
-    </div>
 	</div>
 	
 	<div class = "right-half">
-        <div class="hidden mt-6">
-            <h3 class="text-xl font-bold">Bitstream:</h3>
-            <pre id="bitstreamOutput" class="p-4 bg-white border border-gray-300 rounded-md shadow-md text-sm text-blue-600"></pre>
-        </div>
-        <div class="mt-6 overflow-x-auto">
-            <h3 class="bitstream hidden">Input Bitstream</h3>
-            <table id="bitstreamTable" class="min-w-full table-auto bg-white border-collapse border border-gray-300 rounded-md shadow-md">
-                <!-- The table will be populated here dynamically -->
-            </table>
-        </div>
-        <div class="mt-6 overflow-x-auto">
-            <h3 class="bitstream hidden">Recovered Bitstream</h3>
-            <table id="plot8" class="min-w-full table-auto bg-white border-collapse border border-gray-300 rounded-md shadow-md">
-                <!-- The table will be populated here dynamically -->
-            </table>
-        </div>
+<br/>
+<!-- Table to display SNR and SER values -->
+<table id="snrTable" border="1" class = "custom-table">
+    <thead>
+        <tr>
+            <th>SNR (in dB)</th>
+            <th>Bit Error Rate (BER)</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- Button to plot BER vs SER and BER vs SNR -->
+<button   class="button bg-blue-500 text-white rounded-md px-2 py-1 text-base"
+id="plotButton">Plot BER vs SNR</button>
+
+<!-- Placeholder for the plot -->
+<div id="plotArea"></div>
 	</div></div>
 	
 
@@ -288,8 +265,8 @@ type="number" id="snr" value="0" min="0" max = "20")
       let value = parseInt(nSubcarriersInput.value, 10);
       
       // Show alert if the value is out of range
-      if (value < 4 || value > 64) {
-        alert("Choose Number of OFDM Subcarriers between 4 and 64");
+      if (value < 8 || value > 64) {
+        alert("Choose Number of OFDM Subcarriers between 8 and 64");
 		window.location.reload(true); 
       }
     }
@@ -737,14 +714,12 @@ binaryData = data.map(symbols =>
 	    // Update the table with SNR and SER values
     updateSNRTable(EbN0dB, bitErrorrate);
 	            document.getElementById('scrolltomessage').scrollIntoView({ behavior: 'smooth' });
-colorBits();
-plotReceivedBitstreams(scaledReceivedSubcarriers);
-showElement();
 }
 
 // Initialize snrData globally
 snrData = [];
 
+// Function to update the SNR table
 // Function to update the SNR table with adjusted SNR (in dB)
 function updateSNRTable(snr, ser) {
     // Get the number of subcarriers (N)
@@ -766,29 +741,25 @@ function updateSNRTable(snr, ser) {
     let adjustedSNR = snr - snrAdjustment;
 
     // Check if the adjusted SNR value already exists to avoid duplicates
-    let existingSNR = snrData.find(item => Math.abs(item.snr - adjustedSNR) < 0.001);
+    let existingSNR = snrData.find(item => Math.abs(item.snr - snr) < 0.001);
     
-    if (existingSNR) {
-        // If the adjusted SNR already exists, show an alert
-        alert(`SNR value of ${adjustedSNR} dB already exists in the table.`);
-    } else {
-        // Add new entry with adjusted SNR if it doesn't exist
+    if (!existingSNR) {
+        // Add new entry with adjusted SNR
         snrData.push({ snr: adjustedSNR, ser });
-        
-        // Sort the snrData array by SNR value (ascending)
-        snrData.sort((a, b) => a.snr - b.snr);
-
-        // Update the table UI
-        let tbody = document.querySelector("#snrTable tbody");
-        tbody.innerHTML = ""; // Clear the table body
-
-        snrData.forEach(item => {
-            let row = `<tr><td>${item.snr}</td><td>${item.ser.toExponential(2)}</td></tr>`;
-            tbody.innerHTML += row;
-        });
     }
-}
 
+    // Sort the snrData array by SNR value (ascending)
+    snrData.sort((a, b) => a.snr - b.snr);
+
+    // Update the table UI
+    let tbody = document.querySelector("#snrTable tbody");
+    tbody.innerHTML = ""; // Clear the table body
+
+    snrData.forEach(item => {
+        let row = `<tr><td>${item.snr}</td><td>${item.ser.toExponential(2)}</td></tr>`;
+        tbody.innerHTML += row;
+    });
+}
 
 
 // Plot function for BER vs SER in logarithmic scale
@@ -1249,179 +1220,6 @@ function plotReceivedBitstreams(binaryReceivedData) {
 	            document.getElementById('scrolltoreceivedbits').scrollIntoView({ behavior: 'smooth' });
 }
 
-
-
-function colorBits() {
-  let nSymbols = parseInt(document.getElementById('nSymbols').value); // Number of OFDM symbols
-  let N = parseInt(document.getElementById('nSubcarriers').value); // Number of subcarriers
-
-  // Array to hold the extracted bits
-  let bits = [];
-
-  // Extract bits (1 or 0) from modData real parts
-  for (let sym = 0; sym < nSymbols; sym++) {
-    for (let i = 0; i < N; i++) {
-      // Check if the real part is positive or negative to decide 1 or 0
-      bits.push(modData[sym][i].real > 0 ? '1' : '0');
-    }
-  }
-
-  // Show the bitstream in an element with id="bitstreamOutput"
-  document.getElementById('bitstreamOutput').textContent = bits.join('');
-
-  // Prepare data for the bitstream table with coloring
-  const tableData = Array.from({ length: 1 }, () => {
-    // First row will be "bit1", "bit2", "bit3", etc., as column headers
-    const headerRow = [];
-    for (let i = 0; i < bits.length; i++) {
-      headerRow.push(`bit ${i + 1}`);
-    }
-    return headerRow; // Return the header row
-  });
-
-  // Add bits as data (second row) and apply coloring
-  const colorChunks = (bits, N) => {
-    const coloredBits = [];
-    let colorIndex = 0;
-
-    // Define a set of colors to use for each chunk (you can customize this array)
-    const colors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2']; // Example colors
-
-    for (let i = 0; i < bits.length; i++) {
-      // Apply color to each chunk of N bits
-      if (i % N === 0 && i !== 0) {
-        colorIndex = (colorIndex + 1) % colors.length; // Cycle through the colors
-      }
-      coloredBits.push(`<span style="color:${colors[colorIndex]}; font-weight: bold; font-size: 20px;">${bits[i]}</span>`);
-    }
-
-    return coloredBits;
-  };
-
-  // Get the colored bits
-  const coloredBits = colorChunks(bits, N);
-
-  // Add the colored bits as the second row
-  tableData.push(coloredBits);
-
-  // Render the table in the "bitstreamTable" element
-  const table = document.getElementById("bitstreamTable");
-  table.innerHTML = tableData
-    .map((row, rowIndex) =>
-      `<tr>${row.map((cell, colIndex) => {
-        return rowIndex === 0
-          ? `<th style="background-color: #007bff; color: white; font-size: 20px; border: 1px solid white; padding: 6px;">${cell}</th>`  // Header row with color
-          : `<td>${cell}</td>`; // Data row
-      }).join("")}</tr>`
-    )
-    .join("");
-}
-
-
-
-// Plot8 results for Received Data
-function plotReceivedBitstreams(scaledReceivedSubcarriers) {
-
-
-    // Get parameters
-    let nSymbols = parseInt(document.getElementById('nSymbols').value); // Number of OFDM symbols
-    let N = parseInt(document.getElementById('nSubcarriers').value);   // Number of subcarriers
-
-    // Array to hold extracted bits
-    let bits = [];
-
-    // Extract bits (1 if real > 0, else 0)
-    for (let sym = 0; sym < nSymbols; sym++) {
-        for (let i = 0; i < N; i++) {
-            bits.push(scaledReceivedSubcarriers[sym][i].real > 0 ? '1' : '0');
-        }
-    }
-
-    // Display bitstream text
-    const bitOutput = document.getElementById('bitstreamOutput');
-    if (bitOutput) bitOutput.textContent = bits.join('');
-
-    // Prepare header row (bit1, bit2, bit3, ...)
-    const headerRow = [];
-    for (let i = 0; i < bits.length; i++) {
-        headerRow.push(`bit ${i + 1}`);
-    }
-
-    // Function to color chunks of N bits (per OFDM symbol)
-    const colorChunks = (bits, N) => {
-        const coloredBits = [];
-        let colorIndex = 0;
-        const colors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#8A2BE2']; // tomato, steelblue, limegreen, gold, purple
-
-        for (let i = 0; i < bits.length; i++) {
-            if (i % N === 0 && i !== 0) colorIndex = (colorIndex + 1) % colors.length;
-            coloredBits.push(
-                `<span style="color:${colors[colorIndex]}; font-weight: bold; font-size: 20px;">${bits[i]}</span>`
-            );
-        }
-        return coloredBits;
-    };
-
-    const coloredBits = colorChunks(bits, N);
-
-    // === Create Table ===
-    const tableContainer = document.getElementById("plot8");
-    tableContainer.innerHTML = ''; // Clear any previous plot/table
-
-    // Create table element
-    const table = document.createElement('table');
-    table.id = 'plot8'; // same ID as original plot
-    table.style.width = '100%';
-    table.style.borderCollapse = 'collapse';
-    table.style.marginTop = '20px';
-    table.style.textAlign = 'center';
-    table.style.fontWeight = 'bold';
-    table.style.borderRadius = '6px';
-    table.style.overflow = 'hidden';
-
-    // Add header row
-    const header = document.createElement('tr');
-    header.style.backgroundColor = '#007bff';
-    header.style.color = 'white';
-    headerRow.forEach(h => {
-        const th = document.createElement('th');
-        th.textContent = h;
-        th.style.border = '1px solid white';
-        th.style.padding = '6px';
-        th.style.fontSize = '20px'; 
-        header.appendChild(th);
-    });
-    table.appendChild(header);
-
-    // Add bit row
-    const bitRow = document.createElement('tr');
-    bitRow.style.backgroundColor = '#e9ecef';
-    coloredBits.forEach(bitHTML => {
-        const td = document.createElement('td');
-        td.innerHTML = bitHTML;
-        td.style.border = '1px solid #ccc';
-        td.style.padding = '6px';
-        bitRow.appendChild(td);
-    });
-    table.appendChild(bitRow);
-
-    // Append to container
-    tableContainer.appendChild(table);
-
-    // Scroll into view
-   //document.getElementById('scrolltoreceivedbits').scrollIntoView({ behavior: 'smooth' });
-}
-
-function showElement() {
-            // Select all elements with the "content" class
-            const elements = document.querySelectorAll('.bitstream');
-            
-            // Loop through all elements and toggle the "visible" class
-            elements.forEach(element => {
-                element.classList.remove('hidden');  // Remove the hidden class
-                element.classList.add('visible');   // Add the visible class
-            });
-        }
     </script>
 	
 	<style>
@@ -1449,36 +1247,6 @@ li::before {
     color: #4caf50;
     margin-right: 10px;
 }
-/*
-table {
-      border-collapse: collapse;
-      margin: 20px auto;
-      background: white;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px 12px;
-      text-align: center;
-    }
-
-    th {
-      background:#2599f8;
-      color: white;
-    }
-
-    td:first-child {
-      background: #e9ecef;
-      font-weight: bold;
-    }
-
-    tr:first-child td {
-      background: #2599f8;
-      color: white;
-      font-weight: bold;
-    }
-    */
 	</style>
   </body>
 </html>
