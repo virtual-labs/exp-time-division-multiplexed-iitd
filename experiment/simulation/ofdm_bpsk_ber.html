@@ -154,7 +154,12 @@ type="number" id="snr" value="0" min="0" max = "20")
         >
           Calculate BER
         </button>
-
+        <button 
+        class="bg-green-500 text-white rounded-md px-3 py-1 hover:scale-105 mt-3 absolute top-[0.75em] left-[20em]"
+        onclick="location.reload();"
+      >
+        Reset Simulator
+      </button>
         <button
           class="hidden button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4em] left-[0.125em]"
           onclick="plot1()"
@@ -213,7 +218,7 @@ type="number" id="snr" value="0" min="0" max = "20")
         <!-- Button to plot BER vs SER and BER vs SNR -->
         <button   class="button bg-blue-500 text-white rounded-md px-2 py-1 text-base"
         id="plotButton">Plot BER vs SNR</button>
-        
+
         <!-- Placeholder for the plot -->
         <div id="plotArea"></div>
         <div class = "hidden">

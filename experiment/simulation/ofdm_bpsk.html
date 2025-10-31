@@ -66,17 +66,17 @@
         <div id="instructions">
             <h1>Instructions for OFDM Modulation with BPSK</h1>
             <ul>
-              <li class="step step4"><strong>Note:</strong> Use the input fields to enter the number of OFDM symbols, number of subcarriers, cyclic prefix length, sampling frequency (Hz), carrier frequency (Hz), and SNR (in dB).</li>
+              <li class="step step4"><strong>Note:</strong> Use the input fields to enter the number of OFDM symbols, number of subcarriers, cyclic prefix length, sampling frequency (Hz), carrier frequency (Hz), and Baud Rate.</li>
 
               <li class="step step1"><strong>Step 1:</strong> Click on the <em>'Generate Message'</em> button to generate the input bitstream.</li>
               <li class="step step4"><strong>Step 2:</strong> Click on the <em>'Make OFDM Symbol'</em> button to map the ofdm symbols from the input bitstream.</li>
               <li class="step step3"><strong>Step 3:</strong> Click on the <em>'Generate Subcarriers'</em> button to map the geretare the subcarriers.</li>
              
-              <li class="step step1"><strong>Step 4:</strong> Click the <em>'Perform BPSK'</em> button to generate the BPSK modulated signal from the available bitstream.</li>          
+              <li class="step step1"><strong>Step 4:</strong> Click the <em>'BPSK'</em> button to generate the BPSK modulated signal from the available bitstream.</li>          
           
-              <li class="step step3"><strong>Step 5:</strong> Click on the <em>'Time Domain OFDM'</em> button to perform IFFT and obtain the time-domain OFDM signal without adding a cyclic prefix.</li>
+              <li class="step step3"><strong>Step 5:</strong> Click on the <em>'IFFT'</em> button to perform IFFT and obtain the time-domain OFDM signal without adding a cyclic prefix.</li>
           
-              <li class="step step4"><strong>Step 6:</strong> Click on the <em>'Time Domain OFDM With CP'</em> button to add the cyclic prefix to the time-domain OFDM signal, simulating a practical OFDM frame structure.</li>
+              <li class="step step4"><strong>Step 6:</strong> Click on the <em>'Add CP'</em> button to add the cyclic prefix to the time-domain OFDM signal, simulating a practical OFDM frame structure.</li>
               <li class="step step2"><strong>Step 7:</strong> Click on the <em>'Final OFDM Signal'</em> button to map the geretare the final baseband ofdm signal.</li>
               <li class="step step4"><strong>Step 8:</strong> Click on the <em>'Generate Passbnad Signal'</em> button to convert the final baseband ofdm signal into a passband signal.</li>              
               <li class="step step3"><strong>Step 9:</strong> Click on the <em>'Show Frequency Spectrums'</em> button to view the frequency spectra of OFDM</li>
@@ -178,26 +178,31 @@ type="number" id="snr" value="20" min="0" max = "20")
         >
           Generate Message
         </button>
-
+        <button 
+        class="button bg-green-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[25em]"
+        onclick="location.reload();"
+      >
+        Reset Simulator
+      </button>
         <button
-        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[10em]"
+        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4.5em] left-[0.125em]"
         onclick="renderGlobalTable(binaryData)"
       >
         Make OFDM Symbol
       </button>
 
       <button
-      class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[21em]"
+      class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-1.5em] left-[2.5em]"
       onclick="renderGlobalTable2(binaryData)"
     >
     Generate Subcarriers
     </button>
 
         <button
-        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4.5em] left-[0.125em]"
+        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-1.5em] left-[13.25em]"
         onclick="bpsk(data)"
       >
-        Perform BPSK
+        BPSK
       </button>
 
         <button
@@ -208,28 +213,28 @@ type="number" id="snr" value="20" min="0" max = "20")
         </button>
         
         <button
-          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-2.5em] left-[0.125em]"
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-1.5em] left-[21em]"
           onclick="plot2()"
         >
-          Time domain ofdm
+          IFFT
         </button>
 
         <button
-          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-5.5em] left-[0.125em]"
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-1.5em] left-[26.5em]"
           onclick="plot3()"
         >
-          Time domain ofdm with cp
+          Add CP
         </button>
 
         <button
-        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-8.5em] left-[0.125em]"
+        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-1.5em] left-[32em]"
         onclick="basebandGraph()"
       >
         Final OFDM Signal
       </button>
 
       <button
-      class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-11.5em] left-[0.125em]"
+      class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-4.5em] left-[28.5em]"
       onclick="plotTransmittedSignal()"
     >
       Generate Passband Signal
@@ -237,7 +242,7 @@ type="number" id="snr" value="20" min="0" max = "20")
 
         <a href = "./ofdm_spectrum.html" target = "_blank">
         <button
-        class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-14.5em] left-[0.125em]"
+        class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-8.5em] left-[28em]"
       >
         Show Frequency Spectrums
       </button>
