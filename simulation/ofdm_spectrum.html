@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Virtual Labs</title>
+    <style>
+
+#instructions,h1 {
+    color: #333;
+    font-size: 22px; /* Increased font size */
+    margin-bottom: 20px;
+}
+    </style>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+	    <!-- sidebar and body -->
+	<div id = "instructions">
+        <h1>Power Spectral Density (PSD) of OFDM</h1>
+	</div>
+	<hr/>
+	<br>
+    <div class="flex min-h-[10vh]">
+      <div class="px-6 pb-6 mt-1 flex-1">
+        <div class="">
+          <div class="flex flex-col justify-center">
+            <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-2">
+              <div class="">
+              </div>
+              <div class="flex items-center justify-center gap-1 mt-2">
+        <label for="nSubcarriers">Number of OFDM Subcarriers (N):</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="nSubcarriers" value="8" min="1"
+                />
+              </div>
+              <div class="flex items-center justify-center gap-1 mt-2">
+        <label for="deltaF">Subcarrier Spacing (Hz):</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="deltaF" value="15" min="1"
+                />
+              </div>
+			  
+			    <div class="flex items-center justify-center gap-1 mt-2">
+        <label for="fs">Sampling Frequency (Hz):</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="fs" value="1000" min="1"
+                />
+              </div>
+              <div class="flex items-center justify-center gap-1 mt-2">
+                <label for="fc">Carrier Frequency (Hz):</label>
+                        <input
+                          class="border border-black px-2 py-1 rounded-sm"
+        type="number" id="fc" value="200" min="1"
+                        />
+                      </div>
+			  <br/>
+			  
+              </div>
+            </div>
+            </div>
+        </div>
+      </div>
+    </div>
+	<hr/>
+	
+
+      <div>
+        
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 relative top-[1.5em] left-[0.125em]"
+          onclick="plotOFDM()"
+        >
+          Plot
+        </button>
+      </div>
+
+
+
+<div id = "scrolltomessage" class="flex items-center gap-2 justify-center max-lg:flex-col">
+    <div id="plotBasebandPSD" class="w-[600px] h-[450px]"></div>
+  </div>
+				
+	</div></div>
+
+
+<script>
+function qam16Symbols(N) {
+    const symbols = [];
+    const scale = 1/Math.sqrt(10); // normalize 16-QAM
+    for(let i=0; i<N; i++){
+        const re = [-3,-1,1,3][Math.floor(Math.random()*4)];
+        const im = [-3,-1,1,3][Math.floor(Math.random()*4)];
+        symbols.push({re: re*scale, im: im*scale});
+    }
+    return symbols;
+}
+
+function plotOFDM(){
+    const N = parseInt(document.getElementById('nSubcarriers').value);
+    const Delta_f = parseFloat(document.getElementById('deltaF').value);
+    const Fs = parseFloat(document.getElementById('fs').value);
+    const fc = parseFloat(document.getElementById('fc').value);
+
+    const T_symbol = 1/Delta_f;
+    const t = Array.from({length: Math.floor(Fs*T_symbol)}, (_, i) => i/Fs);
+
+    const symbols = qam16Symbols(N);
+
+    // Baseband OFDM waveform
+    const x_t = t.map((ti) => {
+        let sum = {re:0, im:0};
+        for(let k=0; k<N; k++){
+            const fk = (k - N/2) * Delta_f;
+            const angle = 2*Math.PI*fk*ti;
+            sum.re += symbols[k].re*Math.cos(angle) - symbols[k].im*Math.sin(angle);
+            sum.im += symbols[k].re*Math.sin(angle) + symbols[k].im*Math.cos(angle);
+        }
+        return sum;
+    });
+
+    // Normalize power
+    let power = x_t.reduce((acc,s) => acc + s.re**2 + s.im**2,0)/x_t.length;
+    const normFactor = Math.sqrt(power);
+    const x_t_norm = x_t.map(s => ({re: s.re/normFactor, im: s.im/normFactor}));
+
+    // Analytical PSD
+    const Nf = 100000;
+    const f_axis = Array.from({length: Nf}, (_, i) => -Fs/2 + i*Fs/Nf);
+    let PSD = Array(Nf).fill(0);
+    for(let k=0; k<N; k++){
+        const fk = (k - N/2)*Delta_f;
+        for(let i=0; i<Nf; i++){
+            const x = T_symbol*(f_axis[i]-fk);
+            PSD[i] += (Math.sin(Math.PI*x)/(Math.PI*x+1e-12))**2;
+        }
+    }
+    // scale PSD to match power
+    const sumPSD = PSD.reduce((a,b)=>a+b,0);
+    PSD = PSD.map(p=> p/sumPSD * 1); // unit total power
+    const PSD_dB = PSD.map(p=>10*Math.log10(p+1e-12));
+
+    // Passband waveform
+    const s_t = x_t_norm.map(s => s.re*Math.cos(2*Math.PI*fc*t[x_t_norm.indexOf(s)]) - s.im*Math.sin(2*Math.PI*fc*t[x_t_norm.indexOf(s)]));
+
+    // --- Plot Baseband PSD ---
+    Plotly.newPlot('plotBasebandPSD',[{
+        x: f_axis,    // in Hz
+        x: f_axis.map(f => f + fc),
+        y: PSD_dB,
+        mode:'lines',
+        line:{width:1.5, color:'blue'}
+    }],{
+        title:'Power Spectra of OFDM',
+        xaxis:{range: [0, Fs/2], title:'Frequency (Hz)'},
+        yaxis:{title:'PSD (dB/Hz)'}
+    });
+
+/*
+    // --- Plot Passband waveform ---
+    Plotly.newPlot('plotPassbandWaveform',[{
+        x: t,          // time in seconds
+        y: s_t,
+        mode:'lines',
+        line:{width:1.2,color:'red'}
+    }],{
+        title:`Theoretical OFDM Passband (fc=${fc} Hz)`,
+        xaxis:{title:'Time (s)'},
+        yaxis:{title:'Amplitude'}
+    });
+
+    // --- Zoomed PSD around carrier (two-sided) ---
+    const BW = N*Delta_f;
+    const fZoom = f_axis.filter(f => Math.abs(f - fc) <= 2*BW);
+    const PSDZoom = PSD_dB.filter((_,i)=> Math.abs(f_axis[i] - fc) <= 2*BW);
+    Plotly.newPlot('plotZoomedPSD',[{
+        x: fZoom,
+        y: PSDZoom,
+        mode:'lines',
+        line:{width:1.2,color:'green'}
+    }],{
+        title:'Zoomed Two-Sided Theoretical PSD around Carrier',
+        xaxis:{title:'Frequency (Hz)'},
+        yaxis:{title:'PSD (dB/Hz)'}
+    });
+    */
+}
+</script>
+
+</body>
+</html>
