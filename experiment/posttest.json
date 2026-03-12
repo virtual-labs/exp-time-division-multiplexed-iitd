@@ -16,7 +16,7 @@
         "d": "Incorrect. Cyclic prefix is essential to maintaining orthogonality in multipath conditions."
       },
       "correctAnswer": "a",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "2. How does timing offset in an OFDM receiver impact system performance?",
@@ -33,7 +33,7 @@
         "d": "Incorrect. Timing offset worsens synchronization rather than improves it."
       },
       "correctAnswer": "b",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "3. Why does OFDM have a high peak-to-average power ratio (PAPR)?",
@@ -50,7 +50,7 @@
         "d": "Incorrect. Frequency offset distorts the signal but doesn't increase average power."
       },
       "correctAnswer": "c",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "4. How does increasing the number of OFDM subcarriers (with fixed bandwidth) impact the system?",
@@ -67,7 +67,7 @@
         "d": "Incorrect. Channel estimation becomes more complex with more subcarriers."
       },
       "correctAnswer": "b",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "5. Which of the following best describes the function of the cyclic prefix in OFDM under a dispersive channel?",
@@ -84,7 +84,7 @@
         "d": "Incorrect. Channel response affects amplitude."
       },
       "correctAnswer": "b",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "6. What is a major disadvantage of OFDM in mobile environments?",
@@ -101,7 +101,7 @@
         "d": "Incorrect. Power efficiency depends on amplifier design and PAPR management."
       },
       "correctAnswer": "b",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "7. In an OFDM system using 64-QAM, what does increasing the modulation order do?",
@@ -118,7 +118,7 @@
         "d": "Incorrect. CP is still needed regardless of modulation."
       },
       "correctAnswer": "b",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "8. Why is the IFFT used at the transmitter in OFDM systems?",
@@ -135,7 +135,7 @@
         "d": "Incorrect. Filtering is not the purpose of IFFT."
       },
       "correctAnswer": "c",
-      "difficulty": "hard"
+      "difficulty": "intermediate"
     },
     {
       "question": "9. In an OFDM system, what would be the primary effect of a frequency offset between the transmitter and receiver?",
@@ -152,7 +152,7 @@
         "d": "Incorrect. The signal duration remains unaffected."
       },
       "correctAnswer": "b",
-      "difficulty": "hard"
+      "difficulty": "advanced"
     },
     {
       "question": "10. Which of the following best explains spectral efficiency in OFDM with adaptive modulation?",
@@ -169,7 +169,7 @@
         "d": "Incorrect. Reducing IFFT size limits subcarrier count and reduces granularity."
       },
       "correctAnswer": "a",
-      "difficulty": "hard"
+      "difficulty": "advanced"
     }
   ]
 }
