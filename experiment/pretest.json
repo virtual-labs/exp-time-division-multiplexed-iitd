@@ -10,13 +10,13 @@
         "d": "Cyclic prefix duration equals one symbol duration"
       },
       "explanations": {
-        "a": "Baud rate relates to symbol transmission, not orthogonality.",
+        "a": "Incorrect! Baud rate relates to symbol transmission, not orthogonality.",
         "b": "Correct! Orthogonality is maintained when subcarrier spacing = 1/T, where T is symbol duration.",
-        "c": "Amplitude variation doesn't ensure orthogonality.",
-        "d": "Cyclic prefix helps with ISI, not orthogonality."
+        "c": "Incorrect! Amplitude variation doesn't ensure orthogonality.",
+        "d": "Incorrect! Cyclic prefix helps with ISI, not orthogonality."
       },
       "correctAnswer": "b",
-      "difficulty": "intermediate"
+      "difficulty": "beginner"
     },
     {
       "question": "2. In practical OFDM systems, which impairment causes loss of orthogonality among subcarriers?",
@@ -27,13 +27,13 @@
         "d": "All of the above"
       },
       "explanations": {
-        "a": "Phase noise disturbs carrier phase, impacting orthogonality.",
-        "b": "Correct! Even a small frequency offset leads to inter-carrier interference (ICI).",
-        "c": "Nonlinearities distort OFDM’s superimposed waveform.",
-        "d": "All three contribute to orthogonality loss in different ways."
+        "a": "Incorrect! Phase noise disturbs carrier phase, impacting orthogonality.",
+        "b": "Incorrect! Even a small frequency offset leads to inter-carrier interference (ICI), but not the only factor.",
+        "c": "Incorrect! Nonlinearities distort OFDM’s waveform but alone do not account for all orthogonality loss.",
+        "d": "Correct! All three contribute to orthogonality loss in different ways."
       },
       "correctAnswer": "d",
-      "difficulty": "intermediate"
+      "difficulty": "beginner"
     },
     {
       "question": "3. What is the main disadvantage of using a long cyclic prefix in OFDM?",
@@ -44,9 +44,9 @@
         "d": "It decreases useful data rate"
       },
       "explanations": {
-        "a": "PAPR is unrelated to cyclic prefix length.",
-        "b": "Longer cyclic prefix can improve BER slightly but wastes bandwidth.",
-        "c": "Longer cyclic prefix actually reduces spectral efficiency.",
+        "a": "Incorrect! PAPR is unrelated to cyclic prefix length.",
+        "b": "Incorrect! Longer cyclic prefix can improve BER slightly but wastes bandwidth.",
+        "c": "Incorrect! Longer cyclic prefix actually reduces spectral efficiency.",
         "d": "Correct! A longer cyclic prefix adds overhead, reducing effective throughput."
       },
       "correctAnswer": "d",
@@ -61,10 +61,10 @@
         "d": "Carrier spacing must be larger than coherence bandwidth"
       },
       "explanations": {
-        "a": "Symbol duration alone is not sufficient if no cyclic prefix is added.",
+        "a": "Incorrect! Symbol duration alone is not sufficient if no cyclic prefix is added.",
         "b": "Correct! To avoid ISI, the guard interval (cyclic prefix) must cover the delay spread.",
-        "c": "FFT/IFFT size is standard but doesn’t guarantee ISI-free transmission.",
-        "d": "This condition relates to flat fading, not ISI."
+        "c": "Incorrect! FFT/IFFT size is standard but doesn’t guarantee ISI-free transmission.",
+        "d": "Incorrect! This condition relates to flat fading, not ISI."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
@@ -78,10 +78,10 @@
         "d": "FFT is performed before the cyclic prefix is removed"
       },
       "explanations": {
-        "a": "OFDM is multicarrier, not single carrier.",
+        "a": "Incorrect! OFDM is multicarrier, not single carrier.",
         "b": "Correct! Even slight frequency offset introduces ICI, breaking orthogonality.",
-        "c": "Guard intervals prevent ISI, not spectral distortion.",
-        "d": "FFT is performed *after* prefix removal."
+        "c": "Incorrect! Guard intervals prevent ISI, not spectral distortion.",
+        "d": "Incorrect! FFT is performed *after* prefix removal."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
@@ -95,10 +95,10 @@
         "d": "Improves timing synchronization"
       },
       "explanations": {
-        "a": "Zero-padding has negligible effect on PAPR.",
-        "b": "It spreads the energy; doesn't increase it.",
+        "a": "Incorrect! Zero-padding has negligible effect on PAPR.",
+        "b": "Incorrect! It spreads the energy; doesn't increase it.",
         "c": "Correct! Zero-padding widens time domain signal and improves spectral roll-off.",
-        "d": "Zero-padding doesn’t help with timing; cyclic prefix does."
+        "d": "Incorrect! Zero-padding doesn’t help with timing; cyclic prefix does."
       },
       "correctAnswer": "c",
       "difficulty": "intermediate"
@@ -112,10 +112,10 @@
         "d": "Because it lacks time-domain filtering"
       },
       "explanations": {
-        "a": "OFDM uses amplitude-varying modulation like QAM.",
+        "a": "Incorrect! OFDM uses amplitude-varying modulation like QAM.",
         "b": "Correct! Subcarriers can align in phase, leading to large peaks in amplitude.",
-        "c": "Cyclic prefix doesn’t increase peak power.",
-        "d": "Filtering may help but isn’t the root cause."
+        "c": "Incorrect! Cyclic prefix doesn’t increase peak power.",
+        "d": "Incorrect! Filtering may help but isn’t the root cause."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
@@ -129,10 +129,10 @@
         "d": "It reduces the modulation order"
       },
       "explanations": {
-        "a": "Diversity isn’t affected directly by prefix length.",
+        "a": "Incorrect! Diversity isn’t affected directly by prefix length.",
         "b": "Correct! Inadequate cyclic prefix leads to ISI and ICI.",
-        "c": "Shorter prefix saves time but at cost of performance.",
-        "d": "Modulation order is independent of cyclic prefix length."
+        "c": "Incorrect! Shorter prefix saves time but at cost of performance.",
+        "d": "Incorrect! Modulation order is independent of cyclic prefix length."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
@@ -146,10 +146,10 @@
         "d": "Improves spectral efficiency by reducing inter-symbol spacing"
       },
       "explanations": {
-        "a": "Time resolution worsens with longer symbols.",
+        "a": "Incorrect! Time resolution worsens with longer symbols.",
         "b": "Correct! Larger FFT reduces subcarrier spacing, improving frequency resolution but increases sensitivity to Doppler.",
-        "c": "Cyclic prefix percentage increases if its duration is fixed.",
-        "d": "Spectral efficiency remains constant unless symbol rate changes."
+        "c": "Incorrect! Cyclic prefix percentage increases if its duration is fixed.",
+        "d": "Incorrect! Spectral efficiency remains constant unless symbol rate changes."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
@@ -164,9 +164,9 @@
       },
       "explanations": {
         "a": "Correct! Each subcarrier sees a narrowband flat-fading channel, so equalization is simple.",
-        "b": "Multipath still occurs, but its effects are simplified.",
-        "c": "Cyclic prefix avoids ISI but not equalization for fading.",
-        "d": "Diversity is mostly in frequency, not time."
+        "b": "Incorrect! Multipath still occurs, but its effects are simplified.",
+        "c": "Incorrect! Cyclic prefix avoids ISI but not equalization for fading.",
+        "d": "Incorrect! Diversity is mostly in frequency, not time."
       },
       "correctAnswer": "a",
       "difficulty": "intermediate"

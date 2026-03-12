@@ -23,8 +23,10 @@
             multiple orthogonal multiplexed narrowband signals. In this way it,
             overcomes the inter-symbol interferences (ISI) issue.
           </p>
-          <div class="flex justify-center">
+          <div align = "center">
             <img src="./images/theory/ofdm/ofdm1.png" alt="ofdm_image" />
+            <br/>
+            <strong>Fig 1: Conceptual illustration of high-bandwidth signal dispersion and OFDM mitigation</strong>
           </div>
           <p>
             OFDM converts frequency-selective channel to multiple (M)
@@ -36,7 +38,7 @@
           <div class="flex flex-col justify-center items-center">
             <img src="./images/theory/ofdm/ofdm2.png" alt="ofdm_image" />
             <br/>
-            <p class="font-semibold">Fig: Orthogonal Frequency Division Multiplexing (OFDM)</p>
+            <p class="font-semibold">Fig 2: Block Diagram of an OFDM System</p>
           </div>
           <p>
             <br />
@@ -65,8 +67,10 @@
             based on 1-D transform in frequency domain (IFFT/FFT). Orthogonality
             among the subcarriers is the key.
           </p>
-          <div class="flex justify-center">
+          <div align="center">
             <img src="./images/theory/ofdm/ofdm5.png" alt="ofdm_image" />
+            <br/>
+            <strong>Fig 3: OFDM Converts Frequency-selective Channel into Multiple Flat Channels</strong>
           </div>
           <h3>
             Effect of high Doppler in OFDM
@@ -75,8 +79,10 @@
             In presence of high Doppler, subcarriers lose orthogonality. This
             results in inter-carrier interference (ICI).
           </p>
-          <div class="flex justify-center">
+          <div align="center">
             <img src="./images/theory/ofdm/ofdm6.png" alt="ofdm_image" />
+                        <br/>
+            <strong>Fig 4: Effect of High Doppler on Subcarrier Orthogonality</strong>
           </div>
             <br />
         <p>
@@ -99,8 +105,10 @@
           <h3>
             OFDM Transmitter
           </h3>
-          <div class="flex justify-center">
+          <div align="center">
             <img src="./images/theory/ofdm/ofdm8.png" alt="ofdm_image" />
+            <br/>
+            <strong>Fig 5: OFDM Transmitter Block Diagram</strong>
           </div>
           <br/>
           <p>
@@ -133,8 +141,10 @@
           <h3>
             OFDM Receiver
           </h3>
-          <div class="flex justify-center">
+          <div align="center">
             <img src="./images/theory/ofdm/ofdm9.png" alt="ofdm_image" />
+                        <br/>
+            <strong>Fig 6: OFDM Receiver Block Diagram</strong>
           </div>
           <br/>
           <p>
