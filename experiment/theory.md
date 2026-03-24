@@ -4,178 +4,179 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <!-- sidebar and body -->
-          <h2>
-            Orthogonal Frequency Division Multiplexing (OFDM)
-          </h2>
-          <p>
-            When a signal with high bandwidth traverses through a medium, it
-            tends to disperse more compared to a signal with lower bandwidth.
-            <br />
-            <br />
-            A high-bandwidth signal comprises a wide range of frequency
-            components. Each frequency component may interact differently with
-            the transmission medium due to factors such as attenuation,
-            dispersion, and distortion. OFDM combats the high-bandwidth
-            frequency selective channel by dividing the original signal into
-            multiple orthogonal multiplexed narrowband signals. In this way it,
-            overcomes the inter-symbol interferences (ISI) issue.
-          </p>
-          <div align = "center">
-            <img src="./images/theory/ofdm/ofdm1.png" alt="ofdm_image" />
-            <br/>
-            <strong>Fig 1: Conceptual illustration of high-bandwidth signal dispersion and OFDM mitigation</strong>
-          </div>
-          <p>
-            OFDM converts frequency-selective channel to multiple (M)
-            frequency-flat channels.
-          </p>
-          <h3>
-            Block Diagram:
-          </h3>
-          <div class="flex flex-col justify-center items-center">
-            <img src="./images/theory/ofdm/ofdm2.png" alt="ofdm_image" />
-            <br/>
-            <p class="font-semibold">Fig 2: Block Diagram of an OFDM System</p>
-          </div>
-          <p>
-            <br />
-            In OFDM, modulation and demodulation are performed using IFFT and
-            FFT.
-            <br />
-          </p>
-          <p class="font-semibold">
-            At transmitter side: <br />
-            <br />
-          </p>
-          <div class="flex">
-            <img src="./images/theory/ofdm/ofdm3.png" alt="ofdm_image" />
-          </div>
-          <p class="font-semibold">
-            <br />
-            At receiver side: <br />
-            <br />
-          </p>
-          <div class="flex">
-            <img src="./images/theory/ofdm/ofdm4.png" alt="ofdm_image" />
-          </div>
-          <p>
-            <br />
-            In OFDM, Information is signalled in the frequency domain. It is
-            based on 1-D transform in frequency domain (IFFT/FFT). Orthogonality
-            among the subcarriers is the key.
-          </p>
-          <div align="center">
-            <img src="./images/theory/ofdm/ofdm5.png" alt="ofdm_image" />
-            <br/>
-            <strong>Fig 3: OFDM Converts Frequency-selective Channel into Multiple Flat Channels</strong>
-          </div>
-          <h3>
-            Effect of high Doppler in OFDM
-          </h3>
-          <p>
-            In presence of high Doppler, subcarriers lose orthogonality. This
-            results in inter-carrier interference (ICI).
-          </p>
-          <div align="center">
-            <img src="./images/theory/ofdm/ofdm6.png" alt="ofdm_image" />
-                        <br/>
-            <strong>Fig 4: Effect of High Doppler on Subcarrier Orthogonality</strong>
-          </div>
-            <br />
-        <p>
-        It causes severe degradation in how accurately data is received (known as 'bit error performance') in fast-changing environments (high Doppler), leading to persistent errors (error floors). It also makes it hard to predict and correct for channel distortions ('channel estimation and equalization') in these difficult conditions.
-        </p>
-        <p>
-        To avoid <strong>Inter-Symbol Interference (ISI)</strong> – where parts of one data symbol bleed into the next, causing confusion – when sending many smaller, parallel data signals, each individual signal (called a <strong>subcarrier</strong>) must be kept perfectly separate from the others. This 'perfect separation' is called <strong>orthogonality</strong>. The idea of avoiding ISI by transmitting many such orthogonal, low-bandwidth subcarriers is the core motivation behind OFDM.
-        </p>
-        <p>
-        An OFDM modulator acts like a dispatcher, taking a single, fast stream of data and breaking it down into many slower, parallel streams. Each of these perfectly separated (orthogonal) slower streams then travels through a much simpler part of the radio channel, experiencing very little ISI, and thus can be easily corrected for any remaining distortions.
-        </p>
-        <p>
-        To give an example: imagine a single burst of data lasting 0.25 seconds, so the symbol duration is 
-        T<sub>sym</sub> = 0.25 s. The corresponding symbol rate is R<sub>sym</sub> = 1/T<sub>sym</sub> = 4 Hz. 
-        Instead of sending all the data on one carrier, OFDM transmits it over multiple <strong>subcarriers</strong>. 
-        These subcarriers are placed at frequencies f<sub>0</sub>, f<sub>0</sub>+R<sub>sym</sub>, 
-        f<sub>0</sub>+2R<sub>sym</sub>, f<sub>0</sub>+3R<sub>sym</sub>, and so on. Each subcarrier is 
-        orthogonal to the others and carries a portion of the original data in parallel.
-        </p>
+<h2>Orthogonal Frequency Division Multiplexing (OFDM)</h2>
+
+<p>
+OFDM divides a high-bandwidth signal into multiple narrowband subcarriers to reduce <strong>inter-symbol interference (ISI)</strong> and simplify equalization in multipath channels.
+</p>
+<h3>Mathematical Formulation of OFDM</h3>
+<p>
+Let the input data symbols be \(X_k\), for \(k = 0, 1, ..., N-1\), where \(N\) is the number of subcarriers. The OFDM signal in the <strong>time domain</strong> is obtained using the Inverse Fast Fourier Transform (IFFT):
+</p>
+
+<div class="math-block">
+$$
+x_n = \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} X_k \, e^{j 2 \pi k n / N}, \quad n = 0, 1, ..., N-1
+$$
+</div>
+
+<p>
+Here:
+<ul class="list-disc ml-6">
+<li>\(X_k\) = frequency-domain symbol on the \(k\)-th subcarrier</li>
+<li>\(x_n\) = time-domain OFDM sample</li>
+<li>\(N\) = total number of subcarriers</li>
+<li>Normalization factor \(1/\sqrt{N}\) ensures constant average power</li>
+</ul>
+</p>
+
+<p>
+At the receiver, the Fast Fourier Transform (FFT) recovers the transmitted symbols:
+</p>
+<div class="math-block">
+$$
+Y_k = \frac{1}{\sqrt{N}} \sum_{n=0}^{N-1} y_n \, e^{-j 2 \pi k n / N}, \quad k = 0, 1, ..., N-1
+$$
+</div>
+<h3>Cyclic Prefix (CP)</h3>
+<p>
+To prevent ISI, a cyclic prefix is added. If \(x_n\) is the original OFDM symbol of length \(N\), the transmitted symbol with CP of length \(N_{CP}\) is:
+</p>
+
+<div class="math-block">
+$$
+\tilde{x}_n = 
+\begin{cases}
+x_{N-N_{CP}+n}, & 0 \le n < N_{CP} \\
+x_{n-N_{CP}}, & N_{CP} \le n < N+N_{CP}
+\end{cases}
+$$
+</div>
+<p>
+  The sequence x̃ₙ is formed by appending a cyclic prefix of length N_CP to the 
+  original signal xₙ. The first N_CP samples of x̃ₙ are copies of the last 
+  N_CP samples of xₙ, while the remaining samples correspond to the original 
+  signal shifted by N_CP. This results in a new sequence where the end of the 
+  signal is repeated at the beginning, a technique commonly used in OFDM systems.
+</p>
+<p>
+This ensures that linear convolution with the channel becomes circular convolution, preserving orthogonality of subcarriers.
+</p>
+<h3>Subcarrier Spacing and Orthogonality</h3>
+<p>
+  The subcarrier spacing \(\Delta f\) is defined by the sampling frequency \(f_s\) and the number of subcarriers \(N\). It is also the reciprocal of the useful symbol duration \(T_{sym}\):
+</p>
+
+<div class="math-block">
+$$
+\Delta f = \frac{f_s}{N} = \frac{1}{T_{sym}}
+$$
+</div>
+
+<p>
+  This specific spacing guarantees that the subcarriers are <strong>orthogonal</strong> (mutually independent):
+</p>
+
+<div class="math-block">
+$$
+\sum_{n=0}^{N-1} e^{j 2 \pi (k-m) n / N} = 
+\begin{cases}
+N, & k=m \\
+0, & k \ne m
+\end{cases}
+$$
+</div>
+
+<p>
+  Where \(k\) and \(m\) are subcarrier indices. <strong>Orthogonality</strong> ensures no inter-carrier interference (ICI) in ideal conditions.
+</p>
           <h3>
             OFDM Transmitter
           </h3>
           <div align="center">
-            <img src="./images/theory/ofdm/ofdm8.png" alt="ofdm_image" />
+            <img src="./ofdm8.png" alt="ofdm_image" />
             <br/>
-            <strong>Fig 5: OFDM Transmitter Block Diagram</strong>
+            <strong>Fig 1: OFDM Transmitter Block Diagram</strong>
           </div>
           <br/>
           <p>
-            <span class="font-semibold">1. Data Encoding:</span>Convert the
-            input data stream into symbols suitable for transmission (e.g.,
-            using QAM, PSK, or other modulation schemes).
+            <span class="font-semibold">1. Modulation:</span>
+            The input message bits are mapped into complex symbols using digital 
+            modulation schemes such as Quadrature Amplitude Modulation (QAM) or 
+            Phase Shift Keying (PSK).
             <br />
+          
             <span class="font-semibold">2. Serial-to-Parallel Conversion:</span>
-            Group the symbols into blocks, and then convert these serially
-            arranged symbols into parallel data streams, one for each
-            subcarrier.
+            The modulated symbols are grouped into blocks and converted from a 
+            serial stream into parallel streams, each corresponding to a subcarrier.
             <br />
-            <span class="font-semibold"
-              >3. IFFT (Inverse Fast Fourier Transform):</span
-            >
-            Apply the IFFT algorithm to convert the time-domain parallel data
-            streams into frequency-domain OFDM symbols. The IFFT operation
-            converts the data from the frequency domain to the time domain.
+          
+            <span class="font-semibold">3. IFFT (Inverse Fast Fourier Transform):</span>
+            An N-point IFFT is applied to the parallel data to convert the 
+            frequency-domain symbols into a time-domain OFDM signal while maintaining 
+            orthogonality among subcarriers.
             <br />
-            <span class="font-semibold">4. Cyclic Prefix Addition:</span> Add a
-            cyclic prefix to each OFDM symbol to mitigate the effects of
-            multipath delay spread. The cyclic prefix is a copy of the end part
-            of the OFDM symbol that is appended at its beginning. <br />
-            <span class="font-semibold">5. Digital-to-Analog Conversion:</span>
-            Convert the time-domain OFDM symbols into analog signals. <br />
-            <span class="font-semibold">6. Upconversion and Transmission:</span>
-            Upconvert the analog OFDM signal to the desired carrier frequency
-            and transmit it over the wireless channel.
+          
+            <span class="font-semibold">4. Cyclic Prefix Addition:</span>
+            A cyclic prefix is added to each OFDM symbol to reduce inter-symbol 
+            interference caused by multipath propagation. It is formed by copying 
+            the last portion of the symbol and appending it to the beginning.
+            <br />
+          
+            <span class="font-semibold">5. Parallel-to-Serial Conversion:</span>
+            The parallel OFDM symbols are converted back into a serial stream to 
+            produce a continuous signal.
+            <br />
+          
+            <span class="font-semibold">6. Digital-to-Analog Conversion and Filtering:</span>
+            The discrete-time OFDM signal is converted into a continuous-time analog 
+            signal using a digital-to-analog converter (DAC). A reconstruction filter 
+            is then applied to smooth the signal and remove unwanted spectral components.
+            <br />
+          
+            <span class="font-semibold">7. Transmission:</span>
+            The resulting analog signal is transmitted over the communication channel.
           </p>
           <h3>
             OFDM Receiver
           </h3>
           <div align="center">
-            <img src="./images/theory/ofdm/ofdm9.png" alt="ofdm_image" />
+            <img src="./ofdm9.png" alt="ofdm_image" />
                         <br/>
-            <strong>Fig 6: OFDM Receiver Block Diagram</strong>
+            <strong>Fig 2: OFDM Receiver Block Diagram</strong>
           </div>
           <br/>
           <p>
-            <span class="font-semibold">1. Signal Reception:</span>Receive the
-            transmitted OFDM signal after it has traveled through the wireless
-            channel.
+            <span class="font-semibold">1. Signal Reception:</span>
+            Receive the incoming OFDM signal from the channel.
             <br />
-            <span class="font-semibold">2. Downconversion:</span>Downconvert the
-            received signal to baseband or an intermediate frequency.
+          
+            <span class="font-semibold">2. Filtering & Analog-to-Digital Conversion:</span>
+            Filter the received signal and convert it from analog to digital form for further processing.
             <br />
-            <span class="font-semibold">3. Analog-to-Digital Conversion:</span>
-            : Convert the analog signal into a digital form suitable for
-            processing. <br />
-            <span class="font-semibold">4. Cyclic Prefix Removal:</span> Remove
-            the cyclic prefix from each OFDM symbol. <br />
-            <span class="font-semibold">5. FFT (Fast Fourier Transform): </span>
-            Apply the FFT algorithm to convert the time-domain OFDM symbols back
-            into the frequency domain. The FFT operation recovers the original
-            frequency-domain OFDM symbols.<br />
+          
+            <span class="font-semibold">3. Serial-to-Parallel Conversion:</span>
+            Convert the incoming serial data stream into parallel data blocks corresponding to OFDM symbols.
+            <br />
+          
+            <span class="font-semibold">4. Cyclic Prefix Removal:</span>
+            Remove the cyclic prefix from each OFDM symbol to eliminate redundancy added during transmission.
+            <br />
+          
+            <span class="font-semibold">5. N-Point FFT:</span>
+            Apply the FFT to transform the time-domain signal into the frequency domain and recover subcarrier data.
+            <br />
+          
             <span class="font-semibold">6. Parallel-to-Serial Conversion:</span>
-            Convert the frequency-domain symbols back into a serial data stream.
+            Convert the parallel frequency-domain data back into a serial stream.
             <br />
-            <span class="font-semibold">7. Data Demodulation:</span> :
-            Demodulate the received symbols to recover the original data stream.
-            <br />
-            <span class="font-semibold">8. Channel Equalization:</span> Apply
-            channel equalization techniques to mitigate the effects of channel
-            impairments, such as frequency-selective fading. <br />
-            <span class="font-semibold">9. Data Decoding: </span> Decode the
-            received symbols to obtain the original transmitted data. <br />
+          
+            <span class="font-semibold">7. De-mapping:</span>
+            Map the received symbols back to their corresponding bit sequences to recover the transmitted bits.
           </p>
-          <!--  -->
 </body>
 </html>
