@@ -42,6 +42,12 @@ $$
 Y_k = \frac{1}{\sqrt{N}} \sum_{n=0}^{N-1} y_n \, e^{-j 2 \pi k n / N}, \quad k = 0, 1, ..., N-1
 $$
 </div>
+<p>
+Where:
+<ul class="list-disc ml-6">
+<li>\(y_n\) = received time-domain OFDM sample</li>
+</ul>
+</p>
 <h3>Cyclic Prefix (CP)</h3>
 <p>
 To prevent ISI, a cyclic prefix is added. If \(x_n\) is the original OFDM symbol of length \(N\), the transmitted symbol with CP of length \(N_{CP}\) is:
@@ -109,35 +115,29 @@ $$
             modulation schemes such as Quadrature Amplitude Modulation (QAM) or 
             Phase Shift Keying (PSK).
             <br />
-          
             <span class="font-semibold">2. Serial-to-Parallel Conversion:</span>
             The modulated symbols are grouped into blocks and converted from a 
             serial stream into parallel streams, each corresponding to a subcarrier.
             <br />
-          
             <span class="font-semibold">3. IFFT (Inverse Fast Fourier Transform):</span>
             An N-point IFFT is applied to the parallel data to convert the 
             frequency-domain symbols into a time-domain OFDM signal while maintaining 
             orthogonality among subcarriers.
             <br />
-          
             <span class="font-semibold">4. Cyclic Prefix Addition:</span>
             A cyclic prefix is added to each OFDM symbol to reduce inter-symbol 
             interference caused by multipath propagation. It is formed by copying 
             the last portion of the symbol and appending it to the beginning.
             <br />
-          
             <span class="font-semibold">5. Parallel-to-Serial Conversion:</span>
             The parallel OFDM symbols are converted back into a serial stream to 
             produce a continuous signal.
             <br />
-          
             <span class="font-semibold">6. Digital-to-Analog Conversion and Filtering:</span>
             The discrete-time OFDM signal is converted into a continuous-time analog 
             signal using a digital-to-analog converter (DAC). A reconstruction filter 
             is then applied to smooth the signal and remove unwanted spectral components.
             <br />
-          
             <span class="font-semibold">7. Transmission:</span>
             The resulting analog signal is transmitted over the communication channel.
           </p>
@@ -154,27 +154,21 @@ $$
             <span class="font-semibold">1. Signal Reception:</span>
             Receive the incoming OFDM signal from the channel.
             <br />
-          
             <span class="font-semibold">2. Filtering & Analog-to-Digital Conversion:</span>
             Filter the received signal and convert it from analog to digital form for further processing.
             <br />
-          
             <span class="font-semibold">3. Serial-to-Parallel Conversion:</span>
             Convert the incoming serial data stream into parallel data blocks corresponding to OFDM symbols.
             <br />
-          
             <span class="font-semibold">4. Cyclic Prefix Removal:</span>
             Remove the cyclic prefix from each OFDM symbol to eliminate redundancy added during transmission.
             <br />
-          
             <span class="font-semibold">5. N-Point FFT:</span>
             Apply the FFT to transform the time-domain signal into the frequency domain and recover subcarrier data.
             <br />
-          
             <span class="font-semibold">6. Parallel-to-Serial Conversion:</span>
             Convert the parallel frequency-domain data back into a serial stream.
             <br />
-          
             <span class="font-semibold">7. De-mapping:</span>
             Map the received symbols back to their corresponding bit sequences to recover the transmitted bits.
           </p>
