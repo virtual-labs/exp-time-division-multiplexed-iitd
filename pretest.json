@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "In a practical OFDM system with N-point FFT and sampling rate f_s, what condition ensures orthogonality among subcarriers?",
+      "answers": {
+        "a": "Subcarrier spacing equals the baud rate",
+        "b": "Subcarrier spacing equals f_s / N",
+        "c": "All subcarriers have unique amplitudes",
+        "d": "Cyclic prefix duration equals one symbol duration"
+      },
+      "explanations": {
+        "a": "Incorrect! Baud rate relates to symbol transmission, not subcarrier orthogonality.",
+        "b": "Correct! In digital OFDM, subcarrier spacing = f_s / N ensures orthogonality.",
+        "c": "Incorrect! Amplitude differences do not guarantee orthogonality.",
+        "d": "Incorrect! Cyclic prefix prevents ISI but does not ensure orthogonality."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which impairments in practical OFDM systems can cause loss of subcarrier orthogonality?",
+      "answers": {
+        "a": "Phase noise",
+        "b": "Frequency offset",
+        "c": "Nonlinear amplification",
+        "d": "All of the above"
+      },
+      "explanations": {
+        "a": "Incorrect. Phase noise disturbs subcarrier phases but is not the only cause of orthogonality loss.",
+        "b": "Incorrect. Frequency offsets lead to inter-carrier interference, but other factors also contribute.",
+        "c": "Incorrect. Nonlinear amplification distorts subcarrier amplitudes and phases but alone does not explain all orthogonality loss.",
+        "d": "Correct! Phase noise, frequency offsets, and nonlinearities all degrade orthogonality and cause ICI."
+      },
+      "correctAnswer": "d",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What is the main disadvantage of using a long cyclic prefix in OFDM?",
+      "answers": {
+        "a": "It increases the peak-to-average power ratio (PAPR)",
+        "b": "It reduces the bit error rate (BER)",
+        "c": "It increases spectral efficiency",
+        "d": "It decreases the effective data rate"
+      },
+      "explanations": {
+        "a": "Incorrect. PAPR is not directly affected by cyclic prefix length.",
+        "b": "Incorrect. While a longer cyclic prefix can slightly improve BER, it comes at a cost.",
+        "c": "Incorrect. Longer cyclic prefix reduces spectral efficiency, not increases it.",
+        "d": "Correct! A longer cyclic prefix adds overhead, reducing the fraction of time used for transmitting data."
+      },
+      "correctAnswer": "d",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "To avoid inter-symbol interference (ISI) in OFDM, what must be ensured regarding the guard interval?",
+      "answers": {
+        "a": "Symbol duration must be longer than the channel delay spread",
+        "b": "Guard interval (cyclic prefix) must be longer than the maximum channel delay spread",
+        "c": "IFFT size must be equal to FFT size",
+        "d": "Subcarrier spacing must exceed coherence bandwidth"
+      },
+      "explanations": {
+        "a": "Incorrect. Symbol duration alone is insufficient without a proper cyclic prefix.",
+        "b": "Correct! The cyclic prefix should cover the maximum multipath delay to prevent ISI.",
+        "c": "Incorrect. FFT/IFFT size is a system design choice but doesn’t guarantee ISI-free transmission.",
+        "d": "Incorrect. This condition relates to flat fading per subcarrier, not ISI prevention."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Why is OFDM sensitive to frequency synchronization errors?",
+      "answers": {
+        "a": "OFDM uses a single carrier for data transmission",
+        "b": "Orthogonality of subcarriers breaks down with frequency shifts",
+        "c": "Guard intervals cause spectral distortion",
+        "d": "FFT is performed before the cyclic prefix is removed"
+      },
+      "explanations": {
+        "a": "Incorrect. OFDM is a multi-carrier system.",
+        "b": "Correct! Even small frequency offsets introduce inter-carrier interference (ICI), breaking orthogonality.",
+        "c": "Incorrect. Guard intervals prevent ISI but do not cause orthogonality issues.",
+        "d": "Incorrect. FFT is performed after removing the cyclic prefix."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In an OFDM system with 1024 subcarriers, what is the purpose of zero-padding unused subcarriers?",
+      "answers": {
+        "a": "Reduces PAPR",
+        "b": "Increases energy per symbol",
+        "c": "Reduces spectral leakage and controls bandwidth",
+        "d": "Improves timing synchronization"
+      },
+      "explanations": {
+        "a": "Incorrect. Zero-padding does not significantly affect PAPR.",
+        "b": "Incorrect. It does not increase transmitted energy.",
+        "c": "Correct! Zero-padding smooths the edges of the spectrum, reducing spectral leakage and defining bandwidth.",
+        "d": "Incorrect. Timing is mainly handled by cyclic prefix and synchronization sequences."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Why does OFDM inherently have a high peak-to-average power ratio (PAPR)?",
+      "answers": {
+        "a": "Because it uses constant-envelope modulation",
+        "b": "Because multiple subcarriers can constructively interfere",
+        "c": "Because the cyclic prefix increases signal power",
+        "d": "Because it lacks time-domain filtering"
+      },
+      "explanations": {
+        "a": "Incorrect. OFDM uses amplitude-varying modulation (e.g., QAM), not constant envelope.",
+        "b": "Correct! When many subcarriers align in phase, large peaks occur in the time-domain signal, causing high PAPR.",
+        "c": "Incorrect. The cyclic prefix does not increase peak amplitude.",
+        "d": "Incorrect. Filtering may reduce out-of-band leakage but doesn’t solve PAPR."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What happens if the cyclic prefix is shorter than the channel’s maximum delay spread?",
+      "answers": {
+        "a": "It improves frequency diversity",
+        "b": "It causes inter-symbol and inter-carrier interference",
+        "c": "It lowers the system latency",
+        "d": "It reduces modulation order"
+      },
+      "explanations": {
+        "a": "Incorrect. Frequency diversity is unaffected by cyclic prefix length.",
+        "b": "Correct! Insufficient cyclic prefix leads to ISI and ICI, degrading performance.",
+        "c": "Incorrect. Latency may reduce slightly but at a major cost in reliability.",
+        "d": "Incorrect. Modulation order is independent of cyclic prefix length."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "In an OFDM system with fixed bandwidth, what is the effect of increasing the FFT size?",
+      "answers": {
+        "a": "Improves time resolution and increases ICI",
+        "b": "Reduces subcarrier spacing and improves frequency resolution",
+        "c": "Decreases the cyclic prefix overhead",
+        "d": "Improves spectral efficiency by reducing symbol spacing"
+      },
+      "explanations": {
+        "a": "Incorrect. Increasing FFT size lengthens the symbol duration, reducing time resolution.",
+        "b": "Correct! More FFT points reduce subcarrier spacing (Δf = BW/N), improving frequency resolution but increasing Doppler sensitivity.",
+        "c": "Incorrect. Cyclic prefix ratio may increase if its duration is fixed.",
+        "d": "Incorrect. Spectral efficiency remains unchanged unless the symbol rate is adjusted."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Why is equalization in OFDM often simpler than in single-carrier frequency-selective channels?",
+      "answers": {
+        "a": "Each subcarrier experiences flat fading, allowing single-tap equalization",
+        "b": "OFDM inherently avoids multipath",
+        "c": "The cyclic prefix eliminates the need for equalization",
+        "d": "OFDM uses time-domain diversity"
+      },
+      "explanations": {
+        "a": "Correct! Each subcarrier sees a flat-fading channel, so one complex gain per subcarrier suffices for equalization.",
+        "b": "Incorrect. Multipath still exists; OFDM simplifies its impact per subcarrier.",
+        "c": "Incorrect. The cyclic prefix prevents ISI but does not replace equalization for amplitude/phase distortions.",
+        "d": "Incorrect. Time-domain diversity is not the main reason equalization is simpler."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    }
+  ]
+}

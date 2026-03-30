@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Virtual Labs</title>
+    <style>
+	    .container {
+            display: flex;
+			    height: 100vh; /* Full viewport height */
+        width: 100vw; /* Full viewport width */
+        }
+		.left-half {
+            width: 50vw;
+			}
+
+        .middle {
+            width: 50vw;
+		    position: relative;
+		    overflow: auto;
+        }
+
+/* Custom table styles */
+.custom-table {
+    width: auto;
+    border-collapse: collapse;
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+/* Header and cell styles */
+.custom-table th,
+.custom-table td {
+    border: 1px solid black;  /* Adds a solid black border */
+    padding: 5px;  /* Slightly larger padding for better spacing */
+    text-align: center;
+    font-size: 17px;  /* Set font size for headers and cells */
+}
+
+/* Header-specific styles */
+.custom-table th {
+    width: auto;  /* Sets the width to auto to fit content */
+    background-color: #f2f2f2;  /* Light grey background for header */
+    font-weight: bold;  /* Bold text for headers */
+    font-size: 20px;  /* Larger font size for headers */
+}
+
+/* Alternate row styling for better readability */
+.custom-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;  /* Slightly darker background for even rows */
+}
+
+/* Table hover effect */
+.custom-table tbody tr:hover {
+    background-color: #e6f7ff;  /* Light blue background on row hover */
+}
+
+
+    </style>
+  </head>
+  <body>
+    <!-- sidebar and body -->
+	    <!-- sidebar and body -->
+        <div id="instructions">
+            <h1>Instructions for OFDM Modulation with BPSK</h1>
+            <ul>
+              <li class="step step4"><strong>Note:</strong> Use the input fields to enter the number of OFDM symbols, number of subcarriers, cyclic prefix length, and SNR (in dB).</li>
+
+              <li class="step step1"><strong>Step 1:</strong> Click on the <em>'Generate Message'</em> button to generate the input bitstream for modulation.</li>
+              <li class="step step1"><strong>Step 2:</strong> Click the <em>'Generate BPSK'</em> button to generate the BPSK modulated signal from the input bitstream.</li>          
+              <li class="step step2"><strong>Step 3:</strong> Click on the <em>'Frequency domain ofdm'</em> button to map the generated modulated symbols into ofdm symbols.</li>
+          
+              <li class="step step3"><strong>Step 4:</strong> Click on the <em>'Time Domain OFDM'</em> button to perform IFFT and obtain the time-domain OFDM signal without adding a cyclic prefix.</li>
+          
+              <li class="step step4"><strong>Step 5:</strong> Click on the <em>'Time Domain OFDM With CP'</em> button to add the cyclic prefix to the time-domain OFDM signal, simulating a practical OFDM frame structure.</li>
+              <li class="step step4"><strong>Step 6:</strong> Click on the <em>'Show Frequency Spectrums'</em> button to view the frequency spectra of OFDM</li>
+          
+            </ul>
+          </div>
+          
+	<hr/>
+	<br>
+    <div class="flex min-h-[10vh]">
+      <div class="px-6 pb-6 mt-1 flex-1">
+        <div class="">
+          <div class="flex flex-col justify-center">
+            <div class="flex max-lg:flex-col gap-x-12 gap-y-2 mt-2">
+              <div class="">
+                <div class="flex items-center justify-center gap-1">
+        <label for="nSymbols">Number of OFDM Symbols:</label>
+                  <input
+                    class="max-lg:ml-10 border border-black px-2 py-1 rounded-sm"
+type="number" id="nSymbols" value="2" min="1"
+                  />
+                </div>
+              </div>
+              <div class="flex items-center justify-center gap-1 mt-2">
+        <label for="nSubcarriers">Number of OFDM Subcarriers (N):</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="nSubcarriers" value="8" min="1"
+                />
+              </div>
+              <div class="flex items-center justify-center gap-1 mt-2">
+        <label for="cyclicPrefix">Length of Cyclic Prefix (Ncp):</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="cyclicPrefix" value="4" min="1"
+                />
+              </div>
+			  
+			    <div class="flex items-center justify-center gap-1 mt-2">
+        <label for="samplingFrequency">Sampling Frequency (Fs):</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="samplingFrequency" value="1000" min="1"
+                />
+              </div>
+              <div class="flex items-center justify-center gap-1 mt-2">
+                <label for="carrierFrequency">Carrier Frequency (Fs):</label>
+                        <input
+                          class="border border-black px-2 py-1 rounded-sm"
+        type="number" id="carrierFrequency" value="500" min="1"
+                        />
+                      </div>
+			  <br/>
+			   <div class="flex items-center justify-center gap-1 mt-2 hidden">
+        <label for="ofdmSymbolIndex">Show results for OFDM Symbol:</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="ofdmSymbolIndex" value="1" min="1"
+                />
+              </div>
+
+			   <div class="flex items-center justify-center gap-1 mt-2">
+        <label for="snr">SNR (dB):</label>
+                <input
+                  class="border border-black px-2 py-1 rounded-sm"
+type="number" id="snr" value="20" min="0" max = "20")
+                />
+              </div>
+			  
+              </div>
+            </div>
+            </div>
+        </div>
+      </div>
+    </div>
+	<hr/>
+	
+	<div class = "container">
+<div class="left-half">
+  <div class="flex gap-1">
+    <div class="flex-1 flex flex-col items-center">
+      <div class="w-full" style="position: relative;">
+        <img
+          src="ofdm2409_1.png"
+          alt="psk1"
+          style="height: 28.125em; width: 34.375em; margin-left: 5em;"
+        />
+        
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[0.125em]"
+          onclick="runQAMSystem()"
+        >
+          Generate Message
+        </button>
+
+        <button
+        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[10em]"
+        onclick="renderGlobalTable(binaryData)"
+      >
+        Generate Subcarriers
+      </button>
+
+        <button
+        class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[1.5em] left-[20em]"
+        onclick="plotModData()"
+      >
+        Generate BPSK
+      </button>
+
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute top-[4em] left-[0.125em]"
+          onclick="plot1ff()"
+        >
+          Frequency domain ofdm
+        </button>
+        
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-2.5em] left-[0.125em]"
+          onclick="plot2()"
+        >
+          Time domain ofdm
+        </button>
+
+        <button
+          class="button bg-blue-500 text-white rounded-md px-2 py-1 absolute bottom-[-5.5em] left-[0.125em]"
+          onclick="plot3()"
+        >
+          Time domain ofdm with cp
+        </button>
+
+        <a href = "./ofdm_spectrum.html" target = "_blank">
+        <button
+        class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-8.5em] left-[0.125em]"
+      >
+        Show Frequency Spectrums
+      </button>
+    </a>
+ <!--      
+        <button
+          class="button bg-gray-500 text-white rounded-md px-2 py-1 absolute bottom-[-9.5em] left-[11.375em]"
+          onclick="plotReceivedBitstreams(binaryReceivedData)"
+        >
+          Demodulate OFDM
+        </button>
+ -->        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+				
+	<div class = "middle">
+	            <div id = "scrolltomessage" class="flex items-center gap-2 justify-center max-lg:flex-col">
+              <div id="plot7" class="w-[600px] h-[450px]"></div>
+			</div>
+      <table id="dataTable"></table>
+      <div id = "scrolltoqam" class="flex items-center gap-2 justify-center max-lg:flex-col">
+        <div id="plot7_mod" class="w-[600px] h-[450px]"></div>
+</div>
+		    <div id = "scrolltosubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
+
+              <div id="allPlotsContainer" class="w-[600px] h-auto"></div>
+
+
+			</div>
+			<div id = "scrolltoofdmwithoutcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
+        <div id="plotContainer" class="w-[600px] h-auto"></div>
+
+			</div>
+			<div id = "scrolltoofdmwithcp" class="flex items-center gap-2 justify-center max-lg:flex-col">
+                <div id="plots-container" class="w-[600px] h-auto"></div>
+              </div>
+	</div>
+	
+
+	<div class = "right-half hidden">
+<br/>
+
+<table id="snrTable" border="1" class = "custom-table">
+    <thead>
+        <tr>
+            <th>SNR (in dB)</th>
+            <th>Symbol Error Rate (SER)</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+<button   class="button bg-blue-500 text-white rounded-md px-2 py-1 text-base"
+id="plotButton">Plot SER vs SER</button>
+
+
+<div id="plotArea"></div>
+
+	</div></div>
+	
+	
+	
+<div id = "demodulation">
+	    <!-- sidebar and body -->
+			  <div id = "container">
+    <h1>Instructions for Demodulation of OFDM using 16-QAM</h1>
+    <ul>
+      <li class="step step1">Step 1: Click on the 'Received Subcarrier' button to simulate reception and retrieve the subcarriers for a selected OFDM symbol (after CP removal and FFT).</li>
+
+		<li class="step step1">Step 2: You can Demodulate the OFDM Signal clicking on the 'Demodulate OFDM' button</li>
+		<li class="step step2">In the demodulation part, maximum likelihood detection is used to find the closest constellation point to each received symbol. After identifying the nearest point, the Gray code mapping is reversed to recover the 
+		original transmitted data. This approach ensures accurate data recovery even in the presence of noise.
+    </ul>
+</div>
+    <div class="flex min-h-[80vh]">
+      <div class="px-6 pb-6 flex-1">
+        <!--  -->
+        <div class="flex">
+          <div class="flex-1 basis-4/5 flex flex-col">
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+
+
+            </div>
+            <div class="flex max-lg:flex-col mt-5 items-center gap-x-8 gap-y-2">
+ 
+
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-4 border-t-2">
+          <div class="flex flex-col">
+            <div class="flex justify-center pt-4">
+              <button
+              class="button bg-blue-500 text-white rounded-md px-2 py-1"
+              onclick="plot4(scaledReceivedSubcarriers)"
+            >
+              Received subcarrier
+            </button>
+
+            </div>
+            <div class="flex justify-center pt-4">
+              <button
+                class="bg-blue-500 text-white rounded-md px-2 py-1"
+                class="button"
+                onclick="plotReceivedBitstreams(binaryReceivedData)"
+              >
+               Demodulate OFDM
+              </button>
+            </div>
+            <div class="flex gap-1">
+              <div class="flex-1 flex flex-col items-center">
+                <div class="w-full">
+                  <img
+                    class="w-[80%] h-[80%]"
+                    src="ofdm_demod.png"
+                    alt="psk1"
+					style= "height:550px; width: 650px; margin-left: 40px"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-col items-center gap-4 mt-4">
+              <div id = "scrolltoreceivedsubcarrier" class="flex items-center gap-2 justify-center max-lg:flex-col">
+                <div id="plot4" class="w-[600px] h-[450px]"></div>
+              </div>
+              <div id="plot1fff" class="w-[600px] h-[450px]"></div>
+
+              <div id = "scrolltoreceivedbits" class="flex items-center gap-2 justify-center max-lg:flex-col">
+              <div id="plot8" class="w-[600px] h-[450px]"></div>
+            </div>
+          </div>
+            </div>
+          </div>
+        </div>
+        <!--  -->
+      </div>
+    </div>
+
+  </div>
+
+  <div align = "center">
+    <a href = ".\ofdm_bpsk_demod.html">
+    <button
+    class="bg-blue-500 text-white py-1 px-3  rounded-md hover:scale-105"
+  >
+    Perform Demodulation
+  </button>
+  </a>
+  </div>
+  <script>
+    function checkFrequencies() {
+        // Get values from input fields
+        let carrierFrequency = parseFloat(document.getElementById('carrierFrequency').value);
+        let samplingFrequency = parseFloat(document.getElementById('samplingFrequency').value);
+        
+        // Check the frequencies
+        if (carrierFrequency >= samplingFrequency) {
+            alert("Sampling frequency should be higher than the carrier frequency.");
+            window.location.reload(true); 
+        } else {
+            console.log("Sampling frequency is higher than the carrier frequency.");
+        }
+    }
+
+    // Function to attach event listeners to all buttons
+    function attachEventListeners() {
+        let buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('click', checkFrequencies);
+        });
+    }
+
+    // Attach event listeners when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', attachEventListeners);
+
+</script>
+
+    <script>
+	
+  const nSubcarriersInput = document.getElementById('nSubcarriers');
+  
+  // Add event listener to all buttons on the page
+  document.addEventListener('click', function (event) {
+    if (event.target.tagName === 'BUTTON') {
+      let value = parseInt(nSubcarriersInput.value, 10);
+      
+      // Show alert if the value is out of range
+      if (value < 4 || value > 64) {
+        alert("Choose Number of OFDM Subcarriers between 4 and 64");
+		window.location.reload(true); 
+      }
+    }
+  });
+        // Function to check if a number is a power of 2
+        function isPowerOf2(n) {
+            return n > 0 && (n & (n - 1)) === 0;
+        }
+
+        function validateInputs() {
+            const nSymbols = parseInt(document.getElementById('nSymbols').value);
+            const nSubcarriers = parseInt(document.getElementById('nSubcarriers').value);
+            const cyclicPrefix = parseInt(document.getElementById('cyclicPrefix').value);
+            const ofdmSymbolIndex = parseInt(document.getElementById('ofdmSymbolIndex').value);
+
+            // Check if the number of subcarriers is a power of 2
+            if (!isPowerOf2(nSubcarriers)) {
+                alert('Number of subcarriers must be a power of 2.');
+				window.location.reload(true); 
+            }
+
+            // Check if OFDM symbol index is greater than the number of symbols
+            if (ofdmSymbolIndex > nSymbols) {
+                alert('OFDM Symbol index cannot be greater than the number of OFDM symbols.');
+				window.location.reload(true); 
+            }
+
+            // Check if cyclic prefix length is greater than the number of subcarriers
+            if (cyclicPrefix >= nSubcarriers) {
+                alert('Choose a lower value for the length of cyclic prefix.');
+				window.location.reload(true); 
+            }
+        }
+
+        // Add event listener to all buttons on the page
+        window.onload = function() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', validateInputs);
+            });
+        };
+
+// Function to update all input values
+function updateValues() {
+    const inputs = document.querySelectorAll('.input-field');
+    inputs.forEach(input => {
+        console.log(`${input.id}: ${input.value}`);
+        // Add your logic to handle the updated values here
+    });
+}
+
+// Select all input fields and attach the event listener
+const inputFields = document.querySelectorAll('.input-field');
+inputFields.forEach(field => {
+    field.addEventListener('input', updateValues);
+});
+
+
+
+
+        // Define complex number operations
+        class Complex {
+            constructor(real, imag) {
+                this.real = real;
+                this.imag = imag;
+            }
+
+            add(other) {
+                return new Complex(this.real + other.real, this.imag + other.imag);
+            }
+
+            subtract(other) {
+                return new Complex(this.real - other.real, this.imag - other.imag);
+            }
+
+            multiply(other) {
+                return new Complex(
+                    this.real * other.real - this.imag * other.imag,
+                    this.real * other.imag + this.imag * other.real
+                );
+            }
+
+            divide(other) {
+                const denom = other.real * other.real + other.imag * other.imag;
+                return new Complex(
+                    (this.real * other.real + this.imag * other.imag) / denom,
+                    (this.imag * other.real - this.real * other.imag) / denom
+                );
+            }
+
+            magnitude() {
+                return Math.sqrt(this.real * this.real + this.imag * this.imag);
+            }
+
+            toString() {
+                return `${this.real}${this.imag >= 0 ? '+' : ''}${this.imag}i`;
+            }
+        }
+
+        // Cooley-Tukey FFT function
+        function cooleyTukeyFFT(x) {
+            const N = x.length;
+            if (N <= 1) return x;
+
+            const half = N / 2;
+            const even = cooleyTukeyFFT(x.filter((_, i) => i % 2 === 0));
+            const odd = cooleyTukeyFFT(x.filter((_, i) => i % 2 !== 0));
+
+            const T = Array.from({ length: half }, (_, k) => {
+                const theta = -2 * Math.PI * k / N;
+                const w = new Complex(Math.cos(theta), Math.sin(theta));
+                return even[k].add(w.multiply(odd[k]));
+            });
+
+            return [...T, ...T.map((t, k) => even[k].subtract(t))];
+        }
+
+        // Cooley-Tukey IFFT function
+        function cooleyTukeyIFFT(x) {
+            const N = x.length;
+            const conjugated = x.map(c => new Complex(c.real, -c.imag));
+            const result = cooleyTukeyFFT(conjugated);
+            return result.map(c => new Complex(c.real / N, -c.imag / N));
+        }
+
+        // Custom 16-QAM Modulation Function
+// Gray code mapping for 16-QAM symbols
+// Standard 16-QAM Gray-coded mapping (4 bits per symbol)
+// Standard Gray code mapping for 16-QAM (decimal index to 4-bit Gray code)
+// Gray code mapping: index -> Gray code
+function grayCodeMapping(index) {
+    const grayMap = [
+        0b0000, 0b0001, 0b0011, 0b0010,
+        0b0100, 0b0101, 0b0111, 0b0110,
+        0b1100, 0b1101, 0b1111, 0b1110,
+        0b1000, 0b1001, 0b1011, 0b1010
+    ];
+    return grayMap[index];
+}
+
+// Reverse mapping: Gray code -> index
+function reverseGrayCodeMapping(grayCode) {
+    const grayMap = [
+        0b0000, 0b0001, 0b0011, 0b0010,
+        0b0100, 0b0101, 0b0111, 0b0110,
+        0b1100, 0b1101, 0b1111, 0b1110,
+        0b1000, 0b1001, 0b1011, 0b1010
+    ];
+    return grayMap.indexOf(grayCode);
+}
+
+// Correct Gray-coded 16-QAM constellation points
+const constellationGray = [
+    new Complex(-3, -3), new Complex(-3, -1), new Complex(-3, 1), new Complex(-3, 3), // 0-3
+    new Complex(-1, -3), new Complex(-1, -1), new Complex(-1, 1), new Complex(-1, 3), // 4-7
+    new Complex(3, -3),  new Complex(3, -1),  new Complex(3, 1),  new Complex(3, 3),  // 8-11
+    new Complex(1, -3),  new Complex(1, -1),  new Complex(1, 1),  new Complex(1, 3)   // 12-15
+];
+
+// Custom 16-QAM Modulation using Gray Code
+function qammodCustom(data, M) {
+    if (M !== 16) throw new Error('This function is designed for 16-QAM');
+
+    // Map each data symbol to the Gray-coded constellation
+    return data.map(row => row.map(d => constellationGray[grayCodeMapping(d)]));
+}
+
+// Custom 16-QAM Demodulation using Maximum Likelihood and Gray Code
+function qamdemodCustom(modData, M) {
+    if (M !== 16) throw new Error('This function is designed for 16-QAM');
+
+    const modDataArray = modData.flat();
+    const demodData = modDataArray.map(symbol => {
+        let minDistance = Infinity;
+        let bestSymbol = null;
+
+        // Find the nearest constellation point
+        for (let [index, point] of constellationGray.entries()) {
+            let distance = symbol.subtract(point).magnitude();
+            if (distance < minDistance) {
+                minDistance = distance;
+                bestSymbol = index;
+            }
+        }
+
+        // Reverse Gray code to get original 4-bit symbol
+        return reverseGrayCodeMapping(bestSymbol);
+    });
+
+    // Reshape to original 2D structure
+    return Array.from({ length: modData.length }, (_, i) =>
+        demodData.slice(i * modData[0].length, (i + 1) * modData[0].length)
+    );
+}
+
+
+function bpskDemodCustom(modData) {
+    const modDataArray = modData.flat();
+    const demodData = modDataArray.map(symbol => {
+        // Check the real part of the symbol
+        if (symbol.real > 0) {
+            return 1; // Mapped to 1+0j
+        } else {
+            return 0; // Mapped to -1+0j
+        }
+    });
+
+    // Reshape to the original 2D structure
+    return Array.from({ length: modData.length }, (_, i) =>
+        demodData.slice(i * modData[0].length, (i + 1) * modData[0].length)
+    );
+}
+
+
+
+
+
+        // Helper function to get ordinal suffix
+        function getOrdinalSuffix(n) {
+            const suffixes = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
+        }
+
+//////////////////////awgn /////////////////////
+// Convert SNR from dB to linear scale
+        // Convert dB to linear scale
+        function dbToLinear(snrDb) {
+            return Math.pow(10, snrDb / 10);
+        }
+
+        // Generate Gaussian noise using Box-Muller transform
+        function generateGaussianNoise(size) {
+            const noise = [];
+            while (noise.length < size) {
+                const u1 = Math.random();
+                const u2 = Math.random();
+                const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+                const z2 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2);
+                noise.push(z1, z2);
+            }
+            return noise.slice(0, size);
+        }
+
+        // Add AWGN to the transmitted signal
+        function addAWGN(txSignal, EbN0dB) {
+            const snrLinear = Math.pow(10, EbN0dB / 10);
+            const noise = generateGaussianNoise(txSignal.length * 2).map(n => n / Math.sqrt(2));
+            return txSignal.map((symbol, i) => {
+                const realNoise = noise[2 * i] / Math.sqrt(snrLinear);
+                const imagNoise = noise[2 * i + 1] / Math.sqrt(snrLinear);
+                return new Complex(symbol.real + realNoise, symbol.imag + imagNoise);
+            });
+        }
+////////////////////////////////////////////////
+
+  //      function runOFDMSystem() {
+            // Get user input for nSymbols, N, Ncp, and Fs
+/*
+            function updateB() {
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let EbN0dB = parseInt(document.getElementById('snr').value);
+
+    // Use the updated EbN0dB value in the code, but do not update the input field
+    if (N === 64) {
+        EbN0dB += 46;
+    } else if (N === 32) {
+        EbN0dB += 39;
+    } else if (N === 16) {
+        EbN0dB += 31;
+    } else if (N === 8) {
+        EbN0dB += 22;
+    } 
+
+    // Use the updated EbN0dB value in further calculations or logic, but do not display it back in the input field
+    console.log("Updated EbN0dB for use in the code:", EbN0dB);
+}
+
+// Correct usage of event listener for window load
+window.addEventListener('load', function() {
+    console.log("Page has fully loaded.");
+    updateB(); // Call the updateB function after page load
+});
+*/
+			
+			let nSymbols;// = parseInt(document.getElementById('nSymbols').value);
+            let N;// = parseInt(document.getElementById('nSubcarriers').value);
+            let Ncp;// = parseInt(document.getElementById('cyclicPrefix').value);
+            let Fs;// = parseFloat(document.getElementById('samplingFrequency').value);
+            let Fc;
+            let M;// = 16;  // Modulation order (16-QAM -> M = 16)
+            let ofdmSymbolIndex;// = parseInt(document.getElementById('ofdmSymbolIndex').value) - 1;
+            let EbN0dB;
+						    if (N === 64) {
+        EbN0dB += 46;
+    } else if (N === 32) {
+        EbN0dB += 39;
+    } else if (N === 16) {
+        EbN0dB += 31;
+    } else if (N === 8) {
+        EbN0dB += 22;
+    } 
+            // Generate random data for transmission (0 to M-1 for 16-QAM)
+            let data;// = Array.from({length: nSymbols}, () => Array.from({length: N}, () => Math.floor(Math.random() * M)));
+
+            // Convert data to binary
+            let binaryData;// = data.map(symbols => symbols.map(value => value.toString(2).padStart(Math.log2(M), '0')));
+
+            // 16-QAM modulation of the data
+            let modData;// = data;
+
+            // Perform IFFT to generate the time domain OFDM signal
+            let ofdmTimeSignal;// = modData.map(row => cooleyTukeyIFFT(row));
+
+            // Add cyclic prefix
+            let ofdmWithCP;// = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
+            let NoisyOFDMWithCP;
+            // Receiver Side - Remove Cyclic Prefix and Demodulate
+            let receivedSignal;// = ofdmWithCP.map(row => row.slice(Ncp));
+
+            // Apply FFT to recover the received subcarriers
+            let receivedSubcarriers;// = receivedSignal.map(row => cooleyTukeyFFT(row));
+            let scaledReceivedSubcarriers;
+            // 16-QAM Demodulation of the received subcarriers
+            let receivedData;// = qamdemodCustom(modData, M);
+            console.log(receivedData);
+            // Calculate symbol errors
+            let numErrors;// = data.flat().reduce((acc, val, idx) => acc + (val !== receivedData.flat()[idx]), 0);
+ let bitErrorRate;
+ let timeAxisOfdm;
+ let timeAxisOfdmWithCP;
+ let binaryReceivedData;
+ let snrData = []; // Array to store SNR and SER values
+
+function runQAMSystem() {
+    // Get user input for nSymbols, N, Ncp, and Fs
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;  // Modulation order (16-QAM -> M = 16)
+    let ofdmSymbolIndex = parseInt(document.getElementById('ofdmSymbolIndex').value) - 1;
+    let EbN0dB = parseInt(document.getElementById('snr').value);
+				    if (N === 64) {
+        EbN0dB += 46;
+    } else if (N === 32) {
+        EbN0dB += 39;
+    } else if (N === 16) {
+        EbN0dB += 31;
+    } else if (N === 8) {
+        EbN0dB += 22;
+    } 
+    // Generate random data for transmission (0 to M-1 for 16-QAM)
+// Assuming Complex class is defined above
+
+data = Array.from({ length: nSymbols }, () =>
+  Array.from({ length: N }, () => {
+    const real = Math.random() < 0.5 ? -1 : 1;
+    const imag = 0;
+
+    // Always return a valid Complex instance
+    const complexNum = new Complex(real, imag);
+
+    if (!(complexNum instanceof Complex)) {
+      // Defensive fallback: This should never happen
+      console.warn("Warning: complexNum is not instance of Complex");
+      return new Complex(0, 0);
+    }
+
+    return complexNum;
+  })
+);
+
+
+    console.log("data", data);
+    
+    // Convert data to binary
+binaryData = data.map(symbols =>
+  symbols.map(value => value.real === -1 ? '0' : '1')
+);
+     console.log("binaryData", binaryData);
+    // 16-QAM modulation of the data
+    modData = data;
+    console.log("modData", modData);
+    
+    // Perform IFFT to generate the time domain OFDM signal
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
+    console.log("ofdmTimeSignal", ofdmTimeSignal);
+    
+    // Add cyclic prefix
+    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
+    console.log("ofdmWithCP", ofdmWithCP);
+    
+    // Here you can add noise if needed
+    NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); //46
+    console.log("NoisyOFDMWithCP", NoisyOFDMWithCP);
+    
+    // Receiver Side - Remove Cyclic Prefix and Demodulate
+    let receivedSignal = NoisyOFDMWithCP.map(row => row.slice(Ncp));
+    console.log("receivedSignal", receivedSignal);
+    
+    // Apply FFT to recover the received subcarriers
+    let receivedSubcarriers = receivedSignal.map(row => cooleyTukeyFFT(row));
+    
+    // Factor to multiply by
+    const factor = N;//N;
+
+    // Create a Complex object for the scaling factor
+    const scalingFactor = new Complex(factor, 0); // 32 + 0i
+
+    // Scale each complex number using the multiply method
+    scaledReceivedSubcarriers = receivedSubcarriers.map(row =>
+        row.map(complexNumber => complexNumber.multiply(scalingFactor))
+    );
+
+    console.log("scaledReceivedSubcarriers", scaledReceivedSubcarriers);
+    
+    // 16-QAM Demodulation of the received subcarriers
+    let receivedData = qamdemodCustom(scaledReceivedSubcarriers, M);
+    console.log("receivedData", receivedData);
+    
+    // Calculate symbol errors
+    let numErrors = data.flat().reduce((acc, val, idx) => acc + (val !== receivedData.flat()[idx]), 0);
+    console.log(`Number of symbol errors: ${numErrors}`);
+    let bitErrorrate = numErrors / (nSymbols * N);
+	console.log(`BER: ${bitErrorrate}`);
+	/*
+	        // Select the div with the class 'right-half'
+        let divElement = document.querySelector('.right-half');
+
+        // Set the inner HTML of the selected div to display the variable value
+        divElement.innerHTML = `The Symbol Error Rate is: ${bitErrorrate}`;
+		*/
+    // Plot for the specified OFDM symbol
+    let binaryModData = dataToBinary(data.flat(), 16);
+    binaryReceivedData = dataToBinary(receivedData.flat(), 16);
+
+    // Plot the results
+    plotModulatedBitstreams(modData);
+	    // Update the table with SNR and SER values
+    updateSNRTable(EbN0dB, bitErrorrate);
+	            document.getElementById('scrolltomessage').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+// Initialize snrData globally
+snrData = [];
+
+// Function to update the SNR table
+// Function to update the SNR table with adjusted SNR (in dB)
+function updateSNRTable(snr, ser) {
+    // Get the number of subcarriers (N)
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+
+    // Adjust SNR based on the number of subcarriers (N)
+    let snrAdjustment = 0;
+    if (N === 64) {
+        snrAdjustment = 46;
+    } else if (N === 32) {
+        snrAdjustment = 39;
+    } else if (N === 16) {
+        snrAdjustment = 31;
+    } else if (N === 8) {
+        snrAdjustment = 22;
+    }
+
+    // Adjust the SNR value
+    let adjustedSNR = snr - snrAdjustment;
+
+    // Check if the adjusted SNR value already exists to avoid duplicates
+    let existingSNR = snrData.find(item => Math.abs(item.snr - snr) < 0.001);
+    
+    if (!existingSNR) {
+        // Add new entry with adjusted SNR
+        snrData.push({ snr: adjustedSNR, ser });
+    }
+
+    // Sort the snrData array by SNR value (ascending)
+    snrData.sort((a, b) => a.snr - b.snr);
+
+    // Update the table UI
+    let tbody = document.querySelector("#snrTable tbody");
+    tbody.innerHTML = ""; // Clear the table body
+
+    snrData.forEach(item => {
+        let row = `<tr><td>${item.snr}</td><td>${item.ser.toExponential(2)}</td></tr>`;
+        tbody.innerHTML += row;
+    });
+}
+
+
+// Plot function for BER vs SER in logarithmic scale
+document.getElementById('plotButton').addEventListener('click', function() {
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let snrValues = snrData.map(item => item.snr);
+    let serValues = snrData.map(item => item.ser);
+    // Adjust SNR values based on the number of subcarriers (N)
+    let snrAdjustment = 0;
+    if (N === 64) {
+        snrAdjustment = 46;
+    } else if (N === 32) {
+        snrAdjustment = 39;
+    } else if (N === 16) {
+        snrAdjustment = 31;
+    } else if (N === 8) {
+        snrAdjustment = 22;
+    }
+
+    // Adjust each SNR value
+    snrValues = snrValues.map(snr => snr - snrAdjustment);
+    // Check if there are data points to plot
+    if (snrValues.length === 0 || serValues.length === 0) {
+        alert("No data available to plot. Please run the system to generate values.");
+        return;
+    }
+
+    // Plot using Plotly
+    let trace = {
+        x: snrValues,
+        y: serValues,
+        mode: 'lines+markers',
+        type: 'scatter'
+    };
+
+    let layout = {
+        title: 'BER vs SER',
+        xaxis: {
+            title: 'SNR (EbN0dB)',
+            type: 'linear'  // Linear scale for x-axis
+        },
+        yaxis: {
+            title: 'SER (Symbol Error Rate)',
+            type: 'log',  // Logarithmic scale for y-axis
+        }
+    };
+
+    Plotly.newPlot('plotArea', [trace], layout);
+});
+
+
+
+// Plot Subcarriers in Frequency Domain (before IFFT)
+function plot1ff() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let M = 16;  // 16-QAM
+
+    let modData = data;
+
+    // Clear previous plots
+    const container = document.getElementById('allPlotsContainer');
+    container.innerHTML = '';  // Remove previous plots
+
+    for (let ofdmSymbolIndex = 0; ofdmSymbolIndex < nSymbols; ofdmSymbolIndex++) {
+        const xAxis = Array.from({ length: N }, (_, i) => i);
+
+        // Real part impulses
+        const traceRe = {
+            x: xAxis.flatMap(x => [x, x, null]),
+            y: modData[ofdmSymbolIndex].flatMap(c => [0, c.real, null]),
+            mode: 'lines+markers',
+            type: 'scatter',
+            line: { color: 'blue' },
+            name: 'Real Part'
+        };
+
+        // Imaginary part impulses
+        const traceIm = {
+            x: xAxis.flatMap(x => [x, x, null]),
+            y: modData[ofdmSymbolIndex].flatMap(c => [0, c.imag, null]),
+            mode: 'lines+markers',
+            type: 'scatter',
+            line: { color: 'red' },
+            name: 'Imaginary Part'
+        };
+
+        const layout = {
+            title: `Serial-to-Parallel Conversion – Frequency Domain Symbols 1 to ${nSymbols} <br> Frequency Domain OFDM Symbol ${ofdmSymbolIndex + 1}`,
+            xaxis: { title: 'Subcarrier Index' },
+            yaxis: { title: 'Value (Re & Im)' }
+        };
+
+        // Create container div for each plot
+        const plotDiv = document.createElement('div');
+        plotDiv.id = `plota_${ofdmSymbolIndex}`;
+        plotDiv.style.marginBottom = "30px";
+        container.appendChild(plotDiv);
+
+        Plotly.newPlot(plotDiv.id, [traceRe], layout);
+    }
+
+    // Optionally scroll to plot area
+    container.scrollIntoView({ behavior: 'smooth' });
+}
+
+
+
+// --- Event listener for OFDM symbol index change ---
+document.getElementById('ofdmSymbolIndex').addEventListener('input', () => {
+    plot1ff();
+    plot2();
+    plot3();
+});
+
+/*
+            // Plot Time Domain OFDM Signal (after IFFT)
+            function plot2() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;  // Modulation order (16-QAM -> M = 16)
+
+    // Prompt the user for OFDM symbol index
+    let ofdmSymbolIndex = parseInt(
+        prompt(
+            `Enter OFDM Symbol Number (1 to ${nSymbols}):\nTo see another symbol, just click on 'Generate Time domain ofdm without cp' button again.`,
+            "1"
+        )
+    ) - 1;
+
+    // 16-QAM modulation
+    let modData = data;
+
+    // Perform IFFT to generate the time domain OFDM signal
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
+
+    // Vertical impulses for real part
+    const xRe = Array.from({length: N}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yRe = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[ofdmSymbolIndex][i].real, null]).flat();
+
+    const traceRe = {
+        x: xRe,
+        y: yRe,
+        mode: 'lines+markers',
+        type: 'scatter',
+        name: 'Real Part',
+        line: { color: 'blue' },
+        marker: { size: 6 }
+    };
+
+    // Vertical impulses for imaginary part
+    const xIm = Array.from({length: N}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yIm = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[ofdmSymbolIndex][i].imag, null]).flat();
+
+    const traceIm = {
+        x: xIm,
+        y: yIm,
+        mode: 'lines+markers',
+        type: 'scatter',
+        name: 'Imaginary Part',
+        line: { color: 'red' },
+        marker: { size: 6 }
+    };
+
+    const layout = {
+        title: `OFDM Symbol ${ofdmSymbolIndex+1} (without cyclic prefix)`,
+        xaxis: { title: 'Time (s)' },
+        yaxis: { title: 'Amplitude' }
+    };
+
+    Plotly.newPlot('plot2', [traceRe, traceIm], layout);
+
+    document.getElementById('scrolltoofdmwithoutcp').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+            // Plot Time Domain OFDM Signal with Cyclic Prefix
+            function plot3() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;  // Modulation order (16-QAM -> M = 16)
+
+    // Prompt the user for OFDM symbol index
+    let ofdmSymbolIndex = parseInt(
+        prompt(
+            `Enter OFDM Symbol Number (1 to ${nSymbols}):\nTo see another symbol, just click on 'Generate Time domain ofdm cp' button again.`,
+            "1"
+        )
+    ) - 1;
+
+    // 16-QAM modulation
+    let modData = data;
+
+    // Perform IFFT to generate the time domain OFDM signal
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
+
+    // Add cyclic prefix
+    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
+
+    // --- Vertical impulses for real part ---
+    const xRe = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yRe = Array.from({length: N + Ncp}, (_, i) => [0, ofdmWithCP[ofdmSymbolIndex][i].real, null]).flat();
+
+    const traceRe = {
+        x: xRe,
+        y: yRe,
+        mode: 'lines+markers',
+        type: 'scatter',
+        name: 'Real Part',
+        line: { color: 'blue' },
+        marker: { size: 6 }
+    };
+
+    // --- Vertical impulses for imaginary part ---
+    const xIm = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yIm = Array.from({length: N + Ncp}, (_, i) => [0, ofdmWithCP[ofdmSymbolIndex][i].imag, null]).flat();
+
+    const traceIm = {
+        x: xIm,
+        y: yIm,
+        mode: 'lines+markers',
+        type: 'scatter',
+        name: 'Imaginary Part',
+        line: { color: 'red' },
+        marker: { size: 6 }
+    };
+
+    const layout = {
+        title: `OFDM Symbol ${ofdmSymbolIndex + 1} (with cyclic prefix)`,
+        xaxis: { title: 'Time (s)' },
+        yaxis: { title: 'Amplitude' }
+    };
+
+    Plotly.newPlot('plot3', [traceRe, traceIm], layout);
+    document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth' });
+
+    saveData();
+}
+*/
+
+// Plot Time Domain OFDM Signal (after IFFT)
+// --- Linear interpolation for complex samples ---
+function interpolateComplex(x, factor) {
+    const N = x.length;
+    const result = [];
+    for (let i = 0; i < N - 1; i++) {
+        for (let j = 0; j < factor; j++) {
+            const alpha = j / factor;
+            result.push({
+                real: x[i].real * (1 - alpha) + x[i + 1].real * alpha,
+                imag: x[i].imag * (1 - alpha) + x[i + 1].imag * alpha
+            });
+        }
+    }
+    result.push({...x[N-1]});
+    return result;
+}
+
+// --- Plot OFDM Symbol Baseband + Passband ---
+function plot2() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;
+    let Fc = parseFloat(document.getElementById('carrierFrequency').value);
+
+    let modData = data;
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
+
+    const t = Array.from({length: N}, (_, i) => i / Fs);
+
+    // --- Baseband traces remain the same ---
+    const xRe = Array.from({length: N}, (_, i) => i).flatMap(x => [x, x, null]);
+    const yRe = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[0][i].real, null]).flat();
+    const xIm = Array.from({length: N}, (_, i) => i).flatMap(x => [x, x, null]);
+    const yIm = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[0][i].imag, null]).flat();
+
+    const traceRe = { x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter', name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 } };
+    const traceIm = { x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter', name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 } };
+
+    const layout = {
+        xaxis: { title: 'Time-Domain OFDM samples' },
+        yaxis: { title: 'Amplitude' }
+    };
+
+    // Create a container div for each plot and append it to a parent container
+    const container = document.getElementById('plotContainer'); // The parent container
+
+    for (let ofdmSymbolIndex = 0; ofdmSymbolIndex < nSymbols; ofdmSymbolIndex++) {
+        // Create a new div for each plot
+        const plotDiv = document.createElement('div');
+        plotDiv.id = `plotb_${ofdmSymbolIndex}`;
+        plotDiv.style.marginBottom = "30px";  // Add space between the plots
+        container.appendChild(plotDiv);
+
+        // Update the data for each symbol
+        const updatedYRe = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[ofdmSymbolIndex][i].real, null]).flat();
+        const updatedYIm = Array.from({length: N}, (_, i) => [0, ofdmTimeSignal[ofdmSymbolIndex][i].imag, null]).flat();
+
+        const updatedTraceRe = { ...traceRe, y: updatedYRe };
+        const updatedTraceIm = { ...traceIm, y: updatedYIm };
+
+        // Update layout with dynamic title
+        layout.title = `OFDM Symbol ${ofdmSymbolIndex + 1} (after IFFT)`;
+
+        // Plot each symbol into its own container div
+        Plotly.newPlot(plotDiv.id, [updatedTraceRe, updatedTraceIm], layout);
+    }
+
+    // Optionally scroll to the plot container (if you want to scroll to the newly created plots)
+    container.scrollIntoView({ behavior: 'smooth' });
+}
+
+/*
+// --- Plot OFDM Symbol with CP ---
+function plot3() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;
+    let Fc = parseFloat(document.getElementById('carrierFrequency').value);
+
+    let ofdmSymbolIndex = parseInt(prompt(`Enter OFDM Symbol Number (1 to ${nSymbols}):`, "1")) - 1;
+
+    let modData = data;
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
+    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
+    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB));
+
+    const t = Array.from({length: N + Ncp}, (_, i) => i / Fs);
+
+    const xRe = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yRe = Array.from({length: N + Ncp}, (_, i) => [0, ofdmWithCP[ofdmSymbolIndex][i].real, null]).flat();
+    const xIm = Array.from({length: N + Ncp}, (_, i) => i/Fs).flatMap(x => [x, x, null]);
+    const yIm = Array.from({length: N + Ncp}, (_, i) => [0, ofdmWithCP[ofdmSymbolIndex][i].imag, null]).flat();
+
+    const traceRe = { x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter', name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 } };
+    const traceIm = { x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter', name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 } };
+
+    // --- Passband (smoothed using interpolation) ---
+    const oversample = 1000;
+    const ofdmInterp = interpolateComplex(ofdmWithCP[ofdmSymbolIndex], oversample);
+    const tHigh = Array.from({length: ofdmInterp.length}, (_, i) => i / (Fs * oversample));
+    const passband = ofdmInterp.map((c,i) => c.real*Math.cos(2*Math.PI*Fc*tHigh[i]) - c.imag*Math.sin(2*Math.PI*Fc*tHigh[i]));
+
+    const tracePass = { x: tHigh, y: passband, mode: 'lines', type: 'scatter', name: 'Passband', line: { color: 'green' } };
+
+    const layout = { title: `OFDM Symbol ${ofdmSymbolIndex+1} with CP (Baseband + Passband)`, xaxis: { title: 'Time (s)' }, yaxis: { title: 'Amplitude' } };
+    Plotly.newPlot('plot3', [traceRe, traceIm, tracePass], layout);
+    document.getElementById('scrolltoofdmwithcp').scrollIntoView({ behavior: 'smooth' });
+
+    saveData();
+}
+*/
+function plot3() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);
+    let N = parseInt(document.getElementById('nSubcarriers').value);
+    let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+    let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+    let M = 16;
+    let Fc = parseFloat(document.getElementById('carrierFrequency').value);
+
+    let modData = data; // [nSymbols][N]
+    let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row)); // IFFT
+    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]); // Add CP
+    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); // Noise
+
+    const t = Array.from({ length: N + Ncp }, (_, i) => i / Fs);
+
+    // Create a container div for the plots
+    const container = document.getElementById('plots-container');
+    container.innerHTML = ''; // Clear previous plots
+
+    // Loop over all the OFDM symbols and create a plot for each
+    for (let ofdmSymbolIndex = 0; ofdmSymbolIndex < nSymbols; ofdmSymbolIndex++) {
+
+        // Plot the Real and Imaginary components for the current symbol
+        const xRe = t.flatMap(x => [x, x, null]);
+        const yRe = ofdmWithCP[ofdmSymbolIndex].map(p => p.real).flatMap(y => [0, y, null]);
+        const xIm = t.flatMap(x => [x, x, null]);
+        const yIm = ofdmWithCP[ofdmSymbolIndex].map(p => p.imag).flatMap(y => [0, y, null]);
+
+        const traceRe = {
+            x: xRe, y: yRe, mode: 'lines+markers', type: 'scatter',
+            name: 'Baseband Real', line: { color: 'blue' }, marker: { size: 6 }
+        };
+
+        const traceIm = {
+            x: xIm, y: yIm, mode: 'lines+markers', type: 'scatter',
+            name: 'Baseband Imag', line: { color: 'red' }, marker: { size: 6 }
+        };
+
+        // --- Passband Signal ---
+        const oversample = 1000;
+        const ofdmInterp = interpolateComplex(ofdmWithCP[ofdmSymbolIndex], oversample);
+        const tHigh = Array.from({ length: ofdmInterp.length }, (_, i) => i / (Fs * oversample));
+        const passband = ofdmInterp.map((c, i) =>
+            c.real * Math.cos(2 * Math.PI * Fc * tHigh[i]) -
+            c.imag * Math.sin(2 * Math.PI * Fc * tHigh[i])
+        );
+
+        const tracePass = {
+            x: tHigh, y: passband, mode: 'lines', type: 'scatter',
+            name: 'Passband', line: { color: 'green' }
+        };
+
+        // === Individual Subcarrier Passband Visualization ===
+        const subcarrierTraces = [];
+        const subSymbols = modData[ofdmSymbolIndex]; // QAM symbols for this symbol
+        const deltaF = Fs / N; // Subcarrier spacing
+        const tSubHigh = Array.from({ length: (N + Ncp) * oversample }, (_, i) => i / (Fs * oversample));
+
+        for (let k = 0; k < N; k++) {
+            const symbol = subSymbols[k];
+            const fk = Fc + deltaF * k; // Shift to passband
+
+            const wave = tSubHigh.map(t =>
+                symbol.real * Math.cos(2 * Math.PI * fk * t) -
+                symbol.imag * Math.sin(2 * Math.PI * fk * t)
+            );
+
+            subcarrierTraces.push({
+                x: tSubHigh,
+                y: wave,
+                mode: 'lines',
+                type: 'scatter',
+                name: `Subcarrier ${k}`,
+                line: { width: 1, dash: 'dot' },
+                visible: (k < 5) ? true : 'legendonly' // Show only first 5 by default
+            });
+        }
+
+        // Create a new container for the current OFDM symbol plot
+        const plotDiv = document.createElement('div');
+        plotDiv.id = `plotc_${ofdmSymbolIndex}`;
+        plotDiv.style.marginBottom = "30px";
+        container.appendChild(plotDiv);
+
+        // Set the layout for the plot
+        const layout = {
+            title: `OFDM Symbol ${ofdmSymbolIndex + 1} with Cyclic Prefix`,
+            xaxis: { title: 'Time (s)' },
+            yaxis: { title: 'Amplitude' }
+        };
+
+        // Plot the current OFDM symbol
+        Plotly.newPlot(plotDiv.id, [traceRe, traceIm, ...subcarrierTraces], layout);
+    }
+
+    // Optionally scroll to plot area
+    container.scrollIntoView({ behavior: 'smooth' });
+
+    saveData();
+}
+
+
+
+
+			
+            // Plot Received Subcarriers in Frequency Domain (after FFT at the receiver)
+			function plot4(scaledReceivedSubcarriers) {
+						 // Get user input for nSymbols, N, Ncp, and Fs
+            let nSymbols = parseInt(document.getElementById('nSymbols').value);
+            let N = parseInt(document.getElementById('nSubcarriers').value);
+            let Ncp = parseInt(document.getElementById('cyclicPrefix').value);
+            let Fs = parseFloat(document.getElementById('samplingFrequency').value);
+            let M = 16;  // Modulation order (16-QAM -> M = 16)
+            let ofdmSymbolIndex = parseInt(document.getElementById('ofdmSymbolIndex').value) - 1;
+/*
+            // Generate random data for transmission (0 to M-1 for 16-QAM)
+            //let data = Array.from({length: nSymbols}, () => Array.from({length: N}, () => Math.floor(Math.random() * M)));
+
+            // Convert data to binary
+            let binaryData = data.map(symbols => symbols.map(value => value.toString(2).padStart(Math.log2(M), '0')));
+
+            // 16-QAM modulation of the data
+            let modData = data;
+
+            // Perform IFFT to generate the time domain OFDM signal
+            let ofdmTimeSignal = modData.map(row => cooleyTukeyIFFT(row));
+
+                        // Add cyclic prefix
+    let ofdmWithCP = ofdmTimeSignal.map(row => [...row.slice(-Ncp), ...row]);
+    console.log("ofdmWithCP", ofdmWithCP);
+    
+    // Here you can add noise if needed
+    let NoisyOFDMWithCP = ofdmWithCP.map(row => addAWGN(row, EbN0dB)); //46
+    console.log("NoisyOFDMWithCP", NoisyOFDMWithCP);
+    
+    // Receiver Side - Remove Cyclic Prefix and Demodulate
+    let receivedSignal = NoisyOFDMWithCP.map(row => row.slice(Ncp));
+    console.log("receivedSignal", receivedSignal);
+    
+    // Apply FFT to recover the received subcarriers
+    let receivedSubcarriers = receivedSignal.map(row => cooleyTukeyFFT(row));
+    
+    // Factor to multiply by
+    const factor = N;//N;
+
+    // Create a Complex object for the scaling factor
+    const scalingFactor = new Complex(factor, 0); // 32 + 0i
+
+    // Scale each complex number using the multiply method
+    let scaledReceivedSubcarriers = receivedSubcarriers.map(row =>
+        row.map(complexNumber => complexNumber.multiply(scalingFactor))
+    );
+
+    console.log("scaledReceivedSubcarriers", scaledReceivedSubcarriers);
+    
+    // 16-QAM Demodulation of the received subcarriers
+    let receivedData = qamdemodCustom(scaledReceivedSubcarriers, M);
+    console.log("receivedData", receivedData);
+            // Calculate symbol errors
+            let numErrors = data.flat().reduce((acc, val, idx) => acc + (val !== receivedData.flat()[idx]), 0);
+            console.log(`Number of symbol errors: ${numErrors}`);
+            // Plot for the specified OFDM symbol
+ //           plotSubcarriers(ofdmSymbolIndex, modData, ofdmTimeSignal, ofdmWithCP, receivedSubcarriers, receivedData, M, N, Ncp, Fs);
+
+		
+	//	            function plot(id, data, layout) {
+     //           Plotly.newPlot(id, [data], layout);
+     //       }
+        // Function to plot graphs with dynamic titles
+       // function plotSubcarriers(ofdmSymbolIndex, modData, ofdmTimeSignal, ofdmWithCP, receivedSubcarriers, receivedData, M, N, Ncp, Fs) {
+            //ofdmSymbolIndex = `${ofdmSymbolIndex + 1}${getOrdinalSuffix(ofdmSymbolIndex + 1)}`;
+            let timeAxisOfdm = Array.from({length: N}, (_, i) => i / Fs);  // Time axis for OFDM without CP
+            let timeAxisOfdmWithCP = Array.from({length: N + Ncp}, (_, i) => i / Fs);  // Time axis for OFDM with CP
+ */ const annotations = scaledReceivedSubcarriers[ofdmSymbolIndex].map((complexVal, index) => ({
+  x: index,
+  y: 5, // fixed height for annotation
+  text: `${complexVal.real.toFixed(1)}${complexVal.imag >= 0 ? '+' : ''}${complexVal.imag.toFixed(1)}j`,
+  showarrow: false,
+  font: { color: "black", size: 10 }
+}));
+
+			const trace = {
+                x: Array.from({length: N}, (_, i) => i),
+                y: Array.from({length: N}, (_, i) => scaledReceivedSubcarriers[ofdmSymbolIndex][i].magnitude()),
+                type: 'bar'
+            };
+			const layout = {
+                title: `Received Subcarriers in Frequency Domain <br> (After FFT) for ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+                xaxis: {title: 'Subcarrier Index'},
+                yaxis: {title: 'Magnitude'},
+                annotations: annotations
+            };
+									            Plotly.newPlot('plot4', [trace], layout);
+
+                              const tracefff = {
+    x: scaledReceivedSubcarriers[ofdmSymbolIndex].map(c => c.real),  // Real parts
+    y: scaledReceivedSubcarriers[ofdmSymbolIndex].map(c => c.imag),  // Imaginary parts
+    mode: 'markers',
+    type: 'scatter',
+    marker: {
+        color: 'blue',
+        size: 8,
+        symbol: 'circle'
+    },
+    name: 'Constellation'
+};
+const layoutfff = {
+    title: `Constellation Diagram`,
+    xaxis: { title: 'In-phase (Re)', zeroline: true },
+    yaxis: { title: 'Quadrature (Im)', zeroline: true },
+    showlegend: false
+};
+
+Plotly.newPlot('plot1fff', [tracefff], layoutfff);
+												            document.getElementById('scrolltoreceivedsubcarrier').scrollIntoView({ behavior: 'smooth' });
+												}
+/*
+            // Plot Transmitted Data ConstellatiolotModData()n (Before IFFT)
+            plot('plot5', {
+                x: modData[ofdmSymbolIndex].map(c => c.real),
+                y: modData[ofdmSymbolIndex].map(c => c.imag),
+                mode: 'markers',
+                type: 'scatter'
+            }, {
+                title: `Transmitted 16-QAM Symbols <br> for ${ofdmSymbolIndex} OFDM Symbol`,
+                xaxis: {title: 'In-phase'},
+                yaxis: {title: 'Quadrature'}
+            });
+
+            // Plot Received Data Constellation (After Demodulation)
+            plot('plot6', {
+                x: qammodCustom(receivedData, M)[ofdmSymbolIndex].map(c => c.real),
+                y: qammodCustom(receivedData, M)[ofdmSymbolIndex].map(c => c.imag),
+                mode: 'markers',
+                type: 'scatter'
+            }, {
+                title: `Received 16-QAM Symbols <br> for ${ofdmSymbolIndex} OFDM Symbol`,
+                xaxis: {title: 'In-phase'},
+                yaxis: {title: 'Quadrature'}
+            });
+        }
+*/
+///////////////////////////////////////////////////////////////
+
+// Convert data to binary bitstream
+/*
+function dataToBinary(data, M) {
+    const bitsPerSymbol = Math.log2(M);
+    return data.map(value => {
+        const binary = value.toString(2).padStart(bitsPerSymbol, '0');
+        return binary.split('').map(bit => parseInt(bit));
+    }).flat();
+}
+*/
+function dataToBinary(data, M) {
+  const bitsPerSymbol = Math.log2(M);
+
+  return data.map(value => {
+    // For BPSK: if value < 0 => '0', else '1'
+    const bit = value < 0 ? '0' : '1';
+
+    // Pad for generality (bitsPerSymbol=1 for BPSK)
+    const binary = bit.padStart(bitsPerSymbol, '0');
+
+    return binary.split('').map(bitChar => parseInt(bitChar));
+  }).flat();
+}
+// Plot7 results for Modulated Data
+function plotModulatedBitstreams(modData) {
+  if (!modData || !Array.isArray(modData) || !Array.isArray(modData[0])) {
+    console.error('modData is not a 2D array');
+    return;
+  }
+
+  let nSymbols = parseInt(document.getElementById('nSymbols').value);
+  let N = parseInt(document.getElementById('nSubcarriers').value);
+
+  let xRe = [];
+  let yRe = [];
+
+  // Collect data for the real part of the modulated signal
+  for (let sym = 0; sym < nSymbols; sym++) {
+    for (let i = 0; i < N; i++) {
+      let idx = sym * N + i;
+
+      // Real part plotting
+      xRe.push(idx);  // x-values are continuous
+      yRe.push(modData[sym][i].real > 0 ? 1 : 0); // Binary 0 or 1 based on real part
+    }
+  }
+
+  const annotations = yRe.slice(0, xRe.length).map((bit, index) => ({
+  x: 1/xRe.length + xRe[index],               // x position is the index of the signal
+  y: 1.1,               // y position is the y value with a small offset to avoid overlap
+  text: bit.toString(),        // Display the binary value (0 or 1)
+  showarrow: false,             // No arrow pointing to the value
+  font: { color: "black", size: 14 },  // Font style for annotations
+}));
+
+
+  // Define trace for the binary step plot (digital signal)
+  const trace = {
+    x: xRe,
+    y: yRe,
+    mode: 'lines',
+    type: 'scatter',
+    name: 'Input Binary Bitstream',
+    line: { shape: 'hv', color: 'blue' }, // Step plot (horizontal-vertical)
+  };
+
+  // Plot the data
+  Plotly.newPlot('plot7', [trace], {
+    title: 'Input Binary Bitstream',
+    xaxis: { title: 'Index' },
+    yaxis: { title: 'Value' },
+    annotations: annotations,
+    showlegend: false,
+  });
+}
+
+
+
+
+
+function plotModData() {
+    let nSymbols = parseInt(document.getElementById('nSymbols').value);  // Total number of symbols
+    let N = parseInt(document.getElementById('nSubcarriers').value);    // Number of subcarriers
+
+    let xRe = [];
+    let yRe = [];
+    let xIm = [];
+    let yIm = [];
+
+    // Define different colors for each OFDM symbol's plot (you can extend this array for more colors if needed)
+    const colors = ['blue', 'green', 'red', 'purple', 'orange', 'cyan', 'magenta'];
+
+    // Prepare traces for each OFDM symbol
+    let traces = [];
+
+    for (let sym = 0; sym < nSymbols; sym++) {
+        let xDataRe = [];
+        let yDataRe = [];
+        let xDataIm = [];
+        let yDataIm = [];
+
+        let currentColor = colors[sym % colors.length];  // Cycle through colors if more symbols
+
+        // Collect data for this symbol
+        for (let i = 0; i < N; i++) {
+            let idx = sym * N + i;  // Sample index for the current symbol
+
+            // Real part data
+            xDataRe.push(idx, idx, null);  // Null to separate segments
+            yDataRe.push(0, modData[sym][i].real, null);
+
+            // Imaginary part data
+            xDataIm.push(idx, idx, null);
+            yDataIm.push(0, modData[sym][i].imag, null);
+        }
+
+        // Create traces for real and imaginary parts of the current symbol
+        let traceRe = {
+            x: xDataRe,
+            y: yDataRe,
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: `Mapped to OFDM Symbol ${sym + 1}`,  // Label legend with OFDM symbol
+            line: { color: currentColor },  // Set color for the symbol
+            marker: { size: 6 }
+        };
+
+        let traceIm = {
+            x: xDataIm,
+            y: yDataIm,
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: `OFDM Symbol ${sym + 1} (Imag)`,  // Label legend with OFDM symbol
+            line: { color: currentColor },  // Set color for the symbol
+            marker: { size: 6 }
+        };
+
+        // Add the traces to the list
+        traces.push(traceRe);
+    }
+
+    // Layout settings for the plot
+    const layout = {
+        title: 'BPSK Modulated Signal',
+        xaxis: {
+            title: 'Symbol Index',
+            tickvals: Array.from({ length: nSymbols * N }, (_, i) => i),  // Label each sample
+            ticktext: Array.from({ length: nSymbols * N }, (_, i) => (i % N) + 1)  // Label by subcarrier index
+        },
+        yaxis: { title: 'Value (Re & Im)' },
+        showlegend: true  // Ensure legend is shown
+    };
+
+    // Plot the chart with traces
+    Plotly.newPlot('plot7_mod', traces, layout);
+
+    // Smooth scroll to the plot section
+    document.getElementById('scrolltoqam').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+
+
+
+
+// Plot8 results for Received Data
+function plotReceivedBitstreams(binaryReceivedData) {
+            let ofdmSymbolIndex = parseInt(document.getElementById('ofdmSymbolIndex').value) - 1;
+    const trace2 = {
+        //x: Array.from({ length: binaryReceivedData.length }, (_, i) => i),
+		x: binaryReceivedData.flatMap((_, idx) => [idx * 1, (idx + 1) * 1]),
+        y: binaryReceivedData.flatMap(val => [val, val]),
+        mode: 'lines',
+        line: { shape: 'hv' },  // Create a step-like plot
+        type: 'scatter',
+        name: 'Binary Bitstream of Received Data'
+    };
+    const annotations = binaryReceivedData.map((bit, index) => ({
+        x: (index + 0.5), // Center the annotation in the bit interval
+        y: 1.1, // Position the text above the line
+        text: bit.toString(),
+        showarrow: false,
+        font: { color: "black" },
+      }));
+    Plotly.newPlot('plot8', [trace2], {
+        title: `Binary Bitsream of Received <br> ${ofdmSymbolIndex+1}${getOrdinalSuffix(ofdmSymbolIndex + 1)} OFDM Symbol`,
+        xaxis: { title: 'Bit Index' },
+        yaxis: { title: 'Bit Value' },
+        annotations: annotations
+    });
+	            document.getElementById('scrolltoreceivedbits').scrollIntoView({ behavior: 'smooth' });
+}
+
+//
+/*
+const globalData = [
+      [12, 45, 78, 32],
+      [56, 23, 89, 14],
+      [90, 67, 22, 40]
+    ];
+*/
+ // --- Function to build table with headers from globalData ---
+ function renderGlobalTable(data) {
+  let m = parseInt(document.getElementById('nSymbols').value);
+    let n = parseInt(document.getElementById('nSubcarriers').value);
+      //const m = data.length;       // number of rows
+      //const n = data[0].length;    // number of columns
+
+      // Create new array with extra row and column for headers
+      const tableData = Array.from({ length: m + 1 }, (_, rowIndex) =>
+        Array.from({ length: n + 1 }, (_, colIndex) => {
+          if (rowIndex === 0 && colIndex === 0) return "";          // top-left
+          if (rowIndex === 0) return `Col ${colIndex}`;             // header row
+          if (colIndex === 0) return `Row ${rowIndex}`;             // header col
+          return data[rowIndex - 1][colIndex - 1];                  // real data
+        })
+      );
+
+      // Render HTML
+      const table = document.getElementById("dataTable");
+      table.innerHTML = tableData
+        .map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`)
+        .join("");
+    }
+
+    // --- Render the table using globalData ---
+    
+
+function saveData() {
+  const myData = {
+    nSymbols,
+    N,
+    Ncp,
+    Fs,
+    Fc,
+    M,
+    ofdmSymbolIndex,
+    EbN0dB,
+    data,
+    binaryData,
+    modData,
+    ofdmTimeSignal,
+    ofdmWithCP,
+    NoisyOFDMWithCP,
+    receivedSignal,
+    receivedSubcarriers,
+    scaledReceivedSubcarriers,
+    receivedData,
+    numErrors,
+    bitErrorRate,
+    timeAxisOfdm,
+    timeAxisOfdmWithCP,
+    binaryReceivedData,
+    snrData
+  };
+
+  localStorage.setItem("sharedOFDMData", JSON.stringify(myData));
+}
+    </script>
+	
+	<style>
+#demodulation {
+  display: none;
+}
+#container {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 25px 40px;
+  max-width: 100%;
+  margin: 20px auto;
+  text-align: left;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h1 {
+  color: #1e3a8a;
+  font-size: 24px;
+  margin-bottom: 25px;
+  text-align: justify;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li.step {
+  margin: 12px 0;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+li.step::before {
+  content: "✔";
+  color: #10b981;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+li.step:hover {
+  transform: scale(1.02);
+  background-color: #f3f4f6;
+}
+
+/* Color code each step */
+.step1 {
+  background-color: #ffe0e0;
+  border-left: 5px solid #ef4444;
+}
+.step2 {
+  background-color: #e0f7ff;
+  border-left: 5px solid #0ea5e9;
+}
+.step3 {
+  background-color: #e0ffe5;
+  border-left: 5px solid #22c55e;
+}
+.step4 {
+  background-color: #f5e0ff;
+  border-left: 5px solid #a855f7;
+}
+	</style>
+  </body>
+</html>
