@@ -63,10 +63,10 @@ x_{n-N_{CP}}, & N_{CP} \le n < N+N_{CP}
 $$
 </div>
 <p>
-  The sequence x̃ₙ is formed by appending a cyclic prefix of length N_CP to the 
-  original signal xₙ. The first N_CP samples of x̃ₙ are copies of the last 
-  N_CP samples of xₙ, while the remaining samples correspond to the original 
-  signal shifted by N_CP. This results in a new sequence where the end of the 
+  The sequence \(\tilde{x}_n\) is formed by appending a cyclic prefix of length \(N_{CP}\) to the 
+  original signal \(x_n\). The first \(N_{CP}\) samples of \(\tilde{x}_n\) are copies of the last 
+  \(N_{CP}\) samples of \(x_n\), while the remaining samples correspond to the original 
+  signal shifted by \(N_{CP}\). This results in a new sequence where the end of the 
   signal is repeated at the beginning, a technique commonly used in OFDM systems.
 </p>
 <p>
